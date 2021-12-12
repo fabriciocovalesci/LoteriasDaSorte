@@ -8,6 +8,7 @@ import ModalAddFav from "../Components/ModalAddFav";
 import TopBar from "../Components/TopBar";
 import DeleteModal from "../Components/deleteModal";
 
+import LoteriaFacil from "./Loterias/LoteriaFacil";
 const FavoritoRoute = () => {
 
     const [dataLoteria, setLoteria] = React.useState([])

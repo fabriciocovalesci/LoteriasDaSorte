@@ -4,6 +4,9 @@ import FeedLoteria from "./FeedLoteria";
 import EstatisticaRoute from "./EstatisticaRoute";
 import FavoritoRoute from "./FavoritoRoute";
 import GeradorRoute from "./GeradorRoute";
+
+import LoteriaFacil from "./Loterias/LoteriaFacil";
+
 import { BottomNavigation } from "react-native-paper";
 
 const Screen = () => {
@@ -19,7 +22,7 @@ const Screen = () => {
     home: FeedLoteria,
     gerador: GeradorRoute,
     estatistica: EstatisticaRoute,
-    favorito: FavoritoRoute
+    favorito: LoteriaFacil
   });
 
   return (
