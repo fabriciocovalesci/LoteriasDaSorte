@@ -49,7 +49,6 @@ const Resultados = () => {
     React.useEffect(() => {
         async function loadDataMega() {
             Promise.all([ResultadoMegaSena(), ResultadoLotoFacil(), ResultadoLotoMania(), ResultadoQuina()]).then((values) => {
-                console.log(values)
                 setMega(values[0].data)
                 setLotoFacil(values[1].data)
                 setLotoMania(values[2].data)

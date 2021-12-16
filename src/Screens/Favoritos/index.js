@@ -2,24 +2,31 @@ import * as React from "react";
 import { View, FlatList } from "react-native";
 import { Text, FAB, Dialog, Portal, Provider, Title, Card, Paragraph, Button, Divider } from "react-native-paper";
 
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import {  useNavigation } from '@react-navigation/native'
+
 import FavoritosDataBase from "../../Model/FavoritosDataBase";
 import ModalAddFav from "../../Components/ModalAddFav";
 import TopBar from "../../Components/TopBar";
 import DeleteModal from "../../Components/deleteModal";
 import { styles } from './styles'
 
-const Favoritos = () => {
+
+
+const Stack = createNativeStackNavigator();
+
+
+
+
+const Favoritos = ({ navigation }) => {
 
     const [dataLoteria, setLoteria] = React.useState([])
-
-  
 
     // FavoritosDataBase.all().then(res => console.log("all ", res))
 
     // FavoritosDataBase.findByTitulo('se').then(res => console.log('like ', res))
 
     // FavoritosDataBase.find(2).then(res => console.log('res ', res))
-    
 
     React.useEffect(() => {
         const getMega = () => {
@@ -32,6 +39,7 @@ const Favoritos = () => {
             getMega()
         }
     },[])
+    
 
 
     console.log('====================================');
@@ -112,7 +120,7 @@ const Favoritos = () => {
 
     return (
         <React.Fragment>
-            <TopBar subtitle="Meus números favoritos"/>
+            {/* <TopBar subtitle="Meus números favoritos"/> */}
 
             <Provider>
                 
@@ -139,21 +147,24 @@ const Favoritos = () => {
                             open={open}
                             icon={open ? 'clover' : 'plus'}
                             actions={[
-                                { icon: 'plus', label: 'Mega Sena', onPress: () => showModalMega() },
-                                {
+                                { 
+                                    icon: 'plus', 
+                                    label: 'Mega Sena', 
+                                    onPress: () => navigation.navigate('CriarFavorito', { loteira: 'Mega Sena', numeros: 60 }),
+                                },{
                                     icon: 'plus',
                                     label: 'Loto Fácil',
-                                    onPress: () =>  showModalFacil()
+                                    onPress: () => navigation.navigate('CriarFavorito', { loteira: 'Loto Fácil', numeros: 25 })
                                 },
                                 {
                                     icon: 'plus',
                                     label: 'Loto Mania',
-                                    onPress: () => showModalMania(),
+                                    onPress: () => navigation.navigate('CriarFavorito', { loteira: 'Loto Mania', numeros: 50 }),
                                 },
                                 {
                                     icon: 'plus',
                                     label: 'Quina',
-                                    onPress: () => showModalQuina(),
+                                    onPress: () => navigation.navigate('CriarFavorito', { loteira: 'Quina', numeros: 80 }),
                                     small: true,
                                 },
                             ]}
