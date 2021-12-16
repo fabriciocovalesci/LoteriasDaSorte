@@ -25,7 +25,7 @@ export function CardFeedLoteriaMega(props) {
             <View>
                 <ModalGanhadores isVisible={visible} onDismiss={hideModal} name={props.nome} premiacoes={props.premiacoes} />
             </View>
-            <View onStartShouldSetResponder={showModal} style={{ flex: 1, height: 300 }}>
+            <View style={{ flex: 1, height: 300 }}>
                 <View style={{ backgroundColor: '#2b6212', height: 30, justifyContent: "center" }}>
                     <Text style={{ alignSelf: "center", color: "#fff" }}>Concurso: {props.concurso}  Data: {props.data}</Text>
                 </View>
@@ -49,9 +49,9 @@ export function CardFeedLoteriaMega(props) {
                     </View>
 
                 </View>
-                <View style={{ backgroundColor: "#fff" }}>
-                    <Button icon="table-eye" name="thumb-up-outline" text="Like" onPress={showModal}>
-                        <Text style={{ color: "#260085", alignSelf: "center", fontSize: 16 }}>Premiação {props.nome}</Text>
+                <View style={{ backgroundColor: "#2b6212" }}>
+                    <Button  icon="table-eye" color='#fff' name="thumb-up-outline" text="Like" onPress={showModal}>
+                        <Text style={{ color: "#fff", alignSelf: "center", fontSize: 16 }}>Premiação {props.nome}</Text>
                     </Button>
                 </View>
             </View>
@@ -71,7 +71,7 @@ export function CardFeedLoteriaLotoFacil(props) {
             <View>
                 <ModalGanhadores isVisible={visible} onDismiss={hideModal} name={props.nome} premiacoes={props.premiacoes} />
             </View>
-            <View onStartShouldSetResponder={showModal} style={{ flex: 1, height: 300 }}>
+            <View style={{ flex: 1, height: 300 }}>
                 <View style={{ backgroundColor: '#930989', height: 30, justifyContent: "center" }}>
                     <Text style={{ alignSelf: "center", color: "#fff" }}>Concurso: {props.concurso}  Data: {props.data}</Text>
                 </View>
@@ -91,9 +91,9 @@ export function CardFeedLoteriaLotoFacil(props) {
                     </View>
 
                 </View>
-                <View style={{ backgroundColor: "#fff" }}>
-                    <Button icon="table-eye" name="thumb-up-outline" text="Like" onPress={showModal}>
-                        <Text style={{ color: "#260085", alignSelf: "center", fontSize: 16 }}>Premiação {props.nome}</Text>
+                <View style={{ backgroundColor: "#930989" }}>
+                    <Button icon="table-eye" color='#fff' name="thumb-up-outline" text="Like" onPress={showModal}>
+                        <Text style={{ color: "#fff", alignSelf: "center", fontSize: 16 }}>Premiação {props.nome}</Text>
                     </Button>
                 </View>
             </View>
@@ -112,7 +112,7 @@ export function CardFeedLoteriaLotoMania(props) {
             <View>
                 <ModalGanhadores isVisible={visible} onDismiss={hideModal} name={props.nome} premiacoes={props.premiacoes} />
             </View>
-            <View onStartShouldSetResponder={showModal} style={{ flex: 1, height: 300 }}>
+            <View style={{ flex: 1, height: 300 }}>
                 <View style={{ backgroundColor: '#F78100', height: 30, justifyContent: "center" }}>
                     <Text style={{ alignSelf: "center", color: "#fff" }}>Concurso: {props.concurso}  Data: {props.data}</Text>
                 </View>
@@ -131,9 +131,9 @@ export function CardFeedLoteriaLotoMania(props) {
                     </View>
 
                 </View>
-                <View style={{ backgroundColor: "#fff" }}>
-                    <Button icon="table-eye" name="thumb-up-outline" text="Like" onPress={showModal}>
-                        <Text style={{ color: "#260085", alignSelf: "center", fontSize: 16 }}>Premiação {props.nome}</Text>
+                <View style={{ backgroundColor: "#F78100" }}>
+                    <Button icon="table-eye" color='#fff' name="thumb-up-outline" text="Like" onPress={showModal}>
+                        <Text style={{ color: "#fff", alignSelf: "center", fontSize: 16 }}>Premiação {props.nome}</Text>
                     </Button>
                 </View>
             </View>
@@ -151,7 +151,7 @@ export function CardFeedLoteriaQuina(props) {
             <View>
                 <ModalGanhadores isVisible={visible} onDismiss={hideModal} name={props.nome} premiacoes={props.premiacoes} />
             </View>
-            <View onStartShouldSetResponder={showModal} style={{ flex: 1, height: 300 }}>
+            <View style={{ flex: 1, height: 300 }}>
                 <View style={{ backgroundColor: '#260085', height: 30, justifyContent: "center" }}>
                     <Text style={{ alignSelf: "center", color: "#fff" }}>Concurso: {props.concurso}  Data: {props.data}</Text>
                 </View>
@@ -174,9 +174,9 @@ export function CardFeedLoteriaQuina(props) {
                     </View>
 
                 </View>
-                <View style={{ backgroundColor: "#fff", marginTop: 10 }}>
-                    <Button icon="table-eye" name="thumb-up-outline" text="Like" onPress={showModal}>
-                        <Text style={{ color: "#260085", alignSelf: "center", fontSize: 16 }}>Premiação {props.nome}</Text>
+                <View style={{ backgroundColor: "#260085" }}>
+                    <Button icon="table-eye" color='#fff' name="thumb-up-outline" text="Like" onPress={showModal}>
+                        <Text style={{ color: "#fff", alignSelf: "center", fontSize: 16 }}>Premiação {props.nome}</Text>
                     </Button>
                 </View>
             </View>
