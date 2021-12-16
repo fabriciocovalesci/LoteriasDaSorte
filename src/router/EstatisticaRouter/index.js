@@ -3,8 +3,7 @@ import { View } from "react-native";
 import { Text, Appbar, Menu } from "react-native-paper";
 import { TabView, SceneMap } from 'react-native-tab-view';
 
-import Mania from "./Loterias/LoteriaMania";
-import TopBar from "../Components/TopBar";
+import TopBar from "../../Components/TopBar";
 
 const FirstRoute = () => (
   <View style={{ flex: 1, backgroundColor: '#ff4081' }} />

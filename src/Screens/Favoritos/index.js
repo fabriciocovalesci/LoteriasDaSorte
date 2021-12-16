@@ -1,15 +1,14 @@
 import * as React from "react";
-import { View, StyleSheet, FlatList } from "react-native";
+import { View, FlatList } from "react-native";
 import { Text, FAB, Dialog, Portal, Provider, Title, Card, Paragraph, Button, Divider } from "react-native-paper";
 
-import FavoritosDataBase from "../Model/FavoritosDataBase";
+import FavoritosDataBase from "../../Model/FavoritosDataBase";
+import ModalAddFav from "../../Components/ModalAddFav";
+import TopBar from "../../Components/TopBar";
+import DeleteModal from "../../Components/deleteModal";
+import { styles } from './styles'
 
-import ModalAddFav from "../Components/ModalAddFav";
-import TopBar from "../Components/TopBar";
-import DeleteModal from "../Components/deleteModal";
-
-import LoteriaFacil from "./Loterias/LoteriaFacil";
-const FavoritoRoute = () => {
+const Favoritos = () => {
 
     const [dataLoteria, setLoteria] = React.useState([])
 
@@ -172,15 +171,5 @@ const FavoritoRoute = () => {
     )
 }
 
-
-const styles = StyleSheet.create({
-    fab: {
-        position: 'absolute',
-        margin: 16,
-        right: 0,
-        bottom: 0,
-    },
-})
-
-export default FavoritoRoute;
+export default Favoritos;
 

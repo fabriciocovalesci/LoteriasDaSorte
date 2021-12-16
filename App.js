@@ -3,7 +3,8 @@ import { StyleSheet, View } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
 
 import theme from "./src/CustomProperties/Theme";
-import MainScreen from "./src/Screens/MainScreen";
+import { TabScreen } from "./src/router/TabRouter";
+
 import TopBar from "./src/Components/TopBar";
 
 
@@ -18,7 +19,7 @@ export default function App() {
     <NavigationContainer>
       <PaperProvider theme={theme}>
         {/* <TopBar /> */}
-        <MainScreen />
+        <TabScreen />
       </PaperProvider>
     </NavigationContainer>
   );

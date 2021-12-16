@@ -2,10 +2,12 @@ import * as React from 'react';
 import { Surface, Text, Title } from 'react-native-paper';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 
-import ModalGerador from '../Components/ModalGerador';
-import TopBar from '../Components/TopBar';
+import { styles } from './styles'
 
-const GeradorRoute = () => {
+import ModalGerador from "../../Components/ModalGerador";
+import TopBar from '../../Components/TopBar';
+
+const GeradorLoteria = () => {
     const [visibleMega, setVisibleMega] = React.useState(false);
     const [visibleFacil, setVisibleFacil] = React.useState(false);
     const [visibleMania, setVisibleMania] = React.useState(false);
@@ -94,62 +96,4 @@ const GeradorRoute = () => {
     );
 }
 
-export default GeradorRoute;
-
-const styles = StyleSheet.create({
-    surfaceMega: {
-        padding: 8,
-        height: 80,
-        width: 100,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: "#209869",
-        elevation: 4,
-        margin: 5,
-        borderWidth: 1,
-        borderColor: "thistle",
-        borderRadius: 10,
-    },
-    surfaceFacil: {
-        padding: 8,
-        height: 80,
-        width: 100,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: "#930989",
-        elevation: 4,
-        margin: 5,
-        borderWidth: 1,
-        borderColor: "thistle",
-        borderRadius: 10,
-    },
-    surfaceMania: {
-        padding: 8,
-        height: 80,
-        width: 100,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: "#F78100",
-        elevation: 4,
-        margin: 5,
-        borderWidth: 1,
-        borderColor: "thistle",
-        borderRadius: 10,
-    },
-    surfaceQuina: {
-        padding: 8,
-        height: 80,
-        width: 100,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: "#260085",
-        elevation: 4,
-        margin: 5,
-        borderWidth: 1,
-        borderColor: "thistle",
-        borderRadius: 10,
-    },
-    surfaceText:{
-        color: "#fff"
-    }
-});
+export default GeradorLoteria;

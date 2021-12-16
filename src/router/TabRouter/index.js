@@ -1,15 +1,13 @@
 import React, { useState } from "react";
-import FeedLoteria from "./FeedLoteria";
-
-import EstatisticaRoute from "./EstatisticaRoute";
-import FavoritoRoute from "./FavoritoRoute";
-import GeradorRoute from "./GeradorRoute";
-
-import LoteriaFacil from "./Loterias/LoteriaFacil";
-
 import { BottomNavigation } from "react-native-paper";
 
-const Screen = () => {
+import Resultados from "../../Screens/UltimosResultados";
+import EstatisticaRoute from "../EstatisticaRouter";
+import Favoritos from "../../Screens/Favoritos";
+import GeradorLoteria from "../../Screens/GeradorLoteria";
+
+
+export const TabScreen = () => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "home", title: "Home", icon: "home", color: "#3F51B5" },
@@ -19,10 +17,10 @@ const Screen = () => {
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
-    home: FeedLoteria,
-    gerador: GeradorRoute,
+    home: Resultados,
+    gerador: GeradorLoteria,
     estatistica: EstatisticaRoute,
-    favorito: LoteriaFacil
+    favorito: Favoritos
   });
 
   return (
@@ -33,5 +31,3 @@ const Screen = () => {
     />
   );
 };
-
-export default Screen;
