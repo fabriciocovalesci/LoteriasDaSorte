@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, View } from 'react-native'
+import { ScrollView, View, StyleSheet } from 'react-native'
 import { Text, FAB, Dialog, Portal, Provider, Title, Card, Paragraph, Button, Divider, TextInput } from "react-native-paper";
 
 
@@ -7,14 +7,37 @@ import { CircleNumber } from '../../Components/CircleNumber'
 
 export default function CriarFavorito({ navigation, route }) {
 
-    console.log('====================================');
-    console.log(route);
-    console.log('====================================');
+    // console.log('====================================');
+    // console.log(route);
+    // console.log('====================================');
+
+
+    const [state, setstate] = React.useState(false)
 
     const [text, setText] = React.useState('');
 
+    const [arraySelected, setArraySelected] = React.useState([])
+
     function saveBack(){
         navigation.goBack()
+    }
+
+    let myarray = []
+
+    function removeItem(array,number){
+        const index = array.indexOf(number);
+        if (index > -1) {
+        array.splice(index, 1);
+        }
+    }
+
+    function getNumber(selected, number){
+        if(!selected) {
+            myarray.push(number);
+            console.log(myarray);
+        }else{
+            removeItem(myarray, number)
+        }
     }
 
     return (
@@ -32,7 +55,7 @@ export default function CriarFavorito({ navigation, route }) {
             <View style={{  justifyContent: "center", flexDirection: "row", flexWrap: "wrap" }}>
                 {
                     Array(route.params.numeros).fill().map((elem, index) => 
-                        <CircleNumber key={index+1} number={index+1}/>
+                        <CircleNumber getNumber={(e, i) => getNumber(e, i)} key={index+1} number={index+1}/>
                         )
                 }
             </View>
@@ -42,3 +65,11 @@ export default function CriarFavorito({ navigation, route }) {
         </View>
     )
 }
+
+
+export const styles = StyleSheet.create({
+    divider: {
+        marginTop: 10, 
+        marginBottom: 10 
+    },
+})
