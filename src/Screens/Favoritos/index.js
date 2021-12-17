@@ -18,7 +18,7 @@ const Stack = createNativeStackNavigator();
 
 
 
-const Favoritos = ({ navigation }) => {
+const Favoritos = ({ navigation, route }) => {
 
     const [dataLoteria, setLoteria] = React.useState([])
 
@@ -28,21 +28,34 @@ const Favoritos = ({ navigation }) => {
 
     // FavoritosDataBase.find(2).then(res => console.log('res ', res))
 
-    React.useEffect(() => {
-        const getMega = () => {
-            FavoritosDataBase.all().then((data) => {
-                setLoteria(arr => [...arr, data])
-            })
-            .catch(err => console.log(err))
-        }
-        return () => {
-            getMega()
-        }
-    },[])
-    
 
+    async function getDataBase (){
+        try {
+            await FavoritosDataBase.all().then(setLoteria)
+            console.log('olaaa' , dataLoteria);
+        } catch (error) {
+            console.error(`Error: banco de dados ${error}`)
+        }
+    }
+
+    function updateElement(){
+        if(route.params !== undefined && route.params.objectLoteria){
+            setLoteria(route.params.objectLoteria)
+            console.log('ip ',dataLoteria);
+        }
+    }
+
+    React.useEffect(() => {
+      getDataBase()
+    },[])   
+
+    React.useEffect(() => {
+        updateElement()
+        console.log(dataLoteria);
+    }, [dataLoteria])
 
     console.log('====================================');
+    console.log(navigation, route);
     console.log(dataLoteria.length);
     console.log('====================================');
 
@@ -104,7 +117,7 @@ const Favoritos = ({ navigation }) => {
                 <Card.Content>
                     <Title>{titulo}</Title>
                     <View style={{flexDirection: "row"}}> 
-                    {JSON.parse(numeros).map(elem => (<Paragraph>{elem} </Paragraph>))}
+                    {JSON.parse(numeros).map(elem => (<Paragraph key={elem}>{elem} </Paragraph>))}
                     </View>
                 </Card.Content>
                 <Card.Actions>
@@ -128,19 +141,21 @@ const Favoritos = ({ navigation }) => {
 
                 <View>
                     <FlatList data={dataLoteria[0]} keyExtractor={item => item.id}
-                    renderItem={CardList} extraData={selectedId} key={dataLoteria.length}
+                    renderItem={CardList} extraData={selectedId}
                     />
                 </View>
 
                 <DeleteModal id={stateDelete._id} title={stateDelete.titulo} isVisibleDelete={isVisibleDelete} hideModalDelete={hideModalDelete}/>
 
+                {/* 
+                MODAIS INATIVOS
                 <ModalAddFav title="Mega Sena" isVisible={visibleMega} hideModal={hideModalMega}/>
 
                 <ModalAddFav title="Loto Fácil" isVisible={visibleFacil} hideModal={hideModalFacil}/>
 
                 <ModalAddFav title="Loto Mania" isVisible={visibleMania} hideModal={hideModalMania}/>
 
-                <ModalAddFav title="Quina" isVisible={visibleQuina} hideModal={hideModalQuina}/>
+                <ModalAddFav title="Quina" isVisible={visibleQuina} hideModal={hideModalQuina}/> */}
 
                     <Portal>
                         <FAB.Group
