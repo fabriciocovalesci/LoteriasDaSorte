@@ -20,20 +20,20 @@ export const CircleNumber = (props) => {
 
 const styles = StyleSheet.create({
     circle: {
-        width: 36,
-        height: 36,
-        borderRadius: 36 / 2,
-        backgroundColor: "#fff",
+        width: 38,
+        height: 38,
+        borderRadius: 38 / 2,
+        backgroundColor: "#3d85c6",
         justifyContent: "center",
         alignItems: "center",
         padding: 5,
         margin: 5
     },
     circleSelect: {
-        width: 36,
-        height: 36,
-        borderRadius: 36 / 2,
-        backgroundColor: "red",
+        width: 38,
+        height: 38,
+        borderRadius: 38 / 2,
+        backgroundColor: "#225123",
         justifyContent: "center",
         alignItems: "center",
         padding: 5,
