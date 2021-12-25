@@ -5,8 +5,13 @@ import { TabView, SceneMap } from 'react-native-tab-view';
 
 import TopBar from "../../Components/TopBar";
 
+
+
+import EstatisticaMega from "../../Screens/EstatisticaMega";
+
 const FirstRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#ff4081' }} />
+  <View style={{ flex: 1, backgroundColor: '#ff4081' }} >
+  </View>
 );
 
 const SecondRoute = () => (
@@ -23,7 +28,7 @@ const FourtRoute = () => (
 
 
 const renderScene = SceneMap({
-  first: FirstRoute,
+  first: EstatisticaMega,
   second: SecondRoute,
   tree: TreeRoute,
   fourt: FourtRoute
