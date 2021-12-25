@@ -27,7 +27,7 @@ const DeleteModal = (props) => {
         <Provider>
             <Portal>
                 <Dialog visible={props.isVisibleDelete} onDismiss={props.hideModalDelete}>
-                    <Dialog.Title style={{ alignSelf: "center" }}>Deletar {props.title}</Dialog.Title>
+                    <Dialog.Title style={{ alignSelf: "center" }}>Deletar {props.title ? props.title : ''}</Dialog.Title>
 
                     <Dialog.Actions style={{ justifyContent: "space-around" }}>
                         <Button style={{ backgroundColor: '#DB3D13' }} onPress={deleteFav} icon="delete-forever-outline" mode="contained" >Deletar</Button>

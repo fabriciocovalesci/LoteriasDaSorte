@@ -161,14 +161,10 @@ export default function CriarFavorito({ navigation, route }) {
     }, [myarray1])
 
 
-    let objectLoteria = {
-        titulo: '',
-        numeros: []
-    }
-
     function saveBack() {
         try {
-            FavoritosDataBase.create({ titulos: text, numeros: JSON.stringify(myarray1.array) })
+            console.log('text ', text)
+            FavoritosDataBase.create({ titulo: text, numeros: JSON.stringify(myarray1.array) })
                 .then(id => {
                     console.log('Fav created with id: ' + id)
                     FavoritosDataBase.all().then(setUpdate)

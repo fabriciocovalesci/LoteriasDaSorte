@@ -13,7 +13,7 @@ const CORS = 'https://corsanywhere.herokuapp.com/'
 
 export const ResultadoMegaSena = async () => {
     try {
-        const response = await axios(CORS + Megalatest, { Headers: { 'Origin': Megalatest } })
+        const response = await axios(Megalatest, { Headers: { 'Origin': Megalatest } })
         return response;
     } catch (error) {
         console.error(error);
@@ -24,7 +24,7 @@ export const ResultadoMegaSena = async () => {
 
 export const ResultadoLotoFacil = async () => {
     try {
-        const response = await axios(CORS + Facillatest, { Headers: { 'Origin': Facillatest } })
+        const response = await axios(Facillatest, { Headers: { 'Origin': Facillatest } })
         return response;
     } catch (error) {
         console.error(error);
@@ -35,7 +35,7 @@ export const ResultadoLotoFacil = async () => {
 
 export const ResultadoLotoMania = async () => {
     try {
-        const response = await axios(CORS + Manialatest, { Headers: { 'Origin': Manialatest } })
+        const response = await axios(Manialatest, { Headers: { 'Origin': Manialatest } })
         return response;
     } catch (error) {
         console.error(error);
@@ -46,7 +46,7 @@ export const ResultadoLotoMania = async () => {
 
 export const ResultadoQuina = async () => {
     try {
-        const response = await axios(CORS + Quinalatest, { Headers: { 'Origin': Quinalatest } })
+        const response = await axios(Quinalatest, { Headers: { 'Origin': Quinalatest } })
         return response;
     } catch (error) {
         console.error(error);
