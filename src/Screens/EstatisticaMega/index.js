@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { View, Text, ScrollView } from 'react-native'
-import EstatisMega from '../../services/estatisticas'
+import { EstatisMega } from '../../services/estatisticas';
 import MyBarChart from '../../Components/BarChart'
 import { DataTable } from 'react-native-paper';
 

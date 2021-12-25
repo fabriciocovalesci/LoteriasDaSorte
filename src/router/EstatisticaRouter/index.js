@@ -8,30 +8,16 @@ import TopBar from "../../Components/TopBar";
 
 
 import EstatisticaMega from "../../Screens/EstatisticaMega";
-
-const FirstRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#ff4081' }} >
-  </View>
-);
-
-const SecondRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#673ab7' }} />
-);
-
-const TreeRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#673a99' }} />
-);
-
-const FourtRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#673a00' }} />
-);
+import EstatisticaFacil from "../../Screens/EstatisticaFacil";
+import EstatisticaMania from "../../Screens/EstatisticaMania";
+import EstatisticaQuina from "../../Screens/EstatisticaQuina";
 
 
 const renderScene = SceneMap({
   first: EstatisticaMega,
-  second: SecondRoute,
-  tree: TreeRoute,
-  fourt: FourtRoute
+  second: EstatisticaFacil,
+  tree: EstatisticaMania,
+  fourt: EstatisticaQuina
 });
 
 const EstatisticaRoute = () => {

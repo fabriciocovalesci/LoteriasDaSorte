@@ -75,7 +75,7 @@ export const AllResultMega = async () => {
 export const AllResultFacil = async () => {
     try {
         const response = await axios(FacilAll, { Headers: { 'Origin': FacilAll } })
-        return response;
+        return response.data;
     } catch (error) {
         console.error(error);
         return null;
@@ -86,7 +86,7 @@ export const AllResultFacil = async () => {
 export const AllResultMania = async () => {
     try {
         const response = await axios(ManiaAll, { Headers: { 'Origin': ManiaAll } })
-        return response;
+        return response.data;
     } catch (error) {
         console.error(error);
         return null;
@@ -97,7 +97,7 @@ export const AllResultMania = async () => {
 export const AllResultQuina = async () => {
     try {
         const response = await axios(QuinaAll, { Headers: { 'Origin': QuinaAll } })
-        return response;
+        return response.data;
     } catch (error) {
         console.error(error);
         return null;
