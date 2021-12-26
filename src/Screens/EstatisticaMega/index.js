@@ -10,25 +10,35 @@ export default function EstatisticaMega() {
 
     const [tableMega, setTableMega] = React.useState([])
 
+    const [megaChart, setMegaChart] = React.useState([])
+
+    const [megaChartMenor, setMegaChartMenor] = React.useState([])
+
 
     React.useEffect(() => {
-        EstatisMega().then((value) => setTableMega(value));
+        EstatisMega().then((value) => {
+            setTableMega(value);
+            setMegaChart(value.slice(0,10));
+            setMegaChartMenor(value.slice(value.length-10, value.length))
+        });
     }, [])
 
     return (
         <>
         <ScrollView>
             <View>
-                <Text>mega sena</Text>
                 <View>
-                    <MyBarChart tituloBar="Frequência por meses" subtituloBar="10 dezenas mais sorteadas" />
+                    <MyBarChart dezenas={megaChart} tituloBar="Maior Ocorrências" subtituloBar="10 dezenas Mais sorteadas" />
+                </View>
+                <View>
+                    <MyBarChart dezenas={megaChartMenor} tituloBar="Menor Ocorrências" subtituloBar="10 dezenas Menos sorteadas" />
                 </View>
             </View>
             
                 <DataTable style={{  }}>
                     <DataTable.Header style={{}}>
                         <DataTable.Title numeric>Dezena</DataTable.Title>
-                        <DataTable.Title numeric>Qtade</DataTable.Title>
+                        <DataTable.Title numeric>Ocorrências</DataTable.Title>
                     </DataTable.Header>
 
                     {tableMega.map((elem, index) =>

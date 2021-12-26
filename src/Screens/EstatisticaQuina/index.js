@@ -10,18 +10,28 @@ export default function EstatisticaQuina() {
 
     const [tableQuina, setTableQuina] = React.useState([])
 
+    const [quinaChartMaior, setQuinaChart] = React.useState([])
+
+    const [quinaChartMenor, setQuinaChartMenor] = React.useState([])
+
 
     React.useEffect(() => {
-        EstatisQuina().then((value) => setTableQuina(value));
+        EstatisQuina().then((value) => {
+            setTableQuina(value);
+            setQuinaChart(value.slice(0,10));
+            setQuinaChartMenor(value.slice(value.length-10, value.length))
+        });
     }, [])
 
     return (
         <>
         <ScrollView>
             <View>
-                <Text>Quina</Text>
+            <View>
+                <MyBarChart dezenas={quinaChartMaior} tituloBar="Maior Ocorrências" subtituloBar="10 dezenas Mais sorteadas" />
+                </View>
                 <View>
-                    <MyBarChart tituloBar="Frequência por meses" subtituloBar="10 dezenas mais sorteadas" />
+                    <MyBarChart dezenas={quinaChartMenor} tituloBar="Menor Ocorrências" subtituloBar="10 dezenas Menos sorteadas" />
                 </View>
             </View>
             

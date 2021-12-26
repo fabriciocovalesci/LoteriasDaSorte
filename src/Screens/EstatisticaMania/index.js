@@ -10,18 +10,28 @@ export default function EstatisticaMania() {
 
     const [tableMania, setTableMania] = React.useState([])
 
+    const [maniaChartMaior, setManiaChart] = React.useState([])
+
+    const [maniaChartMenor, setManiaChartMenor] = React.useState([])
+
 
     React.useEffect(() => {
-        EstatisMania().then((value) => setTableMania(value));
+        EstatisMania().then((value) => {
+            setTableMania(value)
+            setManiaChart(value.slice(0,10));
+            setManiaChartMenor(value.slice(value.length-10, value.length))
+        });
     }, [])
 
     return (
         <>
         <ScrollView>
             <View>
-                <Text>Loto Mania</Text>
                 <View>
-                    <MyBarChart tituloBar="Frequência por meses" subtituloBar="10 dezenas mais sorteadas" />
+                    <MyBarChart dezenas={maniaChartMaior} tituloBar="Maior Ocorrências" subtituloBar="10 dezenas Mais sorteadas" />
+                </View>
+                <View>
+                    <MyBarChart dezenas={maniaChartMenor} tituloBar="Menor Ocorrências" subtituloBar="10 dezenas Menos sorteadas" />
                 </View>
             </View>
             

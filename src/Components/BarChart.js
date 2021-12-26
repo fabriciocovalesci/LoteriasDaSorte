@@ -1,11 +1,11 @@
 
 import React from 'react'
-import { Dimensions, View, Text } from "react-native";
+import { Dimensions, View, Text, Button } from "react-native";
 
 const screenWidth = Dimensions.get("window").width;
 
+import { VictoryBar, VictoryChart, VictoryTheme, VictoryLine, VictoryLabel } from "victory-native";
 
-import PureChart from 'react-native-pure-chart';
 import {
     BarChart,
     LineChart,
@@ -14,66 +14,34 @@ import {
 
 export default function MyBarChart(props) {
 
-    let sampleData = [
-        {
-          seriesName: 'series1',
-          labels: 'teste',
-          data: [
-            {x: '32', y: 30},
-            {x: '34', y: 28},
-            {x: '36', y: 28},
-            {x: '19', y: 27},
-            {x: '16', y: 26}
-          ],
-          color: '#297AB1'
-        }
-      ]
+    const data = []
 
-      let sampleData1 = [
-        
-          {seriesName: 'series1', data: [30, 200, 170, 250, 10], color: '#297AB1'},
-          {seriesName: 'series2', data: [20, 100, 150, 130, 15], color: 'yellow'}
-        
-    ]
+    if(props !== undefined && props.dezenas !== undefined && props.dezenas.length !== 0){
+        props.dezenas.forEach(elem => {
+            data.push({ dezenas: elem[0] , earnings: elem[1] })
+        });
+    }
 
-    const data = {
-        labels: ["January", "February", "March", "April", "May", "June"],
-        datasets: [
-          {
-            data: [20, 45, 28, 80, 99, 43]
-          }
-        ]
-      };
-      const data1 = {
-        labels: ["Test1", "Test2"],
-        legend: ["L1", "L2", "L3"],
-        data: [
-          [60, 60, 60],
-          [30, 30, 60]
-        ],
-        barColors: ["#dfe4ea", "#ced6e0", "#a4b0be"]
-      };
-
-      const chartConfig = {
-        backgroundColor: "#e26a00",
-                    backgroundGradientFrom: "#fff",
-                    backgroundGradientTo: "#fff",
-        backgroundGradientToOpacity: 1,
-        color: (opacity = 1) => `rgba(255, 000, 125, ${opacity})`,
-        strokeWidth: 2, // optional, default 3
-        barPercentage: 0.5,
-        useShadowColorFromDataset: false // optional
-      };
 
     return (
         <View>
             <Text style={{ textAlign: "center", fontSize: 14, fontWeight: "bold" }}>{ props.tituloBar }</Text>
             <Text style={{ textAlign: "center", fontSize: 12 }}>{ props.subtituloBar }</Text>
-            {/* <PureChart data={sampleData} type='line' /> */}
-            <PureChart data={sampleData} width={'100%'} height={200} type='bar' />
-            
-
-            
+                     
+            <VictoryChart horizontal offset={10} width={screenWidth} theme={VictoryTheme.material}>
+            <VictoryLabel x={10} y={25} text="Dezenas"  />
+            <VictoryBar animate={{
+                              onLoad: {duration: 1000},
+                              duration: 1000, 
+                              easing: "bounce"
+                            }} data={data} x="dezenas" y="earnings" />
+            <VictoryLabel
+                x={screenWidth/1.5}
+                y={25}
+                textAnchor="middle"
+                text="Ocorrências"
+            />
+            </VictoryChart>             
             
         </View>
     )

@@ -10,18 +10,28 @@ export default function EstatisticaFacil() {
 
     const [tableFacil, setTableFacil] = React.useState([])
 
+    const [facilChart, setFacilChart] = React.useState([])
+
+    const [facilChartMenor, setFacilChartMenor] = React.useState([])
+
 
     React.useEffect(() => {
-        EstatisFacil().then((value) => setTableFacil(value))
+        EstatisFacil().then((value) => {
+            setTableFacil(value);
+            setFacilChart(value.slice(0,10));
+            setFacilChartMenor(value.slice(value.length-10, value.length))
+        })
     }, [])
 
     return (
         <>
         <ScrollView>
             <View>
-                <Text>Loto Facil</Text>
                 <View>
-                    <MyBarChart tituloBar="Frequência por meses" subtituloBar="10 dezenas mais sorteadas" />
+                    <MyBarChart dezenas={facilChart} tituloBar="Maior Ocorrências" subtituloBar="10 dezenas Mais sorteadas" />
+                </View>
+                <View>
+                    <MyBarChart dezenas={facilChartMenor} tituloBar="Menor Ocorrências" subtituloBar="10 dezenas Menos sorteadas" />
                 </View>
             </View>
             
