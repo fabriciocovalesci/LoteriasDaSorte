@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Dimensions, View, StyleSheet } from 'react-native'
+import { Dimensions, View, StyleSheet, Text } from 'react-native'
 import { Button, Snackbar, Dialog, Portal, Paragraph, TextInput, Provider } from 'react-native-paper';
 
 import FavoritosDataBase from '../Model/FavoritosDataBase';
+
 
 const ModalGerador = (props) => {
 
@@ -30,19 +31,31 @@ const ModalGerador = (props) => {
     }
 
     return (
+        <>
         <Portal>
-            <Dialog style={{ borderRadius: 5, height: Dimensions.get('window').height / 2, maxHeight: "auto" }} visible={props.isVisible} onDismiss={props.hideDialog}>
+            <Dialog style={{ borderRadius: 5 }} visible={props.isVisible} onDismiss={props.hideDialog}>
                 <Dialog.Title style={{ alignSelf: "center" }}>{props.title}</Dialog.Title>
                 <Dialog.Content>
-                    <TextInput  keyboardType="default" value={text} onChangeText={text => setText(text)} label="Titulo" mode="flat" />
+                    <TextInput value={text} onChangeText={text => setText(text)} label="Titulo" mode="flat" />
                 </Dialog.Content>
-                <Dialog.Content style={{ alignSelf: "center", marginTop: 10 }}>
-                    <Paragraph style={{ fontSize: 16 }}>{props.numeros}</Paragraph>
-                </Dialog.Content>
-                <Dialog.Actions style={{ flex: 1, justifyContent: "space-around" }}>
+                <Dialog.Content>
+    
+                <View style={{  flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "center" }}>
+
+                    {props.numeros !== undefined && props.numeros.length !== 0 ? props.numeros.map((dezena, index) => 
+                        <View key={index} style={styles.circle}>
+                            <Text style={styles.fontText}>{dezena}</Text>
+                        </View>
+                    ): <Text></Text>}
+                </View>
+                
+                <View style={{ marginTop: 10, justifyContent: "space-around" }}>
                     <Button icon="content-save-outline" mode="contained" style={{ borderRadius: 5 }} onPress={savedData}>Salvar</Button>
-                    <Button onPress={props.hideDialog}>Cancelar</Button>
-                </Dialog.Actions>
+                    <Button onPress={props.hideDialog}>
+                        <Text style={{ color: 'red' }}>Cancelar</Text>
+                    </Button>
+                </View>
+                </Dialog.Content>
             </Dialog>
             <Snackbar
                 visible={visible}
@@ -54,6 +67,7 @@ const ModalGerador = (props) => {
                 Números da {props.title} gravado nos Favoritos.
             </Snackbar>
         </Portal>
+        </>
     );
 };
 
@@ -63,5 +77,22 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'space-between',
+    },
+    circle: {
+        width: 36,
+        height: 36,
+        borderRadius: 36 / 2,
+        backgroundColor: "#3d85c6",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "row",
+        padding: 5,
+        margin: 5
+    },
+    fontText: {
+        color: "#fff", 
+        alignSelf: "center", 
+        fontWeight: "bold" ,
+        textAlign: "center"
     },
 });

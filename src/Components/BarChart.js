@@ -28,9 +28,9 @@ export default function MyBarChart(props) {
             <Text style={{ textAlign: "center", fontSize: 14, fontWeight: "bold" }}>{ props.tituloBar }</Text>
             <Text style={{ textAlign: "center", fontSize: 12 }}>{ props.subtituloBar }</Text>
                      
-            <VictoryChart horizontal offset={10} width={screenWidth} theme={VictoryTheme.material}>
+            <VictoryChart  horizontal offset={10} width={screenWidth} theme={VictoryTheme.material}>
             <VictoryLabel x={10} y={25} text="Dezenas"  />
-            <VictoryBar animate={{
+            <VictoryBar style={{ data: { fill: "#c43a31" } }} alignment='start' animate={{
                               onLoad: {duration: 1000},
                               duration: 1000, 
                               easing: "bounce"
