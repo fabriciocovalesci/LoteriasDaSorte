@@ -12,7 +12,7 @@ const DeleteModal = (props) => {
 
     const onDismissSnackBar = () => setVisible(false);
 
-    // console.log('dell  ', props)
+    console.log('dell  ', props)
     function deleteFav() {
         FavoritosDataBase.remove(props.id)
             .then((res) => {

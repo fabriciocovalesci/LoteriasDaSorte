@@ -1,7 +1,6 @@
 import React from 'react'
 import { ScrollView, View, StyleSheet } from 'react-native'
 import { Text, FAB, Dialog, Portal, Provider, Title, Card, Snackbar, Button, Divider, TextInput } from "react-native-paper";
-
 import FavoritosDataBase from '../../Model/FavoritosDataBase'
 import { CircleNumber } from '../../Components/CircleNumber'
 

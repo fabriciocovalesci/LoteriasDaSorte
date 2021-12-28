@@ -1,5 +1,4 @@
 import * as React from "react";
-import { render } from "react-dom";
 import { View } from 'react-native'
 import { Title, Text, Button, Paragraph, Card } from 'react-native-paper';
 
