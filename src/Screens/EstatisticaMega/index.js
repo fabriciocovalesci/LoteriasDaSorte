@@ -3,7 +3,8 @@
 import React from 'react'
 import { View, Text, ScrollView } from 'react-native'
 import { EstatisMega, EstatisMegaAnalise } from '../../services/estatisticas';
-import MyBarChart from '../../Components/BarChart'
+import {MyBarChart, MyBarChartAtraso} from '../../Components/BarChart';
+import MyPieChart from '../../Components/PieChart';
 import { DataTable } from 'react-native-paper';
 
 const megaAll = require('../../../Json/allmega.json')
@@ -25,7 +26,9 @@ export default function EstatisticaMega() {
 
     const [megaChart, setMegaChart] = React.useState([])
 
-    const [megaChartMenor, setMegaChartMenor] = React.useState([])
+    const [megaChartAtraso, setMegaChartAtraso] = React.useState([])
+
+
 
 
 
@@ -33,18 +36,18 @@ export default function EstatisticaMega() {
         EstatisMega().then((value) => {
             setTableMega(value);
             setMegaChart(value.slice(0, 10));
-            setMegaChartMenor(value.slice(value.length - 10, value.length))
         });
     }, [])
 
     React.useEffect(() => {
         EstatisMegaAnalise().then((values) => {
             setTableMegaAnalise(values)
+            setMegaChartAtraso(values.slice(values.length - 10, values.length))
         })
     }, [])
 
 
-    return (
+     return (
         <>
             <View style={{ marginBottom: 10, marginTop: 10, marginLeft: 5, marginRight: 5 }}>
                 <SegmentedControlTab
@@ -55,12 +58,14 @@ export default function EstatisticaMega() {
             </View>
             <ScrollView>
                 <View>
-                    <View>
-                        <MyBarChart dezenas={megaChart} tituloBar="Maior Ocorrências" subtituloBar="10 dezenas Mais sorteadas" />
-                    </View>
+                    
                 </View>
 
                 {selected === 0 ?
+                <>
+                <View>
+                <MyBarChart dezenas={megaChart} tituloBar="Maior Ocorrências" subtituloBar="10 dezenas Mais sorteadas" />
+                </View>
                     <DataTable>
                         <DataTable.Header style={{}}>
                             <DataTable.Title >Dezena</DataTable.Title>
@@ -75,8 +80,13 @@ export default function EstatisticaMega() {
                             )}
                         </ScrollView>
                     </DataTable>
+                    </>
                     : <Text></Text>}
                 {selected === 1 ?
+                <>
+                <View>
+                <MyBarChartAtraso dezenas={megaChartAtraso} tituloBar="Maiores Atrasos" subtituloBar="10 dezenas Mais atrasadas" />
+                </View>
                     <DataTable>
                         <DataTable.Header style={{}}>
                             <DataTable.Title >Dezena</DataTable.Title>
@@ -95,6 +105,7 @@ export default function EstatisticaMega() {
                             )}
                         </ScrollView>
                     </DataTable>
+                    </>
                     : <Text></Text>}
                 {selected === 2 ?
                     <DataTable>

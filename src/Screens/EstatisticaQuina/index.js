@@ -3,7 +3,7 @@
 import React from 'react'
 import { View, Text, ScrollView } from 'react-native'
 import { EstatisQuina } from '../../services/estatisticas';
-import MyBarChart from '../../Components/BarChart'
+import { MyBarChart } from '../../Components/BarChart';
 import { DataTable } from 'react-native-paper';
 
 export default function EstatisticaQuina() {
