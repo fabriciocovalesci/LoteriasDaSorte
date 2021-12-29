@@ -22,6 +22,7 @@
     "react-native-chart-kit": "^6.11.0",
     "react-native-charts-wrapper": "^0.5.7",
     "react-native-paper": "^4.10.1",
+    "react-native-progress": "^5.0.0",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.8.0",
     "react-native-segmented-control-tab": "^4.0.0",
