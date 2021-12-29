@@ -1,54 +1,191 @@
 
-
 import React from 'react'
-import { View, Text, ScrollView } from 'react-native'
+import { View, Text, ScrollView, Dimensions } from 'react-native'
 import { EstatisQuina } from '../../services/estatisticas';
-import { MyBarChart } from '../../Components/BarChart';
-import { DataTable } from 'react-native-paper';
+import { MyBarChart, MyBarChartAtraso, BarChartSomaPercent } from '../../Components/BarChart';
+import MyPieChart from '../../Components/PieChart';
+import { DataTable, Divider } from 'react-native-paper';
 
-export default function EstatisticaQuina() {
+const megaAll = require('../../../Json/allmega.json')
+
+import * as Progress from 'react-native-progress';
+
+import SegmentedControlTab from "react-native-segmented-control-tab";
+
+export default function EstatisticaMega() {
+
+    const [selected, setStateBtn] = React.useState(0)
 
     const [tableQuina, setTableQuina] = React.useState([])
 
-    const [quinaChartMaior, setQuinaChart] = React.useState([])
+    const [tableQuinaAnalise, setTableQuinaAnalise] = React.useState([])
 
-    const [quinaChartMenor, setQuinaChartMenor] = React.useState([])
+    const [QuinaChart, setQuinaChart] = React.useState([])
+
+    const [facilChartAtraso, setQuinaChartAtraso] = React.useState([])
+
+    const [QuinaSomaParImpar, setQuinaSomaParImpar] = React.useState([])
+
+    const [QuinaSomaPercent, setQuinaSomaPercent] = React.useState()
 
 
     React.useEffect(() => {
         EstatisQuina().then((value) => {
-            setTableQuina(value);
-            setQuinaChart(value.slice(0,10));
-            setQuinaChartMenor(value.slice(value.length-10, value.length))
+            setTableQuina(value.ocorrencias);
+            setQuinaChart(value.ocorrencias.slice(0, 10));
+            setTableQuinaAnalise(value.estatisAtrasoSeq)
+            setQuinaChartAtraso(value.estatisAtrasoSeq.slice(value.estatisAtrasoSeq.length - 10, value.estatisAtrasoSeq.length))
+            setQuinaSomaParImpar(value.somaParImpar.slice(value.somaParImpar.length - 100, value.somaParImpar.length))
+            setQuinaSomaPercent(value.percentSoma)
         });
     }, [])
 
     return (
         <>
-        <ScrollView>
-            <View>
-            <View>
-                <MyBarChart dezenas={quinaChartMaior} tituloBar="Maior Ocorrências" subtituloBar="10 dezenas Mais sorteadas" />
-                </View>
-                <View>
-                    <MyBarChart dezenas={quinaChartMenor} tituloBar="Menor Ocorrências" subtituloBar="10 dezenas Menos sorteadas" />
-                </View>
+            <View style={{ marginBottom: 0, marginTop: 10, marginLeft: 5, marginRight: 5 }}>
+                <SegmentedControlTab
+                    values={["Ocorrências", "Atrasos", "Sequências", "Combinações"]}
+                    selectedIndex={selected}
+                    onTabPress={index => setStateBtn(index)}
+                />
             </View>
-            
-                <DataTable style={{  }}>
-                    <DataTable.Header style={{}}>
-                        <DataTable.Title numeric>Dezena</DataTable.Title>
-                        <DataTable.Title numeric>Qtade</DataTable.Title>
-                    </DataTable.Header>
-
-                    {tableQuina.map((elem, index) =>
-                        <DataTable.Row key={index}>
-                            <DataTable.Cell numeric>{elem[0]}</DataTable.Cell>
-                            <DataTable.Cell numeric>{elem[1]}</DataTable.Cell>
-                        </DataTable.Row>
-                    )
-                    }
-                </DataTable>
+            <ScrollView>
+                {selected === 0 ?
+                    <>
+                        <View>
+                            <MyBarChart dezenas={QuinaChart} tituloBar="Maior Ocorrências" subtituloBar="10 dezenas Mais sorteadas" />
+                        </View>
+                        <DataTable>
+                            <DataTable.Header style={{}}>
+                                <DataTable.Title >Dezena</DataTable.Title>
+                                <DataTable.Title >Ocorrências</DataTable.Title>
+                            </DataTable.Header>
+                            <ScrollView>
+                                {tableQuina.map((elem, index) =>
+                                    <DataTable.Row key={index}>
+                                        <DataTable.Cell >{elem[0]}</DataTable.Cell>
+                                        <DataTable.Cell >{elem[1]}</DataTable.Cell>
+                                    </DataTable.Row>
+                                )}
+                            </ScrollView>
+                        </DataTable>
+                    </>
+                    : <Text></Text>}
+                {selected === 1 ?
+                    <>
+                        <View>
+                            {/* <MyBarChartAtraso dezenas={facilChartAtraso} tituloBar="Maiores Atrasos" subtituloBar="10 dezenas Mais atrasadas" /> */}
+                        </View>
+                        <DataTable>
+                            <DataTable.Header style={{}}>
+                                <DataTable.Title >Dezena</DataTable.Title>
+                                <DataTable.Title >Atraso</DataTable.Title>
+                                <DataTable.Title >Max Atraso</DataTable.Title>
+                                <DataTable.Title >Média Atraso</DataTable.Title>
+                            </DataTable.Header>
+                            <ScrollView>
+                                {tableQuinaAnalise.map((elem, index) =>
+                                    <DataTable.Row key={index + elem.dezena}>
+                                        <DataTable.Cell >{elem.dezena}</DataTable.Cell>
+                                        <DataTable.Cell >{elem.atraso}</DataTable.Cell>
+                                        <DataTable.Cell >{elem.maxAtraso}</DataTable.Cell>
+                                        <DataTable.Cell >{elem.mediaAtraso} %</DataTable.Cell>
+                                    </DataTable.Row>
+                                )}
+                            </ScrollView>
+                        </DataTable>
+                    </>
+                    : <Text></Text>}
+                {selected === 2 ?
+                    <>
+                        <View>
+                            {/* <MyBarChartAtraso dezenas={megaChartAtraso} tituloBar="Maiores Atrasos" subtituloBar="10 dezenas Mais atrasadas" /> */}
+                        </View>
+                        <DataTable>
+                            <DataTable.Header style={{}}>
+                                <DataTable.Title >Dezena</DataTable.Title>
+                                <DataTable.Title >Sequência</DataTable.Title>
+                                <DataTable.Title >Max Seq</DataTable.Title>
+                                <DataTable.Title >Média Seq</DataTable.Title>
+                            </DataTable.Header>
+                            <ScrollView>
+                                {tableQuinaAnalise.map((elem, index) =>
+                                    <DataTable.Row key={index + elem.dezena}>
+                                        <DataTable.Cell >{elem.dezena}</DataTable.Cell>
+                                        <DataTable.Cell >{elem.sequencia}</DataTable.Cell>
+                                        <DataTable.Cell >{elem.maxSequencia}</DataTable.Cell>
+                                        <DataTable.Cell >{elem.mediaSequencia} %</DataTable.Cell>
+                                    </DataTable.Row>
+                                )}
+                            </ScrollView>
+                        </DataTable>
+                    </>
+                    : <Text></Text>}
+                {selected === 3 ?
+                    <>
+                    <View style={{  }}>
+                            <Text style={{ textAlign: "center", marginBottom: 10, fontWeight: "bold" }}>Combinações de Dezenas Pares e Ímpares</Text>
+                        </View>
+                        <View style={{ alignSelf: "center", marginTop: 0 }}>
+                            <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                                <Text>3 pares e 2 ímpares: {QuinaSomaPercent.equal.jogos} jogos</Text>
+                                <Text>{QuinaSomaPercent.equal.porcentagem} %</Text>
+                            </View>
+                            <Progress.Bar progress={QuinaSomaPercent.equal.porcentagem / 100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Divider style={{marginBottom: 10}}/>
+                            <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                                <Text>2 pares e 3 ímpares: {QuinaSomaPercent.Combinada_1.jogos} jogos</Text>
+                                <Text>{QuinaSomaPercent.Combinada_1.porcentagem} %</Text>
+                            </View>
+                            <Progress.Bar progress={QuinaSomaPercent.Combinada_1.porcentagem / 100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Divider style={{marginBottom: 10}}/>
+                            <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                                <Text>4 pares e 1 ímpares: {QuinaSomaPercent.Combinada_2.jogos} jogos</Text>
+                                <Text>{QuinaSomaPercent.Combinada_2.porcentagem} %</Text>
+                            </View>
+                            <Progress.Bar progress={QuinaSomaPercent.Combinada_2.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Divider style={{marginBottom: 10}}/>
+                            <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                                <Text>1 pares e 4 ímpares: {QuinaSomaPercent.Combinada_3.jogos} jogos</Text>
+                                <Text>{QuinaSomaPercent.Combinada_3.porcentagem} %</Text>
+                            </View>
+                            <Progress.Bar progress={QuinaSomaPercent.Combinada_3.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Divider style={{marginBottom: 10}}/>
+                            <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                                <Text>0 pares e 5 ímpares: {QuinaSomaPercent.Combinada_4.jogos} jogos</Text>
+                                <Text>{QuinaSomaPercent.Combinada_4.porcentagem} %</Text>
+                            </View>
+                            <Progress.Bar progress={QuinaSomaPercent.Combinada_4.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Divider style={{marginBottom: 10}}/>
+                            <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                                <Text>5 pares e 0 ímpares: {QuinaSomaPercent.Combinada_5.jogos} jogos</Text>
+                                <Text>{QuinaSomaPercent.Combinada_5.porcentagem} %</Text>
+                            </View>
+                            <Progress.Bar progress={QuinaSomaPercent.Combinada_5.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                        </View>
+                        <View style={{marginTop: 15, marginBottom: 5}}>
+                        <Text style={{ textAlign: "center", marginBottom: 10, fontWeight: "bold" }}>Tabela dos Números Pares e Ímpares</Text>
+                        </View>
+                        <DataTable>
+                            <DataTable.Header style={{}}>
+                                <DataTable.Title >Concurso</DataTable.Title>
+                                <DataTable.Title numeric>Impares</DataTable.Title>
+                                <DataTable.Title numeric>Pares</DataTable.Title>
+                                <DataTable.Title numeric>Soma</DataTable.Title>
+                            </DataTable.Header>
+                            <ScrollView>
+                                {QuinaSomaParImpar.map((elem, index) =>
+                                    <DataTable.Row key={index}>
+                                        <DataTable.Cell >{elem.concurso}</DataTable.Cell>
+                                        <DataTable.Cell numeric>{elem.impar}</DataTable.Cell>
+                                        <DataTable.Cell numeric>{elem.par}</DataTable.Cell>
+                                        <DataTable.Cell numeric>{elem.soma}</DataTable.Cell>
+                                    </DataTable.Row>
+                                )}
+                            </ScrollView>
+                        </DataTable>
+                    </>
+                    : <Text></Text>}
             </ScrollView>
         </>
     )
