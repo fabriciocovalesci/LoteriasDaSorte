@@ -1,6 +1,6 @@
 import * as React from "react";
-import { View, FlatList } from "react-native";
-import { Text, FAB, Dialog, Portal, Provider, Title, Card, Paragraph, Button, Divider } from "react-native-paper";
+import { View, FlatList, Dimensions } from "react-native";
+import { Text, FAB, Dialog,Modal, Portal, Provider, Title, Card, Paragraph, Button, Divider } from "react-native-paper";
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { useNavigation, useIsFocused } from '@react-navigation/native'
@@ -47,21 +47,23 @@ const Favoritos = ({ navigation, route }) => {
         getDataBase()
     }, [isFocused])
 
+
+
+    const deleteFavorito = (id) => {
+        FavoritosDataBase.remove(id)
+            .then((res) => {
+                console.log(`deletado com sucesso id ${id} - ${res}`)
+                getDataBase()
+            })
+            .catch((err) => (console.error(err)))
+    }
+
+    function editFavorito(id) {
+        console.log('editando fav id ', id)
+    }
+
     const CardList = ({ item }) => {
-
         const { id, titulo, numeros } = item;
-
-       async function deleteFavorito() {
-            setstateDelete({ _id: id, titulo: titulo })
-            showModalDelete(!isVisibleDelete)
-           await getDataBase()
-            console.log('deletando fav id ', id)
-        }
-
-        function editFavorito() {
-            console.log('editando fav id ', id)
-        }
-
         return (
             <>
                 <View key={id}>
@@ -73,8 +75,8 @@ const Favoritos = ({ navigation, route }) => {
                             </View>
                         </Card.Content>
                         <Card.Actions>
-                            <Button onPress={editFavorito} icon="pencil" style={{ borderColor: "blue", margin: 5 }} mode="outlined">Editar</Button>
-                            <Button onPress={deleteFavorito} icon="delete-forever-outline" style={{ borderColor: "red", margin: 5 }} mode="outlined">Excluir</Button>
+                            <Button onPress={() => editFavorito(id)} icon="pencil" style={{ borderColor: "blue", margin: 5 }} mode="outlined">Editar</Button>
+                            <Button onPress={() => deleteFavorito(id)} icon="delete-forever-outline" style={{ borderColor: "red", margin: 5 }} mode="outlined">Excluir</Button>
                         </Card.Actions>
                     </Card>
                 </View>
@@ -84,19 +86,17 @@ const Favoritos = ({ navigation, route }) => {
 
 
     return (
+        <>
         <React.Fragment>
-
             <Provider>
                 <Title style={{ alignSelf: "center", marginTop: 10 }}>Meus números</Title>
 
-                <View>
+                <View style={{ flex: 1, height: Dimensions.get('screen').height, justifyContent: "center", alignContent: 'center' }}>
                     <FlatList data={dataLoteria} keyExtractor={item => item.id}
                         renderItem={CardList} extraData={selectedId}
                     />
                 </View>
 
-                <DeleteModal id={stateDelete._id} title={stateDelete.titulo} isVisibleDelete={isVisibleDelete} hideModalDelete={hideModalDelete} />
-               
                 <Portal>
                     <FAB.Group
                         open={open}
@@ -134,6 +134,7 @@ const Favoritos = ({ navigation, route }) => {
 
             </Provider>
         </React.Fragment>
+        </>
     )
 }
 

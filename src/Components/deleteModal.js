@@ -14,13 +14,13 @@ const DeleteModal = (props) => {
 
     console.log('dell  ', props)
     function deleteFav() {
-        FavoritosDataBase.remove(props.id)
-            .then((res) => {
-                console.log('deletado com sucesso ', res)
-                props.hideModalDelete()
-                onToggleSnackBar()
-            })
-            .catch((err) => (console.error(err)))
+        // FavoritosDataBase.remove(props.id)
+        //     .then((res) => {
+        //         console.log('deletado com sucesso ', res)
+        //         props.hideModalDelete()
+        //         onToggleSnackBar()
+        //     })
+        //     .catch((err) => (console.error(err)))
     }
 
     return (
