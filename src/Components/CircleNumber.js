@@ -1,15 +1,38 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from "react-native-paper";
+import { useNavigation, useIsFocused } from '@react-navigation/native'
 
 export const CircleNumber = (props) => {
 
     const [state, setstate] = React.useState(false)
 
+    const [stateUp, setUpdate] = React.useState([])
+
+    const isFocused = useIsFocused();
+
+    const [loading, setLoading] = React.useState(false);
+
     function select(){
         setstate(!state)
         props.getNumber(state, props.number)
     }
+
+
+
+    function dezenasState(){
+        if(props.numberSelected.length !== 0){
+            if(props.numberSelected.includes(props.number)){
+                console.log('oi');
+                setstate(!state)
+            }
+        }
+    }
+    
+
+React.useEffect(() => {
+    console.log('fica de olho');
+}, [dezenasState])
 
     return (
         <View onStartShouldSetResponder={select} style={!state ? styles.circle : styles.circleSelect}>

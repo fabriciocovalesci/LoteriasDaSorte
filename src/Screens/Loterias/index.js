@@ -1,6 +1,6 @@
 import React from 'react'
 import { ScrollView, View, StyleSheet } from 'react-native'
-import { Text, FAB, Dialog, Portal, Provider, Title, Card, Snackbar, Button, Divider, TextInput } from "react-native-paper";
+import { Text, FAB, Dialog, Checkbox, Portal, Provider, Title, Card, Snackbar, Button, Divider, TextInput } from "react-native-paper";
 import FavoritosDataBase from '../../Model/FavoritosDataBase'
 import { CircleNumber } from '../../Components/CircleNumber'
 
@@ -17,8 +17,14 @@ export default function CriarFavorito({ navigation, route }) {
     const [valores, setValores] = React.useState(0.00)
     const [myarray1, setArray] = React.useState({ valor: '0.00', array: [] })
 
+    const [arrayUpdate, setArrayUpdate] = React.useState([])
+
+    const [loading, setLoading] = React.useState(false);
+
     const [text, setText] = React.useState('');
-    let myarray = []
+
+    const [checked, setChecked] = React.useState(false);
+
 
     function removeItem(array, number) {
         const index = array.indexOf(number);
@@ -155,6 +161,27 @@ export default function CriarFavorito({ navigation, route }) {
         }
     }
 
+
+    const updateValues = async () => {
+        let arr = []
+        if(route.params.hasOwnProperty('id')){
+       await FavoritosDataBase.find(route.params.id).then((value) =>{
+            arr.push(JSON.parse(value[0].numeros))
+            setArray({ valor: '0,00', array: JSON.parse(value[0].numeros) })
+            setText(value[0].titulo)
+            setChecked(value[0].associar === 1 ? true : false)
+            setArrayUpdate(JSON.parse(value[0].numeros))
+            setLoading(true);
+        }).catch((err) => (console.error(err)))
+    }
+    setLoading(true);
+    }
+
+    React.useEffect(() => {
+            updateValues()
+        }, [loading])
+        
+
     React.useEffect(() => {
         console.log('Updated State', myarray1)
     }, [myarray1])
@@ -163,7 +190,22 @@ export default function CriarFavorito({ navigation, route }) {
     function saveBack() {
         try {
             console.log('text ', text)
-            FavoritosDataBase.create({ titulo: text, numeros: JSON.stringify(myarray1.array) })
+            FavoritosDataBase.create({ titulo: text, numeros: JSON.stringify(myarray1.array), associar: checked, concurso: '2121' })
+                .then(id => {
+                    console.log('Fav created with id: ' + id)
+                    FavoritosDataBase.all().then(setUpdate)
+                    onToggleSnackBar()
+                })
+                .catch(err => console.log(err))
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    function saveUpdateBack() {
+        try {
+            console.log('text ', text)
+            FavoritosDataBase.update(route.params.id, { titulo: text, numeros: JSON.stringify(myarray1.array), associar: checked, concurso: '2121' })
                 .then(id => {
                     console.log('Fav created with id: ' + id)
                     FavoritosDataBase.all().then(setUpdate)
@@ -186,22 +228,35 @@ export default function CriarFavorito({ navigation, route }) {
                 />
                 <Text style={styles.textSubTitle}>Selecione as dezenas qtde: {myarray1.array.length}</Text>
                 <View style={{ justifyContent: "space-around", flexDirection: "row" }}>
-                    <Text >Soma: {myarray1.array !== undefined && myarray1.array.length !== 0 ? myarray1.array.reduce((acumulador, elemento) => acumulador + elemento) : 0}</Text>
+                    <Text >Soma: {myarray1.array !== undefined && myarray1.array.length !== 0 ? myarray1.array.reduce((acumulador, elemento) => parseInt(acumulador) + parseInt(elemento)) : 0}</Text>
                     <Text >Pares: {myarray1.array !== undefined && myarray1.array.length !== 0 ? myarray1.array.filter(elem => elem % 2 === 0).length : 0}</Text>
                     <Text >Ímpares: {myarray1.array !== undefined && myarray1.array.length !== 0 ? myarray1.array.filter(elem => elem % 2 !== 0).length : 0}</Text>
-                    <Text >R$ {myarray1.valor}</Text>
+                    <Text >R$ {myarray1.valor}</Text> 
                 </View>
             </View>
             <ScrollView>
                 <View style={{ justifyContent: "center", flexDirection: "row", flexWrap: "wrap" }}>
                     {
                         Array(route.params.numeros).fill().map((elem, index) =>
-                            <CircleNumber getNumber={(e, i) => getNumber(e, i)} key={index + 1} number={index + 1} />
+                            <CircleNumber numberSelected={arrayUpdate} getNumber={(e, i) => getNumber(e, i)} key={index + 1} number={index + 1} />
                         )
                     }
                 </View>
                 <Divider style={{ marginTop: 10 }} />
-                <Button onPress={saveBack} icon="content-save" color='#fff' style={{ borderColor: "red", backgroundColor: "green", margin: 5, marginBottom: 20 }} mode="outlined">Salvar</Button>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                <Checkbox
+                    status={checked ? 'checked' : 'unchecked'}
+                    onPress={() => {setChecked(!checked)}}
+                    />
+                <Text onPress={() => {setChecked(!checked)}} style={{ textAlign: "center" }}>Associar ao próximo concurso: 2121</Text>
+                </View>
+                <Divider style={{ marginTop: 10 }} />
+                {
+                    route.params.hasOwnProperty('id') && route.params.id !== undefined ?
+                    <Button onPress={saveUpdateBack} icon="content-save" color='#fff' style={{ borderColor: "red", backgroundColor: "green", margin: 5, marginBottom: 20 }} mode="outlined">Atualizar</Button>
+                    :
+                    <Button onPress={saveBack} icon="content-save" color='#fff' style={{ borderColor: "red", backgroundColor: "green", margin: 5, marginBottom: 20 }} mode="outlined">Salvar</Button>
+                }
             </ScrollView>
             <Snackbar
                 visible={visible}

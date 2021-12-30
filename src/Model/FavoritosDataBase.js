@@ -10,7 +10,7 @@ db.transaction((tx) => {
   //<<<<<<<<<<<<<<<<<<<<<<<< USE ISSO APENAS DURANTE OS TESTES!!! >>>>>>>>>>>>>>>>>>>>>>>
 
   tx.executeSql(
-    "CREATE TABLE IF NOT EXISTS favoritos (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, numeros TEXT);"
+    "CREATE TABLE IF NOT EXISTS favoritos (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, numeros TEXT, associar BOOLEAN, concurso TEXT);"
   );
 });
 
@@ -25,8 +25,8 @@ const create = (obj) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        "INSERT INTO favoritos (titulo, numeros) values (?, ?);",
-        [obj.titulo, obj.numeros],
+        "INSERT INTO favoritos (titulo, numeros, associar, concurso) values (?, ?, ?, ?);",
+        [obj.titulo, obj.numeros, obj.associar, obj.concurso],
         //-----------------------
         (_, { rowsAffected, insertId }) => {
           if (rowsAffected > 0) resolve(insertId);
@@ -50,8 +50,8 @@ const update = (id, obj) => {
     db.transaction((tx) => {
       //comando SQL modificável
       tx.executeSql(
-        "UPDATE favoritos SET titulo=?, numeros=? WHERE id=?;",
-        [obj.titulo, obj.numeros, id],
+        "UPDATE favoritos SET titulo=?, numeros=?, associar=?, concurso=? WHERE id=?;",
+        [obj.titulo, obj.numeros, obj.associar, obj.concurso, id],
         //-----------------------
         (_, { rowsAffected }) => {
           if (rowsAffected > 0) resolve(rowsAffected);
@@ -79,7 +79,7 @@ const find = (id) => {
         [id],
         //-----------------------
         (_, { rows }) => {
-          if (rows.length > 0) resolve(rows);
+          if (rows.length > 0) resolve(rows._array);
           else reject("Obj not found: id=" + id); // nenhum registro encontrado
         },
         (_, error) => reject(error) // erro interno em tx.executeSql

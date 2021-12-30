@@ -60,6 +60,7 @@ const Favoritos = ({ navigation, route }) => {
 
     function editFavorito(id) {
         console.log('editando fav id ', id)
+        navigation.navigate('CriarFavorito', { loteira: 'Mega Sena', numeros: 60, id: id })
     }
 
     const CardList = ({ item }) => {
@@ -70,6 +71,7 @@ const Favoritos = ({ navigation, route }) => {
                     <Card style={{ margin: 10 }}>
                         <Card.Content>
                             <Title>{titulo}</Title>
+                            { item.associar === 1 ? <Text style={{paddingTop: 5, paddingBottom: 5 }}>Vinculado ao concurso: {item.concurso}</Text> : null}
                             <View style={{ flexDirection: "row" }}>
                                 {JSON.parse(numeros).map(elem => (<Paragraph key={elem}>{elem} </Paragraph>))}
                             </View>
@@ -83,7 +85,6 @@ const Favoritos = ({ navigation, route }) => {
             </>
         )
     }
-
 
     return (
         <>

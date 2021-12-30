@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Dimensions, View, StyleSheet, Text } from 'react-native'
-import { Button, Snackbar, Dialog, Portal, Paragraph, TextInput, Provider } from 'react-native-paper';
+import { Button, Snackbar, Dialog, Portal, Paragraph, TextInput, Provider, Checkbox } from 'react-native-paper';
 
 import FavoritosDataBase from '../Model/FavoritosDataBase';
 
@@ -13,11 +13,13 @@ const ModalGerador = (props) => {
 
     const onDismissSnackBar = () => setVisible(false);
 
+    const [checked, setChecked] = React.useState(false)
+
     const [text, setText] = React.useState('');
 
     function savedData() {
         try {
-            FavoritosDataBase.create({ titulo: text, numeros: JSON.stringify(props.numeros) })
+            FavoritosDataBase.create({ titulo: text, numeros: JSON.stringify(props.numeros), associar: checked ? 1 : 0, concurso: '2121' })
                 .then(id => {
                     console.log('Fav created with id: ' + id);
                     setText('');
@@ -47,6 +49,14 @@ const ModalGerador = (props) => {
                             <Text style={styles.fontText}>{dezena}</Text>
                         </View>
                     ): <Text></Text>}
+                </View>
+
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                <Checkbox
+                    status={checked ? 'checked' : 'unchecked'}
+                    onPress={() => {setChecked(!checked)}}
+                    />
+                <Text onPress={() => {setChecked(!checked)}} style={{ textAlign: "center" }}>Associar ao próximo concurso: 2121</Text>
                 </View>
                 
                 <View style={{ marginTop: 10, justifyContent: "space-around" }}>
