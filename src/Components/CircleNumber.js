@@ -31,7 +31,6 @@ export const CircleNumber = (props) => {
     
 
 React.useEffect(() => {
-    console.log('fica de olho');
 }, [dezenasState])
 
     return (

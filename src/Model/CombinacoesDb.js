@@ -6,11 +6,11 @@ import db from "../services/SQLiteDataBase";
  */
 db.transaction((tx) => {
   //<<<<<<<<<<<<<<<<<<<<<<<< USE ISSO APENAS DURANTE OS TESTES!!! >>>>>>>>>>>>>>>>>>>>>>>
-  // tx.executeSql("DROP TABLE favoritos;");
+  // tx.executeSql("DROP TABLE combinacoes;");
   //<<<<<<<<<<<<<<<<<<<<<<<< USE ISSO APENAS DURANTE OS TESTES!!! >>>>>>>>>>>>>>>>>>>>>>>
 
   tx.executeSql(
-    "CREATE TABLE IF NOT EXISTS favoritos (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, numeros TEXT, associar BOOLEAN, concurso INTEGER, loteria TEXT);"
+    `CREATE TABLE IF NOT EXISTS combinacoes (id INTEGER PRIMARY KEY AUTOINCREMENT, concurso TEXT, loteria TEXT, impares INTEGER, pares INTEGER, soma INTEGER, grafico BLOB);`
   );
 });
 
@@ -25,8 +25,8 @@ const create = (obj) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        "INSERT INTO favoritos (titulo, numeros, associar, concurso, loteria) values (?, ?, ?, ?, ?);",
-        [obj.titulo, obj.numeros, obj.associar, obj.concurso, obj.loteria],
+        `INSERT INTO combinacoes (concurso, loteria, impares, pares, soma, grafico) values (?, ?, ?, ?, ?, ?);`
+        [obj.concurso, obj.loteria, obj.impares, obj.pares, obj.soma, obj.grafico],
         //-----------------------
         (_, { rowsAffected, insertId }) => {
           if (rowsAffected > 0) resolve(insertId);
@@ -50,8 +50,8 @@ const update = (id, obj) => {
     db.transaction((tx) => {
       //comando SQL modificável
       tx.executeSql(
-        "UPDATE favoritos SET titulo=?, numeros=?, associar=?, concurso=?, loteria=? WHERE id=?;",
-        [obj.titulo, obj.numeros, obj.associar, obj.concurso, obj.loteria, id],
+        `UPDATE combinacoes SET concurso=?, loteria=?, impares=?, pares=?, soma=?, grafico=? WHERE id=?;`,
+        [obj.concurso, obj.loteria, obj.impares, obj.pares, obj.soma, obj.grafico, id],
         //-----------------------
         (_, { rowsAffected }) => {
           if (rowsAffected > 0) resolve(rowsAffected);
@@ -75,7 +75,7 @@ const find = (id) => {
     db.transaction((tx) => {
       //comando SQL modificável
       tx.executeSql(
-        "SELECT * FROM favoritos WHERE id=?;",
+        "SELECT * FROM combinacoes WHERE id=?;",
         [id],
         //-----------------------
         (_, { rows }) => {
@@ -96,17 +96,17 @@ const find = (id) => {
  *  - Pode retornar erro (reject) caso o ID não exista ou então caso ocorra erro no SQL;
  *  - Pode retornar um array vazio caso nenhum objeto seja encontrado.
  */
-const findByTitulo = (titulo) => {
+const findByloteria = (loteria) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       //comando SQL modificável
       tx.executeSql(
-        "SELECT * FROM favoritos WHERE titulo LIKE ?;",
-        [titulo],
+        "SELECT * FROM combinacoes WHERE loteria LIKE ?;",
+        [loteria],
         //-----------------------
         (_, { rows }) => {
           if (rows.length > 0) resolve(rows);
-          else reject("Obj not found: titulo=" + titulo); // nenhum registro encontrado
+          else reject("Obj not found: loteria=" + loteria); // nenhum registro encontrado
         },
         (_, error) => reject(error) // erro interno em tx.executeSql
       );
@@ -127,7 +127,7 @@ const all = () => {
     db.transaction((tx) => {
       //comando SQL modificável
       tx.executeSql(
-        "SELECT * FROM favoritos;",
+        "SELECT * FROM combinacoes;",
         [],
         //-----------------------
         (_, { rows }) => resolve(rows._array),
@@ -149,7 +149,7 @@ const remove = (id) => {
     db.transaction((tx) => {
       //comando SQL modificável
       tx.executeSql(
-        "DELETE FROM favoritos WHERE id=?;",
+        "DELETE FROM combinacoes WHERE id=?;",
         [id],
         //-----------------------
         (_, { rowsAffected }) => {
@@ -165,7 +165,7 @@ export default {
   create,
   update,
   find,
-  findByTitulo,
+  findByloteria,
   all,
   remove,
 };

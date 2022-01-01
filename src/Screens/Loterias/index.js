@@ -3,6 +3,12 @@ import { ScrollView, View, StyleSheet } from 'react-native'
 import { Text, FAB, Dialog, Checkbox, Portal, Provider, Title, Card, Snackbar, Button, Divider, TextInput } from "react-native-paper";
 import FavoritosDataBase from '../../Model/FavoritosDataBase'
 import { CircleNumber } from '../../Components/CircleNumber'
+import { 
+    ResultadoLotoFacil,
+    ResultadoLotoMania,
+    ResultadoMegaSena,
+    ResultadoQuina    
+} from '../../services';
 
 export default function CriarFavorito({ navigation, route }) {
 
@@ -24,6 +30,46 @@ export default function CriarFavorito({ navigation, route }) {
     const [text, setText] = React.useState('');
 
     const [checked, setChecked] = React.useState(false);
+
+    const [proxConcurso, setProxConc] = React.useState('')
+    const [proxDataConcurso, setProxDataConc] = React.useState('')
+    const [loteria, setLoteria] = React.useState('')
+
+    React.useEffect(() => {
+        async function getLatestLoteria() {
+            try {
+                if (route.params.loteira) {
+                    if (route.params.loteira.includes('Mega')) {
+                        let mega = await ResultadoMegaSena()
+                        setProxConc(mega.data.proxConcurso)
+                        setProxDataConc(mega.data.dataProxConcurso)
+                        setLoteria('megasena')
+                    }
+                    if (route.params.loteira.includes('Fácil')) {
+                        let facil = await ResultadoLotoFacil()
+                        setProxConc(facil.data.proxConcurso)
+                        setProxDataConc(facil.data.dataProxConcurso)
+                        setLoteria('lotofacil')
+                    }
+                    if (route.params.loteira.includes('Mania')) {
+                        let mania = await ResultadoLotoMania()
+                        setProxConc(mania.data.proxConcurso)
+                        setProxDataConc(mania.data.dataProxConcurso)
+                        setLoteria('lotomania')
+                    }
+                    if (route.params.loteira.includes('Quina')) {
+                        let quina = await ResultadoQuina()
+                        setProxConc(quina.data.proxConcurso)
+                        setProxDataConc(quina.data.dataProxConcurso)
+                        setLoteria('quina')
+                    }
+                }   
+            } catch (error) {
+                console.log("Error get latest concurso");
+            }
+        }
+        getLatestLoteria()
+    },[])
 
 
     function removeItem(array, number) {
@@ -161,7 +207,6 @@ export default function CriarFavorito({ navigation, route }) {
         }
     }
 
-
     const updateValues = async () => {
         let arr = []
         if(route.params.hasOwnProperty('id')){
@@ -189,8 +234,7 @@ export default function CriarFavorito({ navigation, route }) {
 
     function saveBack() {
         try {
-            console.log('text ', text)
-            FavoritosDataBase.create({ titulo: text, numeros: JSON.stringify(myarray1.array), associar: checked, concurso: '2121' })
+            FavoritosDataBase.create({ titulo: text, numeros: JSON.stringify(myarray1.array), associar: checked, concurso: parseInt(proxConcurso), loteria: loteria })
                 .then(id => {
                     console.log('Fav created with id: ' + id)
                     FavoritosDataBase.all().then(setUpdate)
@@ -204,8 +248,7 @@ export default function CriarFavorito({ navigation, route }) {
 
     function saveUpdateBack() {
         try {
-            console.log('text ', text)
-            FavoritosDataBase.update(route.params.id, { titulo: text, numeros: JSON.stringify(myarray1.array), associar: checked, concurso: '2121' })
+            FavoritosDataBase.update(route.params.id, { titulo: text, numeros: JSON.stringify(myarray1.array), associar: checked, concurso: proxConcurso, loteria: loteria })
                 .then(id => {
                     console.log('Fav created with id: ' + id)
                     FavoritosDataBase.all().then(setUpdate)
@@ -220,7 +263,7 @@ export default function CriarFavorito({ navigation, route }) {
     return (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
             <View>
-                <Text>{route.params.loteira}</Text>
+                <Text style={{ textAlign: "center", marginTop: 20, fontSize: 16, fontWeight: "bold" }}>{route.params.loteira}</Text>
                 <TextInput style={{ margin: 10 }}
                     label="Titulo"
                     value={text}
@@ -248,8 +291,9 @@ export default function CriarFavorito({ navigation, route }) {
                     status={checked ? 'checked' : 'unchecked'}
                     onPress={() => {setChecked(!checked)}}
                     />
-                <Text onPress={() => {setChecked(!checked)}} style={{ textAlign: "center" }}>Associar ao próximo concurso: 2121</Text>
+                <Text onPress={() => {setChecked(!checked)}} style={{ textAlign: "center" }}>Associar ao próximo concurso: {proxConcurso}</Text>
                 </View>
+                <Text style={{ textAlign: "center" }}>Data próximo sorteio: {proxDataConcurso}</Text>
                 <Divider style={{ marginTop: 10 }} />
                 {
                     route.params.hasOwnProperty('id') && route.params.id !== undefined ?

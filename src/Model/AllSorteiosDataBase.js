@@ -6,11 +6,12 @@ import db from "../services/SQLiteDataBase";
  */
 db.transaction((tx) => {
   //<<<<<<<<<<<<<<<<<<<<<<<< USE ISSO APENAS DURANTE OS TESTES!!! >>>>>>>>>>>>>>>>>>>>>>>
-  // tx.executeSql("DROP TABLE favoritos;");
+  // tx.executeSql("DROP TABLE allsorteios;");
   //<<<<<<<<<<<<<<<<<<<<<<<< USE ISSO APENAS DURANTE OS TESTES!!! >>>>>>>>>>>>>>>>>>>>>>>
 
   tx.executeSql(
-    "CREATE TABLE IF NOT EXISTS favoritos (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, numeros TEXT, associar BOOLEAN, concurso INTEGER, loteria TEXT);"
+    `CREATE TABLE IF NOT EXISTS allsorteios (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, concurso TEXT, data TEXT, 
+      dezenas TEXT, premiacoes TEXT, acumulou BOOLEAN, acumuladaProxConcurso TEXT, dataProxConcurso TEXT, proxConcurso TEXT);`
   );
 });
 
@@ -25,8 +26,9 @@ const create = (obj) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        "INSERT INTO favoritos (titulo, numeros, associar, concurso, loteria) values (?, ?, ?, ?, ?);",
-        [obj.titulo, obj.numeros, obj.associar, obj.concurso, obj.loteria],
+        `INSERT INTO allsorteios (nome, concurso, data, 
+          dezenas, premiacoes, acumulou, acumuladaProxConcurso, dataProxConcurso, proxConcurso) values (?, ?, ?, ?, ?, ?, ?, ?, ?);`
+        [obj.nome, obj.concurso, obj.data, obj.dezenas, obj.premiacoes, obj.acumulou, obj.acumuladaProxConcurso, obj.dataProxConcurso, obj.proxConcurso],
         //-----------------------
         (_, { rowsAffected, insertId }) => {
           if (rowsAffected > 0) resolve(insertId);
@@ -50,8 +52,9 @@ const update = (id, obj) => {
     db.transaction((tx) => {
       //comando SQL modificável
       tx.executeSql(
-        "UPDATE favoritos SET titulo=?, numeros=?, associar=?, concurso=?, loteria=? WHERE id=?;",
-        [obj.titulo, obj.numeros, obj.associar, obj.concurso, obj.loteria, id],
+        `UPDATE allsorteios SET nome=?, concurso=?, data=?, 
+          dezenas=?, premiacoes=?, acumulou=?, acumuladaProxConcurso=?, dataProxConcurso=?, proxConcurso=? WHERE id=?;`,
+        [obj.nome, obj.concurso, obj.data, obj.dezenas, obj.premiacoes, obj.acumulou, obj.acumuladaProxConcurso, obj.dataProxConcurso, obj.proxConcurso, id],
         //-----------------------
         (_, { rowsAffected }) => {
           if (rowsAffected > 0) resolve(rowsAffected);
@@ -75,7 +78,7 @@ const find = (id) => {
     db.transaction((tx) => {
       //comando SQL modificável
       tx.executeSql(
-        "SELECT * FROM favoritos WHERE id=?;",
+        "SELECT * FROM allsorteios WHERE id=?;",
         [id],
         //-----------------------
         (_, { rows }) => {
@@ -96,17 +99,17 @@ const find = (id) => {
  *  - Pode retornar erro (reject) caso o ID não exista ou então caso ocorra erro no SQL;
  *  - Pode retornar um array vazio caso nenhum objeto seja encontrado.
  */
-const findByTitulo = (titulo) => {
+const findByConcurso = (concurso) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       //comando SQL modificável
       tx.executeSql(
-        "SELECT * FROM favoritos WHERE titulo LIKE ?;",
-        [titulo],
+        "SELECT * FROM allsorteios WHERE concurso LIKE ?;",
+        [concurso],
         //-----------------------
         (_, { rows }) => {
           if (rows.length > 0) resolve(rows);
-          else reject("Obj not found: titulo=" + titulo); // nenhum registro encontrado
+          else reject("Obj not found: concurso=" + concurso); // nenhum registro encontrado
         },
         (_, error) => reject(error) // erro interno em tx.executeSql
       );
@@ -127,7 +130,7 @@ const all = () => {
     db.transaction((tx) => {
       //comando SQL modificável
       tx.executeSql(
-        "SELECT * FROM favoritos;",
+        "SELECT * FROM allsorteios;",
         [],
         //-----------------------
         (_, { rows }) => resolve(rows._array),
@@ -149,7 +152,7 @@ const remove = (id) => {
     db.transaction((tx) => {
       //comando SQL modificável
       tx.executeSql(
-        "DELETE FROM favoritos WHERE id=?;",
+        "DELETE FROM allsorteios WHERE id=?;",
         [id],
         //-----------------------
         (_, { rowsAffected }) => {
@@ -165,7 +168,7 @@ export default {
   create,
   update,
   find,
-  findByTitulo,
+  findByConcurso,
   all,
   remove,
 };

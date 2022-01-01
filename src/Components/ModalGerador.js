@@ -1,30 +1,83 @@
 import * as React from 'react';
-import { Dimensions, View, StyleSheet, Text } from 'react-native'
+import { Dimensions, View, StyleSheet, Text, Keyboard } from 'react-native'
 import { Button, Snackbar, Dialog, Portal, Paragraph, TextInput, Provider, Checkbox } from 'react-native-paper';
 
 import FavoritosDataBase from '../Model/FavoritosDataBase';
 
+import { 
+    ResultadoLotoFacil,
+    ResultadoLotoMania,
+    ResultadoMegaSena,
+    ResultadoQuina
+} from '../services';
+
 
 const ModalGerador = (props) => {
 
+    console.log(props.title);
+
+    const [state, setstate] = React.useState()
     const [visible, setVisible] = React.useState(false);
-
     const onToggleSnackBar = () => setVisible(!visible);
-
     const onDismissSnackBar = () => setVisible(false);
-
     const [checked, setChecked] = React.useState(false)
-
     const [text, setText] = React.useState('');
+    const [proxConcurso, setProxConc] = React.useState('')
+    const [proxDataConcurso, setProxDataConc] = React.useState('')
+    const [loteria, setLoteria] = React.useState('')
 
-    function savedData() {
+    React.useEffect(() => {
+        async function getLatestLoteria() {
+            try {
+                if (props.title) {
+                    if (props.title.includes('Mega')) {
+                        let mega = await ResultadoMegaSena()
+                        setProxConc(mega.data.proxConcurso)
+                        setProxDataConc(mega.data.dataProxConcurso)
+                        setLoteria('megasena')
+                    }
+                    if (props.title.includes('Fácil')) {
+                        let facil = await ResultadoLotoFacil()
+                        setProxConc(facil.data.proxConcurso)
+                        setProxDataConc(facil.data.dataProxConcurso)
+                        setLoteria('lotofacil')
+                    }
+                    if (props.title.includes('Mania')) {
+                        let mania = await ResultadoLotoMania()
+                        setProxConc(mania.data.proxConcurso)
+                        setProxDataConc(mania.data.dataProxConcurso)
+                        setLoteria('lotomania')
+                    }
+                    if (props.title.includes('Quina')) {
+                        let quina = await ResultadoQuina()
+                        setProxConc(quina.data.proxConcurso)
+                        setProxDataConc(quina.data.dataProxConcurso)
+                        setLoteria('quina')
+                    }
+                }   
+            } catch (error) {
+                console.log("Error get latest concurso");
+            }
+        }
+        getLatestLoteria()
+    },[])
+
+
+
+    async function savedData() {
         try {
-            FavoritosDataBase.create({ titulo: text, numeros: JSON.stringify(props.numeros), associar: checked ? 1 : 0, concurso: '2121' })
+            FavoritosDataBase.create({ titulo: text, numeros: JSON.stringify(props.numeros), associar: checked, concurso: parseInt(proxConcurso), loteria: loteria })
+            // FavoritosDataBase.create({ titulo: text, numeros: JSON.stringify(props.numeros), associar: checked ? 1 : 0, concurso: '2121' })
                 .then(id => {
                     console.log('Fav created with id: ' + id);
                     setText('');
+                    setProxDataConc('')
+                    setProxConc('')
+                    setLoteria('')
+                    setChecked(false)
                     onToggleSnackBar()
                     props.hideDialog();
+                    Keyboard.dismiss()
                 })
                 .catch(err => console.log(err))
         } catch (error) {
@@ -56,9 +109,9 @@ const ModalGerador = (props) => {
                     status={checked ? 'checked' : 'unchecked'}
                     onPress={() => {setChecked(!checked)}}
                     />
-                <Text onPress={() => {setChecked(!checked)}} style={{ textAlign: "center" }}>Associar ao próximo concurso: 2121</Text>
+                <Text onPress={() => {setChecked(!checked)}} style={{ textAlign: "center" }}>Associar ao próximo concurso: {proxConcurso}</Text>
                 </View>
-                
+                <Text style={{ textAlign: "center" }}>Data próximo sorteio: {proxDataConcurso}</Text>
                 <View style={{ marginTop: 10, justifyContent: "space-around" }}>
                     <Button icon="content-save-outline" mode="contained" style={{ borderRadius: 5 }} onPress={savedData}>Salvar</Button>
                     <Button onPress={props.hideDialog}>

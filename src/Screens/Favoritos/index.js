@@ -1,6 +1,6 @@
 import * as React from "react";
 import { View, FlatList, Dimensions } from "react-native";
-import { Text, FAB, Dialog,Modal, Portal, Provider, Title, Card, Paragraph, Button, Divider } from "react-native-paper";
+import { Text, FAB, Dialog,Chip, Portal, Provider, Title, Card, Paragraph, Button, Divider } from "react-native-paper";
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { useNavigation, useIsFocused } from '@react-navigation/native'
@@ -23,6 +23,8 @@ const Favoritos = ({ navigation, route }) => {
 
     const [isVisibleDelete, setVisibleDelete] = React.useState(false);
 
+    const [loading, setLoading] = React.useState(true);
+
     const showModalDelete = () => setVisibleDelete(true);
     const hideModalDelete = () => setVisibleDelete(false);
 
@@ -36,6 +38,7 @@ const Favoritos = ({ navigation, route }) => {
     async function getDataBase() {
         try {
             await FavoritosDataBase.all().then(setLoteria)
+            setState(!loading)
         } catch (error) {
             console.error(`Error: banco de dados ${error}`)
         }
@@ -64,15 +67,28 @@ const Favoritos = ({ navigation, route }) => {
     }
 
     const CardList = ({ item }) => {
-        const { id, titulo, numeros } = item;
+        const { id, titulo, numeros, loteria } = item;
+        console.log(item);
         return (
             <>
                 <View key={id}>
                     <Card style={{ margin: 10 }}>
                         <Card.Content>
+                            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                             <Title>{titulo}</Title>
+                            { loteria === 'megasena' ? 
+                            <Chip icon="information" style={{ backgroundColor: '#2b6212' }}><Text style={{ color: "#fff" }}>Mega Sena</Text></Chip>
+                            : loteria === 'lotofacil' ?
+                            <Chip icon="information" style={{ backgroundColor: '#930989' }}><Text style={{ color: "#fff" }}>Loto Fácil</Text></Chip>
+                            : loteria === 'lotomania' ?
+                            <Chip icon="information" style={{ backgroundColor: '#F78100' }}><Text style={{ color: "#fff" }}>Loto Mania</Text></Chip>
+                            :
+                            <Chip icon="information" style={{ backgroundColor: '#260085', width: 100 }}><Text style={{ color: "#fff" }}>Quina</Text></Chip>
+                            }
+
+                            </View>
                             { item.associar === 1 ? <Text style={{paddingTop: 5, paddingBottom: 5 }}>Vinculado ao concurso: {item.concurso}</Text> : null}
-                            <View style={{ flexDirection: "row" }}>
+                            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
                                 {JSON.parse(numeros).map(elem => (<Paragraph key={elem}>{elem} </Paragraph>))}
                             </View>
                         </Card.Content>

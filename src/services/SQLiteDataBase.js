@@ -1,5 +1,5 @@
 import * as SQLite from 'expo-sqlite'
 
-const db = SQLite.openDatabase("agoravai.db")
+const db = SQLite.openDatabase("loterias.db")
 
 export default db
