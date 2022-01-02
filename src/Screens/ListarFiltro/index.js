@@ -8,17 +8,13 @@ import { createNavigationContainerRef, useIsFocused, useNavigationBuilder } from
 import FavoritosDataBase from "../../Model/FavoritosDataBase";
 import TopBar from "../../Components/TopBar";
 import DeleteModal from "../../Components/deleteModal";
-import { styles } from './styles'
+import { styles } from '../Filtro/styles'
 const Stack = createNativeStackNavigator();
 
-export default function Filtro() {
-    
-    // console.log(navigation);
-    // const navigation = createNavigationContainerRef()
-    // console.log('====================================');
-    // console.log(navigation.navigate());
-    // console.log('====================================');
+import CardFilter from "../../Components/CardFilter";
 
+export default function ListarFiltro() {
+    
     const [dataLoteria, setLoteria] = React.useState([])
 
     const [selectedId, setSelectedId] = React.useState('');
@@ -41,7 +37,9 @@ export default function Filtro() {
     return (
         <>
         <React.Fragment>
-        <TopBar subtitle="Gerenciar filtros personalizados" />
+        <View>
+            <CardFilter />
+        </View>
             <Provider>
                 <Title style={{ alignSelf: "center", marginTop: 10 }}>Filtros Personalizados</Title>
 
@@ -51,14 +49,14 @@ export default function Filtro() {
                     />
                 </View> */}
 
-                <Portal>
+                {/* <Portal>
                 <FAB
                     style={styles.fab}
                     small
                     icon="plus"
                     onPress={() => alert("criando filtros")}
                 />
-                </Portal>
+                </Portal> */}
 
             </Provider>
         </React.Fragment>

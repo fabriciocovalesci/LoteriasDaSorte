@@ -6,8 +6,9 @@ import Resultados from "../../Screens/UltimosResultados";
 import EstatisticaRoute from "../EstatisticaRouter";
 import Favoritos from "../../Screens/Favoritos";
 import GeradorLoteria from "../../Screens/GeradorLoteria";
-import Filtro from "../../Screens/Filtro";
+import Filtro from "../../Screens/ListarFiltro";
 import CriarFavorito from "../../Screens/Loterias/index";
+import FiltroRoute from "../FilterRouter";
 
 const Stack = createNativeStackNavigator();
 
@@ -37,7 +38,7 @@ export const TabScreen = () => {
     gerador: GeradorLoteria,
     estatistica: EstatisticaRoute,
     favorito: StackFavoritos,
-    filtro: Filtro,
+    filtro: FiltroRoute,
   });
 
   return (

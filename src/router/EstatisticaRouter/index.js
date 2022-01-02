@@ -22,42 +22,6 @@ const renderScene = SceneMap({
 
 const EstatisticaRoute = () => {
 
-    // const [visible, setVisible] = React.useState(false);
-    // const openMenu = () => setVisible(true);
-    // const closeMenu = () => setVisible(false);
-
-    // const [back, setVisibleback] = React.useState(false);
-
-    // function _back(){
-    //     setVisibleback(!back)
-    // }
-
-    // return (
-    //     <>
- 
-    //    <Appbar.Header>
-    //     {back ? <Appbar.BackAction onPress={_back} /> : null}
-    //     <Appbar.Content title="Minha Aposta" />
-    //     {!back ? (
-    //       <Menu
-    //         visible={visible}
-    //         onDismiss={closeMenu}
-    //         anchor={
-    //           <Appbar.Action icon="menu" color="white" onPress={openMenu} />
-    //         }>
-    //         <Menu.Item onPress={() => {console.log('Option 1 was pressed')}} title="Option 1" />
-    //         <Menu.Item onPress={() => {console.log('Option 2 was pressed')}} title="Option 2" />
-    //         <Menu.Item onPress={() => {console.log('Option 3 was pressed')}} title="Option 3" disabled />
-    //       </Menu>
-    //     ) : null}
-    //   </Appbar.Header>
-    //   <View>
-    //        <Text>oi</Text>
-    //    </View>
-    //    </>
-    // )
-    // const layout = useWindowDimensions();
-
     const [index, setIndex] = React.useState(0);
     const [routes] = React.useState([
       { key: 'first', title: 'Mega Sena' },
