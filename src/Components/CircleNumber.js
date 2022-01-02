@@ -42,24 +42,24 @@ React.useEffect(() => {
 
 const styles = StyleSheet.create({
     circle: {
-        width: 38,
-        height: 38,
-        borderRadius: 38 / 2,
+        width: 30,
+        height: 30,
+        borderRadius: 30 / 2,
         backgroundColor: "#3d85c6",
         justifyContent: "center",
         alignItems: "center",
         padding: 5,
-        margin: 5
+        margin: 2
     },
     circleSelect: {
-        width: 38,
-        height: 38,
-        borderRadius: 38 / 2,
+        width: 30,
+        height: 30,
+        borderRadius: 30 / 2,
         backgroundColor: "#225123",
         justifyContent: "center",
         alignItems: "center",
         padding: 5,
-        margin: 5
+        margin: 2
     },
     fontText: {
         color: "#000", 

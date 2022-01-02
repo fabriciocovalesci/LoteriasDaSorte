@@ -1,32 +1,16 @@
 import React, { useState } from "react";
 import { BottomNavigation, View } from "react-native-paper";
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 import Resultados from "../../Screens/UltimosResultados";
 import EstatisticaRoute from "../EstatisticaRouter";
 import Favoritos from "../../Screens/Favoritos";
 import GeradorLoteria from "../../Screens/GeradorLoteria";
-
+import Filtro from "../../Screens/Filtro";
 import CriarFavorito from "../../Screens/Loterias/index";
+import CriarFiltro from "../../Screens/CriarFiltro";
 
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
 const Stack = createNativeStackNavigator();
-
-const FirstRoute = () => {
-  return (
-  <View style={{ flex: 1, backgroundColor: '#ff4081' }} />
-)};
-
-const SecondRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#673ab7' }} />
-);
-
-const TreeRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#673a99' }} />
-);
-
-const FourtRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#673a00' }} />
-);
 
 function MyStack() {
   return (
@@ -34,8 +18,16 @@ function MyStack() {
       <Stack.Screen name="Favoritos" component={Favoritos} />
       <Stack.Screen name="GeradorLoteria" component={GeradorLoteria} />
       <Stack.Screen name="CriarFavorito" component={CriarFavorito} />
-      <Stack.Screen name="TreeRoute" component={TreeRoute} />
-      <Stack.Screen name="FourtRoute" component={FourtRoute} />
+      <Stack.Screen name="CriarFiltro" component={CriarFiltro} />
+    </Stack.Navigator>
+  );
+}
+
+function StackFiltro() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Filtros" component={Filtro} />
+      <Stack.Screen name="CriarFiltro" component={CriarFiltro} />
     </Stack.Navigator>
   );
 }
@@ -48,13 +40,15 @@ export const TabScreen = () => {
     { key: "gerador", title: "Gerador", icon: "counter", color: "#795548" },
     { key: "estatistica", title: "Estatísticas", icon: "chart-bar-stacked", color: "#0349fc" },
     { key: "favorito", title: "Favoritos", icon: "heart", color: "#009688" },
+    { key: "filtro", title: "Filtros", icon: "filter-plus", color: "#260085" },
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
     home: Resultados,
     gerador: GeradorLoteria,
     estatistica: EstatisticaRoute,
-    favorito: MyStack
+    favorito: MyStack,
+    filtro: Filtro,
   });
 
   return (

@@ -27,6 +27,8 @@ export default function CriarFavorito({ navigation, route }) {
 
     const [loading, setLoading] = React.useState(false);
 
+    const [loadingUp, setLoadingUpdate] = React.useState(true);
+
     const [text, setText] = React.useState('');
 
     const [checked, setChecked] = React.useState(false);
@@ -34,6 +36,7 @@ export default function CriarFavorito({ navigation, route }) {
     const [proxConcurso, setProxConc] = React.useState('')
     const [proxDataConcurso, setProxDataConc] = React.useState('')
     const [loteria, setLoteria] = React.useState('')
+    const [loteriaTitle, setLoteriaTitle] = React.useState('')
 
     React.useEffect(() => {
         async function getLatestLoteria() {
@@ -41,27 +44,32 @@ export default function CriarFavorito({ navigation, route }) {
                 if (route.params.loteira) {
                     if (route.params.loteira.includes('Mega')) {
                         let mega = await ResultadoMegaSena()
+                        console.log(mega);
                         setProxConc(mega.data.proxConcurso)
                         setProxDataConc(mega.data.dataProxConcurso)
                         setLoteria('megasena')
+                        setLoteriaTitle("Mega Sena")
                     }
                     if (route.params.loteira.includes('Fácil')) {
                         let facil = await ResultadoLotoFacil()
                         setProxConc(facil.data.proxConcurso)
                         setProxDataConc(facil.data.dataProxConcurso)
                         setLoteria('lotofacil')
+                        setLoteriaTitle("Loto Fácil")
                     }
                     if (route.params.loteira.includes('Mania')) {
                         let mania = await ResultadoLotoMania()
                         setProxConc(mania.data.proxConcurso)
                         setProxDataConc(mania.data.dataProxConcurso)
                         setLoteria('lotomania')
+                        setLoteriaTitle("Loto Mania")
                     }
                     if (route.params.loteira.includes('Quina')) {
                         let quina = await ResultadoQuina()
                         setProxConc(quina.data.proxConcurso)
                         setProxDataConc(quina.data.dataProxConcurso)
                         setLoteria('quina')
+                        setLoteriaTitle("Quina")
                     }
                 }   
             } catch (error) {
@@ -211,11 +219,15 @@ export default function CriarFavorito({ navigation, route }) {
         let arr = []
         if(route.params.hasOwnProperty('id')){
        await FavoritosDataBase.find(route.params.id).then((value) =>{
+           console.log('up ',value);
             arr.push(JSON.parse(value[0].numeros))
             setArray({ valor: '0,00', array: JSON.parse(value[0].numeros) })
             setText(value[0].titulo)
+            setProxConc(value[0].concurso)
+            setProxDataConc(value[0].dataProxConcurso)
             setChecked(value[0].associar === 1 ? true : false)
             setArrayUpdate(JSON.parse(value[0].numeros))
+            filterTitle(route.params.loteira)
             setLoading(true);
         }).catch((err) => (console.error(err)))
     }
@@ -228,13 +240,31 @@ export default function CriarFavorito({ navigation, route }) {
         
 
     React.useEffect(() => {
-        console.log('Updated State', myarray1)
+        console.log('Updated State')
     }, [myarray1])
+
+    function filterTitle(value){
+        if(value == 'megasena'){
+            setLoteriaTitle("Mega Sena")
+        }
+        else if(value == 'lotofacil'){
+            setLoteriaTitle("Loto Fácil")
+        }
+        else if(value == 'lotomania'){
+            setLoteriaTitle("Loto Mania")
+        }
+        else if(value == 'quina'){
+            setLoteriaTitle("Quina")
+        }
+        else{
+            setLoteriaTitle(value)
+        }
+    }
 
 
     function saveBack() {
         try {
-            FavoritosDataBase.create({ titulo: text, numeros: JSON.stringify(myarray1.array), associar: checked, concurso: parseInt(proxConcurso), loteria: loteria })
+            FavoritosDataBase.create({ titulo: text, numeros: JSON.stringify(myarray1.array), associar: checked, concurso: parseInt(proxConcurso), loteria: loteria, dataProxConcurso: proxDataConcurso })
                 .then(id => {
                     console.log('Fav created with id: ' + id)
                     FavoritosDataBase.all().then(setUpdate)
@@ -248,7 +278,7 @@ export default function CriarFavorito({ navigation, route }) {
 
     function saveUpdateBack() {
         try {
-            FavoritosDataBase.update(route.params.id, { titulo: text, numeros: JSON.stringify(myarray1.array), associar: checked, concurso: proxConcurso, loteria: loteria })
+            FavoritosDataBase.update(route.params.id, { titulo: text, numeros: JSON.stringify(myarray1.array), associar: checked, concurso: proxConcurso, loteria: loteria, dataProxConcurso: proxDataConcurso })
                 .then(id => {
                     console.log('Fav created with id: ' + id)
                     FavoritosDataBase.all().then(setUpdate)
@@ -263,7 +293,7 @@ export default function CriarFavorito({ navigation, route }) {
     return (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
             <View>
-                <Text style={{ textAlign: "center", marginTop: 20, fontSize: 16, fontWeight: "bold" }}>{route.params.loteira}</Text>
+                <Text style={{ textAlign: "center", marginTop: 20, fontSize: 16, fontWeight: "bold" }}>{ loteriaTitle }</Text>
                 <TextInput style={{ margin: 10 }}
                     label="Titulo"
                     value={text}
@@ -278,7 +308,7 @@ export default function CriarFavorito({ navigation, route }) {
                 </View>
             </View>
             <ScrollView>
-                <View style={{ justifyContent: "center", flexDirection: "row", flexWrap: "wrap" }}>
+                <View style={{ justifyContent: "center", flexDirection: "row", flexWrap: "wrap", margin: 5 }}>
                     {
                         Array(route.params.numeros).fill().map((elem, index) =>
                             <CircleNumber numberSelected={arrayUpdate} getNumber={(e, i) => getNumber(e, i)} key={index + 1} number={index + 1} />

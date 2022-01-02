@@ -34,11 +34,9 @@ const Favoritos = ({ navigation, route }) => {
 
     const { open } = state;
 
-
     async function getDataBase() {
         try {
             await FavoritosDataBase.all().then(setLoteria)
-            setState(!loading)
         } catch (error) {
             console.error(`Error: banco de dados ${error}`)
         }
@@ -51,7 +49,6 @@ const Favoritos = ({ navigation, route }) => {
     }, [isFocused])
 
 
-
     const deleteFavorito = (id) => {
         FavoritosDataBase.remove(id)
             .then((res) => {
@@ -61,14 +58,28 @@ const Favoritos = ({ navigation, route }) => {
             .catch((err) => (console.error(err)))
     }
 
-    function editFavorito(id) {
-        console.log('editando fav id ', id)
-        navigation.navigate('CriarFavorito', { loteira: 'Mega Sena', numeros: 60, id: id })
+    function editFavorito(id, loteria) {
+        switch (loteria) {
+            case 'megasena':
+                navigation.navigate('CriarFavorito', { loteira: loteria, numeros: 60, id: id })
+                break;
+            case 'lotofacil':
+                navigation.navigate('CriarFavorito', { loteira: loteria, numeros: 25, id: id })
+                break;
+            case 'lotomania':
+                navigation.navigate('CriarFavorito', { loteira: loteria, numeros: 50, id: id })
+                break;
+            case 'quina':
+                navigation.navigate('CriarFavorito', { loteira: loteria, numeros: 80, id: id })
+                break;
+            default:
+                console.error("Error ao direcionar para edicao");
+                break;
+        }
     }
 
     const CardList = ({ item }) => {
         const { id, titulo, numeros, loteria } = item;
-        console.log(item);
         return (
             <>
                 <View key={id}>
@@ -85,7 +96,6 @@ const Favoritos = ({ navigation, route }) => {
                             :
                             <Chip icon="information" style={{ backgroundColor: '#260085', width: 100 }}><Text style={{ color: "#fff" }}>Quina</Text></Chip>
                             }
-
                             </View>
                             { item.associar === 1 ? <Text style={{paddingTop: 5, paddingBottom: 5 }}>Vinculado ao concurso: {item.concurso}</Text> : null}
                             <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
@@ -93,7 +103,7 @@ const Favoritos = ({ navigation, route }) => {
                             </View>
                         </Card.Content>
                         <Card.Actions>
-                            <Button onPress={() => editFavorito(id)} icon="pencil" style={{ borderColor: "blue", margin: 5 }} mode="outlined">Editar</Button>
+                            <Button onPress={() => editFavorito(id, loteria)} icon="pencil" style={{ borderColor: "blue", margin: 5 }} mode="outlined">Editar</Button>
                             <Button onPress={() => deleteFavorito(id)} icon="delete-forever-outline" style={{ borderColor: "red", margin: 5 }} mode="outlined">Excluir</Button>
                         </Card.Actions>
                     </Card>
