@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { useNavigation, useIsFocused } from '@react-navigation/native'
 
 import FavoritosDataBase from "../../Model/FavoritosDataBase";
+import { CircleNumber } from "../../Components/CircleNumber";
 import TopBar from "../../Components/TopBar";
 import DeleteModal from "../../Components/deleteModal";
 import { styles } from './styles'
@@ -79,14 +80,14 @@ const Favoritos = ({ navigation, route }) => {
     }
 
     const CardList = ({ item }) => {
-        const { id, titulo, numeros, loteria } = item;
+        const { id, titulo, numeros, loteria, dataProxConcurso } = item;
         return (
             <>
                 <View key={id}>
-                    <Card style={{ margin: 10 }}>
+                    <Card style={{ margin: 5, borderColor: 'blue', borderStyle: "solid", borderWidth: 0.5 }}>
                         <Card.Content>
                             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                            <Title>{titulo}</Title>
+                            <Title numberOfLines={1} ellipsizeMode="tail" style={{ width: 200 }}>{titulo}</Title>
                             { loteria === 'megasena' ? 
                             <Chip icon="information" style={{ backgroundColor: '#2b6212' }}><Text style={{ color: "#fff" }}>Mega Sena</Text></Chip>
                             : loteria === 'lotofacil' ?
@@ -97,9 +98,14 @@ const Favoritos = ({ navigation, route }) => {
                             <Chip icon="information" style={{ backgroundColor: '#260085', width: 100 }}><Text style={{ color: "#fff" }}>Quina</Text></Chip>
                             }
                             </View>
-                            { item.associar === 1 ? <Text style={{paddingTop: 5, paddingBottom: 5 }}>Vinculado ao concurso: {item.concurso}</Text> : null}
-                            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                                {JSON.parse(numeros).map(elem => (<Paragraph key={elem}>{elem} </Paragraph>))}
+                            { item.associar === 1 ?
+                            <View>
+                                <Text style={{paddingTop: 5, paddingBottom: 5 }}>Vinculado ao concurso: {item.concurso}</Text> 
+                                <Text style={{paddingTop: 5, paddingBottom: 5 }}>Próximo sorteio: {item.dataProxConcurso}</Text> 
+                            </View>
+                             : null}
+                            <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 5 }}>
+                                {JSON.parse(numeros).map(elem => (<CircleNumber key={elem} isSelect={false} number={elem + 1} />))}
                             </View>
                         </Card.Content>
                         <Card.Actions>
@@ -118,11 +124,18 @@ const Favoritos = ({ navigation, route }) => {
             <Provider>
                 <Title style={{ alignSelf: "center", marginTop: 10 }}>Meus números</Title>
 
+                {
+                    dataLoteria.length !== 0 ?
                 <View style={{ flex: 1, height: Dimensions.get('screen').height, justifyContent: "center", alignContent: 'center' }}>
                     <FlatList data={dataLoteria} keyExtractor={item => item.id}
                         renderItem={CardList} extraData={selectedId}
                     />
                 </View>
+                    : 
+                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                        <Text style={{ flexWrap: "wrap" }}>Voce ainda não possui nenhum jogo cadastrado !</Text>
+                    </View>
+                }
 
                 <Portal>
                     <FAB.Group

@@ -311,7 +311,7 @@ export default function CriarFavorito({ navigation, route }) {
                 <View style={{ justifyContent: "center", flexDirection: "row", flexWrap: "wrap", margin: 5 }}>
                     {
                         Array(route.params.numeros).fill().map((elem, index) =>
-                            <CircleNumber numberSelected={arrayUpdate} getNumber={(e, i) => getNumber(e, i)} key={index + 1} number={index + 1} />
+                            <CircleNumber numberSelected={arrayUpdate} isSelect={true} getNumber={(e, i) => getNumber(e, i)} key={index + 1} number={index + 1} />
                         )
                     }
                 </View>

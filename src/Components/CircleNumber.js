@@ -14,8 +14,12 @@ export const CircleNumber = (props) => {
     const [loading, setLoading] = React.useState(false);
 
     function select(){
-        setstate(!state)
-        props.getNumber(state, props.number)
+        if(!props.isSelect){
+            setstate(props.isSelect)
+        }else{
+            setstate(!state)
+            props.getNumber(state, props.number)
+        }
     }
 
 

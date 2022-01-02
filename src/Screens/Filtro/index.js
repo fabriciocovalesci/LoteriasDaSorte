@@ -43,7 +43,7 @@ export default function Filtro() {
         <React.Fragment>
         <TopBar subtitle="Gerenciar filtros personalizados" />
             <Provider>
-                <Title style={{ alignSelf: "center", marginTop: 10 }}>Meus números</Title>
+                <Title style={{ alignSelf: "center", marginTop: 10 }}>Filtros Personalizados</Title>
 
                 {/* <View style={{ flex: 1, height: Dimensions.get('screen').height, justifyContent: "center", alignContent: 'center' }}>
                     <FlatList data={dataLoteria} keyExtractor={item => item.id}

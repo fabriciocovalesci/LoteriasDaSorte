@@ -50,7 +50,7 @@ const update = (id, obj) => {
     db.transaction((tx) => {
       //comando SQL modificável
       tx.executeSql(
-        "UPDATE favoritos SET titulo=?, numeros=?, associar=?, concurso=?, loteria=? dataProxConcurso=? WHERE id=?;",
+        "UPDATE favoritos SET titulo=?, numeros=?, associar=?, concurso=?, loteria=?, dataProxConcurso=? WHERE id=?;",
         [obj.titulo, obj.numeros, obj.associar, obj.concurso, obj.loteria, obj.dataProxConcurso, id],
         //-----------------------
         (_, { rowsAffected }) => {
