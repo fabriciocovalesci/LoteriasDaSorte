@@ -8,32 +8,21 @@ import Favoritos from "../../Screens/Favoritos";
 import GeradorLoteria from "../../Screens/GeradorLoteria";
 import Filtro from "../../Screens/Filtro";
 import CriarFavorito from "../../Screens/Loterias/index";
-import CriarFiltro from "../../Screens/CriarFiltro";
 
 const Stack = createNativeStackNavigator();
 
-function MyStack() {
+const StackFavoritos = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Favoritos" component={Favoritos} />
       <Stack.Screen name="GeradorLoteria" component={GeradorLoteria} />
       <Stack.Screen name="CriarFavorito" component={CriarFavorito} />
-      <Stack.Screen name="CriarFiltro" component={CriarFiltro} />
     </Stack.Navigator>
   );
 }
-
-function StackFiltro() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Filtros" component={Filtro} />
-      <Stack.Screen name="CriarFiltro" component={CriarFiltro} />
-    </Stack.Navigator>
-  );
-}
-
 
 export const TabScreen = () => {
+
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "home", title: "Home", icon: "home", color: "#3F51B5" },
@@ -47,7 +36,7 @@ export const TabScreen = () => {
     home: Resultados,
     gerador: GeradorLoteria,
     estatistica: EstatisticaRoute,
-    favorito: MyStack,
+    favorito: StackFavoritos,
     filtro: Filtro,
   });
 

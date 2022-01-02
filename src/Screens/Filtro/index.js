@@ -56,7 +56,7 @@ export default function Filtro() {
                     style={styles.fab}
                     small
                     icon="plus"
-                    onPress={() => navigation.dispatch('GeradorLoteria')}
+                    onPress={() => alert("criando filtros")}
                 />
                 </Portal>
 

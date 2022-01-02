@@ -25,7 +25,7 @@ export default function CriarFavorito({ navigation, route }) {
 
     const [arrayUpdate, setArrayUpdate] = React.useState([])
 
-    const [loading, setLoading] = React.useState(false);
+    const [loading, setLoading] = React.useState(true);
 
     const [loadingUp, setLoadingUpdate] = React.useState(true);
 
@@ -41,8 +41,8 @@ export default function CriarFavorito({ navigation, route }) {
     React.useEffect(() => {
         async function getLatestLoteria() {
             try {
-                if (route.params.loteira) {
-                    if (route.params.loteira.includes('Mega')) {
+                if (route.params.loteria) {
+                    if (route.params.loteria.includes('Mega')) {
                         let mega = await ResultadoMegaSena()
                         console.log(mega);
                         setProxConc(mega.data.proxConcurso)
@@ -50,21 +50,21 @@ export default function CriarFavorito({ navigation, route }) {
                         setLoteria('megasena')
                         setLoteriaTitle("Mega Sena")
                     }
-                    if (route.params.loteira.includes('Fácil')) {
+                   else if (route.params.loteria.includes('Fácil')) {
                         let facil = await ResultadoLotoFacil()
                         setProxConc(facil.data.proxConcurso)
                         setProxDataConc(facil.data.dataProxConcurso)
                         setLoteria('lotofacil')
                         setLoteriaTitle("Loto Fácil")
                     }
-                    if (route.params.loteira.includes('Mania')) {
+                   else if (route.params.loteria.includes('Mania')) {
                         let mania = await ResultadoLotoMania()
                         setProxConc(mania.data.proxConcurso)
                         setProxDataConc(mania.data.dataProxConcurso)
                         setLoteria('lotomania')
                         setLoteriaTitle("Loto Mania")
                     }
-                    if (route.params.loteira.includes('Quina')) {
+                   else if (route.params.loteria.includes('Quina')) {
                         let quina = await ResultadoQuina()
                         setProxConc(quina.data.proxConcurso)
                         setProxDataConc(quina.data.dataProxConcurso)
@@ -209,7 +209,7 @@ export default function CriarFavorito({ navigation, route }) {
         if (!selected) {
             let arr = [...myarray1.array]
             arr.push(number)
-            valoresLoterias(route.params.loteira, arr)
+            valoresLoterias(route.params.loteria, arr)
         } else {
             removeItem(myarray1.array, number)
         }
@@ -219,7 +219,6 @@ export default function CriarFavorito({ navigation, route }) {
         let arr = []
         if(route.params.hasOwnProperty('id')){
        await FavoritosDataBase.find(route.params.id).then((value) =>{
-           console.log('up ',value);
             arr.push(JSON.parse(value[0].numeros))
             setArray({ valor: '0,00', array: JSON.parse(value[0].numeros) })
             setText(value[0].titulo)
@@ -227,11 +226,11 @@ export default function CriarFavorito({ navigation, route }) {
             setProxDataConc(value[0].dataProxConcurso)
             setChecked(value[0].associar === 1 ? true : false)
             setArrayUpdate(JSON.parse(value[0].numeros))
-            filterTitle(route.params.loteira)
-            setLoading(true);
+            filterTitle(route.params.loteria)
+            setLoading(false);
         }).catch((err) => (console.error(err)))
     }
-    setLoading(true);
+    // setLoading(false);
     }
 
     React.useEffect(() => {
@@ -278,7 +277,7 @@ export default function CriarFavorito({ navigation, route }) {
 
     function saveUpdateBack() {
         try {
-            FavoritosDataBase.update(route.params.id, { titulo: text, numeros: JSON.stringify(myarray1.array), associar: checked, concurso: proxConcurso, loteria: loteria, dataProxConcurso: proxDataConcurso })
+            FavoritosDataBase.update(route.params.id, { titulo: text, numeros: JSON.stringify(myarray1.array), associar: checked, concurso: proxConcurso, loteria: route.params.loteria, dataProxConcurso: proxDataConcurso })
                 .then(id => {
                     console.log('Fav created with id: ' + id)
                     FavoritosDataBase.all().then(setUpdate)

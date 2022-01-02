@@ -1,14 +1,15 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
-
 import theme from "./src/CustomProperties/Theme";
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { TabScreen } from "./src/router/TabRouter";
 
 import TopBar from "./src/Components/TopBar";
+import CriarFiltro from "./src/Screens/CriarFiltro";
+const Stack = createNativeStackNavigator();
 
-
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import AllSorteiosDataBase from "./src/Model/AllSorteiosDataBase";
@@ -79,9 +80,10 @@ export default function App() {
     // }
   }
 
+  const navigationRef = useNavigationContainerRef();
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <PaperProvider theme={theme}>
         {/* <TopBar /> */}
         <TabScreen />

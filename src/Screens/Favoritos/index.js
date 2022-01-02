@@ -62,16 +62,16 @@ const Favoritos = ({ navigation, route }) => {
     function editFavorito(id, loteria) {
         switch (loteria) {
             case 'megasena':
-                navigation.navigate('CriarFavorito', { loteira: loteria, numeros: 60, id: id })
+                navigation.navigate('CriarFavorito', { loteria: loteria, numeros: 60, id: id })
                 break;
             case 'lotofacil':
-                navigation.navigate('CriarFavorito', { loteira: loteria, numeros: 25, id: id })
+                navigation.navigate('CriarFavorito', { loteria: loteria, numeros: 25, id: id })
                 break;
             case 'lotomania':
-                navigation.navigate('CriarFavorito', { loteira: loteria, numeros: 50, id: id })
+                navigation.navigate('CriarFavorito', { loteria: loteria, numeros: 50, id: id })
                 break;
             case 'quina':
-                navigation.navigate('CriarFavorito', { loteira: loteria, numeros: 80, id: id })
+                navigation.navigate('CriarFavorito', { loteria: loteria, numeros: 80, id: id })
                 break;
             default:
                 console.error("Error ao direcionar para edicao");
@@ -80,6 +80,7 @@ const Favoritos = ({ navigation, route }) => {
     }
 
     const CardList = ({ item }) => {
+        console.log(item);
         const { id, titulo, numeros, loteria, dataProxConcurso } = item;
         return (
             <>
@@ -94,14 +95,15 @@ const Favoritos = ({ navigation, route }) => {
                             <Chip icon="information" style={{ backgroundColor: '#930989' }}><Text style={{ color: "#fff" }}>Loto Fácil</Text></Chip>
                             : loteria === 'lotomania' ?
                             <Chip icon="information" style={{ backgroundColor: '#F78100' }}><Text style={{ color: "#fff" }}>Loto Mania</Text></Chip>
-                            :
+                            :  loteria === 'quina' ?
                             <Chip icon="information" style={{ backgroundColor: '#260085', width: 100 }}><Text style={{ color: "#fff" }}>Quina</Text></Chip>
+                            : null
                             }
                             </View>
                             { item.associar === 1 ?
                             <View>
                                 <Text style={{paddingTop: 5, paddingBottom: 5 }}>Vinculado ao concurso: {item.concurso}</Text> 
-                                <Text style={{paddingTop: 5, paddingBottom: 5 }}>Próximo sorteio: {item.dataProxConcurso}</Text> 
+                                <Text style={{paddingTop: 5, paddingBottom: 5 }}>Próximo sorteio: {dataProxConcurso}</Text> 
                             </View>
                              : null}
                             <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 5 }}>
@@ -145,21 +147,21 @@ const Favoritos = ({ navigation, route }) => {
                             {
                                 icon: 'plus',
                                 label: 'Mega Sena',
-                                onPress: () => navigation.navigate('CriarFavorito', { loteira: 'Mega Sena', numeros: 60 }),
+                                onPress: () => navigation.navigate('CriarFavorito', { loteria: 'Mega Sena', numeros: 60 }),
                             }, {
                                 icon: 'plus',
                                 label: 'Loto Fácil',
-                                onPress: () => navigation.navigate('CriarFavorito', { loteira: 'Loto Fácil', numeros: 25 })
+                                onPress: () => navigation.navigate('CriarFavorito', { loteria: 'Loto Fácil', numeros: 25 })
                             },
                             {
                                 icon: 'plus',
                                 label: 'Loto Mania',
-                                onPress: () => navigation.navigate('CriarFavorito', { loteira: 'Loto Mania', numeros: 50 }),
+                                onPress: () => navigation.navigate('CriarFavorito', { loteria: 'Loto Mania', numeros: 50 }),
                             },
                             {
                                 icon: 'plus',
                                 label: 'Quina',
-                                onPress: () => navigation.navigate('CriarFavorito', { loteira: 'Quina', numeros: 80 }),
+                                onPress: () => navigation.navigate('CriarFavorito', { loteria: 'Quina', numeros: 80 }),
                                 small: true,
                             },
                         ]}
