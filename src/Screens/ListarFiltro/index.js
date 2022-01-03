@@ -37,9 +37,6 @@ export default function ListarFiltro() {
     return (
         <>
         <React.Fragment>
-        <View>
-            <CardFilter />
-        </View>
             <Provider>
                 <Title style={{ alignSelf: "center", marginTop: 10 }}>Filtros Personalizados</Title>
 

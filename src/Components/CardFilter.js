@@ -39,7 +39,7 @@ export default function CardFilter(props) {
         <>
             <View style={{flex: 0}}>
                 <Text style={{ alignSelf: "center", fontSize: 16, margin: 10, fontWeight: "bold" }}>{props.title}</Text>
-                <TextInput value={text} onChangeText={text => setText(text)} label="Titulo" mode="flat" />
+                <TextInput style={{ marginRight: 10, marginLeft: 10 }} value={text} onChangeText={text => setText(text)} label="Nome filtro" mode="flat" />
 
                 <View style={{  flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "center" }}>
 
