@@ -7,11 +7,16 @@ import db from "../services/SQLiteDataBase";
 db.transaction((tx) => {
   //<<<<<<<<<<<<<<<<<<<<<<<< USE ISSO APENAS DURANTE OS TESTES!!! >>>>>>>>>>>>>>>>>>>>>>>
   // tx.executeSql("DROP TABLE favoritos;");
+  // tx.executeSql("DROP TABLE filtro;");
   //<<<<<<<<<<<<<<<<<<<<<<<< USE ISSO APENAS DURANTE OS TESTES!!! >>>>>>>>>>>>>>>>>>>>>>>
 
   tx.executeSql(
-    "CREATE TABLE IF NOT EXISTS favoritos (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, numeros TEXT, associar BOOLEAN, concurso INTEGER, loteria TEXT, dataProxConcurso TEXT);"
-  );
+    `CREATE TABLE IF NOT EXISTS favoritos (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, numeros TEXT, associar BOOLEAN, concurso INTEGER, loteria TEXT, dataProxConcurso TEXT);`
+   
+    // CREATE TABLE IF NOT EXISTS filtro (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, loteria TEXT, qtadepar INTEGER, 
+    //   qtadeimpar INTEGER, qtadedezenas INTEGER, soma TEXT, maiorocorrencia BOOL, menorocorrencia BOOL, maioratraso BOOL, 
+    //   menoratraso BOOL, valoraposta TEXT);`
+    );
 });
 
 /**
@@ -37,6 +42,24 @@ const create = (obj) => {
     });
   });
 };
+
+const createFiltro = (obj) => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `INSERT INTO filtro (nome, loteria, qtadepar, qtadeimpar, qtadedezenas, soma, maiorocorrencia, menorocorrencia, maioratraso, menoratraso, valoraposta) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
+        [obj.nome, obj.loteria, obj.qtadepar, obj.qtadeimpar, obj.qtadedezenas, obj.soma, obj.maiorocorrencia, obj.menorocorrencia, obj.maioratraso, obj.menoratraso, obj.valoraposta],
+        //-----------------------
+        (_, { rowsAffected, insertId }) => {
+          if (rowsAffected > 0) resolve(insertId);
+          else reject("Error inserting obj: " + JSON.stringify(obj)); // insert falhou
+        },
+        (_, error) => reject(error) // erro interno em tx.executeSql
+      );
+    });
+  });
+};
+
 
 /**
  * ATUALIZA UM REGISTRO JÁ EXISTENTE
@@ -163,6 +186,7 @@ const remove = (id) => {
 
 export default {
   create,
+  createFiltro,
   update,
   find,
   findByTitulo,

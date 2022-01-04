@@ -12,7 +12,7 @@ db.transaction((tx) => {
   tx.executeSql(
     `CREATE TABLE IF NOT EXISTS filtro (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, loteria TEXT, qtadepar INTEGER, 
         qtadeimpar INTEGER, qtadedezenas INTEGER, soma TEXT, maiorocorrencia BOOL, menorocorrencia BOOL, maioratraso BOOL, 
-        menoratraso BOOL);`
+        menoratraso BOOL, valoraposta TEXT);`
   );
 });
 
@@ -27,8 +27,8 @@ const create = (obj) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        `INSERT INTO filtro (nome, loteria, qtadepar, qtadeimpar, qtadedezenas, soma, maiorocorrencia, menorocorrencia, maioratraso, menoratraso) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
-        [obj.nome, obj.loteria, obj.qtadepar, obj.qtadeimpar, obj.qtadedezenas, obj.soma, obj.maiorocorrencia, obj.menorocorrencia, obj.maioratraso, obj.menoratraso],
+        `INSERT INTO filtro (nome, loteria, qtadepar, qtadeimpar, qtadedezenas, soma, maiorocorrencia, menorocorrencia, maioratraso, menoratraso, valoraposta) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
+        [obj.nome, obj.loteria, obj.qtadepar, obj.qtadeimpar, obj.qtadedezenas, obj.soma, obj.maiorocorrencia, obj.menorocorrencia, obj.maioratraso, obj.menoratraso, obj.valoraposta],
         //-----------------------
         (_, { rowsAffected, insertId }) => {
           if (rowsAffected > 0) resolve(insertId);
@@ -38,6 +38,25 @@ const create = (obj) => {
       );
     });
   });
+};
+
+export const insertFiltro = (nome, loteria, qtadepar, qtadeimpar, qtadedezenas, soma, maiorocorrencia, menorocorrencia, maioratraso, menoratraso, valoraposta) => {
+  const promise = new Promise((resolve, reject) => {
+      db.transaction(tx => {
+        tx.executeSql(
+          `INSERT INTO filtro (nome, loteria, qtadepar, qtadeimpar, qtadedezenas, soma, maiorocorrencia, menorocorrencia, maioratraso, menoratraso, valoraposta) 
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+          [nome, loteria, qtadepar, qtadeimpar, qtadedezenas, soma, maiorocorrencia, menorocorrencia, maioratraso, menoratraso, valoraposta],
+          (_, result) => {
+            resolve(result);
+          },
+          (_, err) => {
+            reject(err);
+          }
+        );
+      });
+    });
+    return promise;
 };
 
 /**
@@ -52,8 +71,8 @@ const update = (id, obj) => {
     db.transaction((tx) => {
       //comando SQL modificável
       tx.executeSql(
-        `UPDATE filtro SET nome=?, loteria=?, qtadepar=?, qtadeimpar=?, qtadedezenas=?, soma=?, maiorocorrencia=?, menorocorrencia=?, maioratraso=?, menoratraso=? WHERE id=?;`
-        [obj.nome, obj.loteria, obj.qtadepar, obj.qtadeimpar, obj.qtadedezenas, obj.soma, obj.maiorocorrencia, obj.menorocorrencia, obj.maioratraso, obj.menoratraso, id],
+        `UPDATE filtro SET nome=?, loteria=?, qtadepar=?, qtadeimpar=?, qtadedezenas=?, soma=?, maiorocorrencia=?, menorocorrencia=?, maioratraso=?, menoratraso=?, valoraposta=? WHERE id=?;`
+        [obj.nome, obj.loteria, obj.qtadepar, obj.qtadeimpar, obj.qtadedezenas, obj.soma, obj.maiorocorrencia, obj.menorocorrencia, obj.maioratraso, obj.menoratraso, obj.valoraposta, id],
         //-----------------------
         (_, { rowsAffected }) => {
           if (rowsAffected > 0) resolve(rowsAffected);

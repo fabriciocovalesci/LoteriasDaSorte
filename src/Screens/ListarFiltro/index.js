@@ -11,9 +11,11 @@ import DeleteModal from "../../Components/deleteModal";
 import { styles } from '../Filtro/styles'
 const Stack = createNativeStackNavigator();
 
+import FiltroDb from "../../Model/FiltroDb";
+
 import CardFilter from "../../Components/CardFilter";
 
-export default function ListarFiltro() {
+export default function ListarFiltro({ route }) {
     
     const [dataLoteria, setLoteria] = React.useState([])
 
@@ -23,6 +25,8 @@ export default function ListarFiltro() {
 
     const [isVisibleDelete, setVisibleDelete] = React.useState(false);
 
+
+    const [filtros, setFiltros] = React.useState([])
     const [loading, setLoading] = React.useState(true);
 
     const showModalDelete = () => setVisibleDelete(true);
@@ -34,12 +38,23 @@ export default function ListarFiltro() {
 
     const { open } = state;
 
+    const getObject = React.useCallback(() => {
+        FiltroDb.all().then((res) => {
+            setFiltros(res)
+        }).catch((err) => console.error(err))
+    });
+
+    React.useEffect(() => {
+        getObject()
+    }, [getObject])
+
     return (
         <>
         <React.Fragment>
             <Provider>
                 <Title style={{ alignSelf: "center", marginTop: 10 }}>Filtros Personalizados</Title>
 
+                <Text>{filtros.length}</Text>
                 {/* <View style={{ flex: 1, height: Dimensions.get('screen').height, justifyContent: "center", alignContent: 'center' }}>
                     <FlatList data={dataLoteria} keyExtractor={item => item.id}
                         renderItem={CardList} extraData={selectedId}

@@ -5,30 +5,22 @@ import { Dimensions, StyleSheet, Keyboard } from 'react-native'
 import { Button, Snackbar, Dialog, Switch, Paragraph, TextInput, Provider, Chip, Checkbox, Menu, Divider } from 'react-native-paper';
 
 import FavoritosDataBase from '../../Model/FavoritosDataBase';
-import FiltroDb from '../../Model/FiltroDb';
-
-
+import { insertFiltro } from '../../Model/FiltroDb';
 import CardFilter from '../../Components/CardFilter'
 
 import Slider from '@react-native-community/slider';
+import FiltroDb from '../../Model/FiltroDb';
 
-export default function CriarFiltro({ navigation, route }) {
-    console.log('====================================');
-    console.log(route);
-    console.log(navigation);
-    console.log('====================================');
+import { useNavigation } from '@react-navigation/native';
 
-    const [state, setstate] = React.useState()
-    // const [visible, setVisible] = React.useState(false);
-    // const onToggleSnackBar = () => setVisible(!visible);
+
+export default function CriarFiltro({ route }) {
+       
+    const onToggleSnackBar = () => setVisible(!visible);
     const onDismissSnackBar = () => setVisible(false);
 
-    const [checked, setChecked] = React.useState(false);
+
     const [nome, setNome] = React.useState('')
-    const [loteria, setLoteria] = React.useState('')
-    const [quantidadePar, setQuantidadePar] = React.useState(0)
-    const [quantidadeImpar, setQuantidadeImpar] = React.useState(0)
-    const [RangeSoma, setRangeSoma] = React.useState('')
     const [maiorOcorrencia, setMaiorOcorrencia] = React.useState(false)
     const [menorOcorrencia, setMenorOcorrencia] = React.useState(false)
     const [maiorAtraso, setMaiorAtraso] = React.useState(false)
@@ -44,7 +36,11 @@ export default function CriarFiltro({ navigation, route }) {
     const [sliderMaxDezenas, setSliderMaxDezenas] = React.useState(15);
     const [sliderMegaPar, setSliderMegaPar] = React.useState(3);
     const [sliderMegaImpar, setSliderMegaImpar] = React.useState(3);
-    const [ValueAposta, setValueAposta] = React.useState({ megasena: 'R$ 4,50', lotofacil: 'R$ 2,50', lotomania: 'R$ 2,50', quina: 'R$ 2,00'});
+
+    const [valueApostaMega, setValueApostaMega] = React.useState('4,50');
+    const [valueApostaFacil, setValueApostaFacil] = React.useState('2,50');
+    const [valueApostaMania, setValueApostaMania] = React.useState('2,50');
+    const [valueApostaQuina, setValueApostaQuina] = React.useState('2,00');
 
     const [checkedMega, setcheckedMega] = React.useState(true);
     const [checkedFacil, setcheckedFacil] = React.useState(false);
@@ -54,93 +50,43 @@ export default function CriarFiltro({ navigation, route }) {
 
     function calculaJogo(loteria, value){
         if(loteria === 'megasena'){
-            if(value === 6) setValueAposta({ megasena: 'R$ 4,50', lotofacil: '', lotomania: '', quina: '' })
-            else if(value === 7) setValueAposta({ megasena: 'R$ 31,50', lotofacil: '', lotomania: '', quina: '' })
-            else if(value === 8) setValueAposta({ megasena: 'R$ 126,00', lotofacil: '', lotomania: '', quina: '' })
-            else if(value === 9) setValueAposta({ megasena: 'R$ 378,00', lotofacil: '', lotomania: '', quina: '' })
-            else if(value === 10) setValueAposta({ megasena: 'R$ 945,00', lotofacil: '', lotomania: '', quina: '' })
-            else if(value === 11) setValueAposta({ megasena: 'R$ 2.079,00', lotofacil: '', lotomania: '', quina: '' })
-            else if(value === 12) setValueAposta({ megasena: 'R$ 4.158,00', lotofacil: '', lotomania: '', quina: '' })
-            else if(value === 13) setValueAposta({ megasena: 'R$ 7.722,00', lotofacil: '', lotomania: '', quina: '' })
-            else if(value === 14) setValueAposta({ megasena: 'R$ 13.513,50', lotofacil: '', lotomania: '', quina: '' })
-            else if(value === 15) setValueAposta({ megasena: 'R$ 22.522,50', lotofacil: '', lotomania: '', quina: '' })
+            if(value === 6) setValueApostaMega('4,50')
+            else if(value === 7) setValueApostaMega('31,50')
+            else if(value === 8) setValueApostaMega('126,00')
+            else if(value === 9) setValueApostaMega('378,00')
+            else if(value === 10) setValueApostaMega('945,00')
+            else if(value === 11) setValueApostaMega('2.079,00')
+            else if(value === 12) setValueApostaMega('4.158,00')
+            else if(value === 13) setValueApostaMega('7.722,00')
+            else if(value === 14) setValueApostaMega('13.513,50')
+            else if(value === 15) setValueApostaMega('22.522,50')
         }
         else if(loteria === 'lotofacil'){
-            if(value === 15) setValueAposta({ megasena: 'R$ 22.522,50', lotofacil: 'R$ 2,50', lotomania: '', quina: 'R$ 6.006,00' })
-            else if(value === 16) setValueAposta({ megasena: '', lotofacil: 'R$ 40,00', lotomania: '', quina: '' })
-            else if(value === 17) setValueAposta({ megasena: '', lotofacil: 'R$ 340,00', lotomania: '', quina: '' })
-            else if(value === 18) setValueAposta({ megasena: '', lotofacil: 'R$ 2.040,00', lotomania: '', quina: '' })
+            if(value === 15) setValueApostaFacil('2,50')
+            else if(value === 16) setValueApostaFacil('40,00')
+            else if(value === 17) setValueApostaFacil('340,00')
+            else if(value === 18) setValueApostaFacil('2.040,00')
         }
         else if(loteria === 'lotomania'){
-            if(value === 20) setValueAposta({ megasena: '', lotofacil: '', lotomania: 'R$ 2,50', quina: '' })
+            if(value === 20) setValueApostaMania('2,50')
         }
         else if(loteria === 'quina'){
-            if(value === 5) setValueAposta({ megasena: '', lotofacil: '', lotomania: '', quina: 'R$ 2,00' })
-            else if(value === 6) setValueAposta({ megasena: 'R$ 4,50', lotofacil: '', lotomania: '', quina: 'R$ 12,00' })
-            else if(value === 7) setValueAposta({ megasena: '', lotofacil: '', lotomania: '', quina: 'R$ 42,00' })
-            else if(value === 8) setValueAposta({ megasena: '', lotofacil: '', lotomania: '', quina: 'R$ 112,00' })
-            else if(value === 9) setValueAposta({ megasena: '', lotofacil: '', lotomania: '', quina: 'R$ 252,00' })
-            else if(value === 10) setValueAposta({ megasena: '', lotofacil: '', lotomania: '', quina: 'R$ 504,00' })
-            else if(value === 11) setValueAposta({ megasena: '', lotofacil: '', lotomania: '', quina: 'R$ 924,00' })
-            else if(value === 12) setValueAposta({ megasena: '', lotofacil: '', lotomania: '', quina: 'R$ 1.584,00' })
-            else if(value === 13) setValueAposta({ megasena: '', lotofacil: '', lotomania: '', quina: 'R$ 2.574,00' })
-            else if(value === 14) setValueAposta({ megasena: '', lotofacil: '', lotomania: '', quina: 'R$ 4.004,00' })
-            else if(value === 15) setValueAposta({ megasena: '', lotofacil: '', lotomania: '', quina: 'R$ 6.006,00'})
-        }
-    }
-
-    function calculaJogo1() {
-        switch (sliderDezenas) {
-            case 5:
-                setValueAposta({ megasena: '', lotofacil: 'R$ 2,50', lotomania: 'R$ 2,50', quina: 'R$ 2,00' })
-                break;
-            case 6:
-                setValueAposta({ megasena: 'R$ 4,50', lotofacil: 'R$ 2,50', lotomania: 'R$ 2,50', quina: 'R$ 12,00' })
-                break;
-            case 7:
-                setValueAposta({ megasena: 'R$ 31,50', lotofacil: 'R$ 2,50', lotomania: 'R$ 2,50', quina: 'R$ 42,00' })
-                break;
-            case 8:
-                setValueAposta({ megasena: 'R$ 126,00', lotofacil: 'R$ 2,50', lotomania: 'R$ 2,50', quina: 'R$ 112,00' })
-                break;
-            case 9:
-                setValueAposta({ megasena: 'R$ 378,00', lotofacil: 'R$ 2,50', lotomania: 'R$ 2,50', quina: 'R$ 252,00' })
-                break;
-            case 10:
-                setValueAposta({ megasena: 'R$ 945,00', lotofacil: 'R$ 2,50', lotomania: 'R$ 2,50', quina: 'R$ 504,00' })
-                break;
-            case 11:
-                setValueAposta({ megasena: 'R$ 2.079,00', lotofacil: 'R$ 2,50', lotomania: 'R$ 2,50', quina: 'R$ 924,00' })
-                break;
-            case 12:
-                setValueAposta({ megasena: 'R$ 4.158,00', lotofacil: 'R$ 2,50', lotomania: 'R$ 2,50', quina: 'R$ 1.584,00' })
-                break;
-            case 13:
-                setValueAposta({ megasena: 'R$ 7.722,00', lotofacil: 'R$ 2,50', lotomania: 'R$ 2,50', quina: 'R$ 2.574,00' })
-                break;
-            case 14:
-                setValueAposta({ megasena: 'R$ 13.513,50', lotofacil: 'R$ 2,50', lotomania: 'R$ 2,50', quina: 'R$ 4.004,00' })
-                break;
-            case 15:
-                setValueAposta({ megasena: 'R$ 22.522,50', lotofacil: 'R$ 2,50', lotomania: 'R$ 2,50', quina: 'R$ 6.006,00' })
-                break;
-            case 16:
-                setValueAposta({ megasena: '', lotofacil: 'R$ 40,00', lotomania: 'R$ 2,50', quina: 'R$ 6.006,00' })
-                break;
-            case 17:
-                setValueAposta({ megasena: '', lotofacil: 'R$ 340,00', lotomania: 'R$ 2,50', quina: 'R$ 6.006,00' })
-                break;
-            case 18:
-                setValueAposta({ megasena: '', lotofacil: 'R$ 2.040,00', lotomania: 'R$ 2,50', quina: 'R$ 6.006,00' })
-                break;
-            default:
-                break;
+            if(value === 5) setValueApostaQuina('2,00')
+            else if(value === 6) setValueApostaQuina('12,00')
+            else if(value === 7) setValueApostaQuina('42,00')
+            else if(value === 8) setValueApostaQuina('112,00')
+            else if(value === 9) setValueApostaQuina('252,00')
+            else if(value === 10) setValueApostaQuina('504,00')
+            else if(value === 11) setValueApostaQuina('924,00')
+            else if(value === 12) setValueApostaQuina('1.584,00')
+            else if(value === 13) setValueApostaQuina('2.574,00')
+            else if(value === 14) setValueApostaQuina('4.004,00')
+            else if(value === 15) setValueApostaQuina('6.006,00')
         }
     }
 
     function checkStateLoteria(loteria){
         if(loteria === 'megasena'){
-            calculaJogo('megasena', sliderDezenas)
             setSliderDezenas(6)
             setSliderMaxDezenas(15)
             setSliderMegaPar(3)
@@ -149,9 +95,9 @@ export default function CriarFiltro({ navigation, route }) {
             setcheckedFacil(false)
             setcheckedMania(false)
             setcheckedQuina(false)
+            calculaJogo('megasena', sliderDezenas)
         }
         else if(loteria === 'lotofacil'){
-            calculaJogo('lotofacil', sliderDezenas)
             setSliderDezenas(15)
             setSliderMaxDezenas(18)
             setSliderMegaPar(8)
@@ -160,9 +106,9 @@ export default function CriarFiltro({ navigation, route }) {
             setcheckedFacil(true)
             setcheckedMania(false)
             setcheckedQuina(false)
+            calculaJogo('lotofacil', sliderDezenas)
         }
         else if(loteria === 'lotomania'){
-            calculaJogo('lotomania', 20)
             setSliderDezenas(20)
             setSliderMaxDezenas(20)
             setSliderMegaPar(10)
@@ -171,9 +117,9 @@ export default function CriarFiltro({ navigation, route }) {
             setcheckedFacil(false)
             setcheckedMania(true)
             setcheckedQuina(false) 
+            calculaJogo('lotomania', 20)
         }
         else if(loteria === 'quina'){
-            calculaJogo('quina', sliderDezenas)
             setSliderDezenas(5)
             setSliderMaxDezenas(15)
             setSliderMegaPar(3)
@@ -182,22 +128,106 @@ export default function CriarFiltro({ navigation, route }) {
             setcheckedFacil(false)
             setcheckedMania(false)
             setcheckedQuina(true)
+            calculaJogo('quina', sliderDezenas)
         }
     }
 
+    function controllerDezenas(value){
+        if(value%2===0){
+            setSliderMegaPar(value/2)
+            setSliderMegaImpar(value/2)
+        }else{
+            let par = value / 2;
+            let impar = Math.abs(par-value)
+            setSliderMegaPar(Math.trunc(par))
+            setSliderMegaImpar(Math.round(impar))
+        }
+    }
 
-    async function savedData() {
+    function truncParImpar(value, dezenas, par, impar){
+        const numero = Math.abs(value-dezenas)
+        if(par && !impar){
+            console.log(value);
+            console.log(numero);
+            setSliderMegaPar(value)
+            setSliderMegaImpar(numero)
+        }
+        if(!par && impar){
+            setSliderMegaPar(numero)
+            setSliderMegaImpar(value)
+        }
+    }
+
+    function getLoteria(){
+        if(checkedMega){
+            return {
+                loteria: 'megasena', 
+                valor: valueApostaMega
+            };
+        }
+        else if(checkedFacil){
+            return {
+                loteria: 'lotofacil', 
+                valor: valueApostaFacil
+            };
+        }
+        else if(checkedMania){
+            return { 
+                loteria: 'lotomania',
+                valor: valueApostaMania
+            };
+        }
+        else if(checkedQuina){
+            return {
+                loteria: 'quina',
+                valor: valueApostaQuina
+            }
+        }
+    }
+
+    function resetValues() {
+        setNome('')
+        setMaiorOcorrencia(false)
+        setMenorOcorrencia(false)
+        setMaiorAtraso(false)
+        setMenorAtraso(false)
+        setValueApostaMega('4,50');
+        setValueApostaFacil('2,50');
+        setValueApostaMania('2,50');
+        setValueApostaQuina('2,00');
+        setcheckedMega(true);
+        setcheckedFacil(false);
+        setcheckedMania(false);
+        setcheckedQuina(false);
+        setSliderDezenas(6);
+        setSliderMaxDezenas(15);
+        setSliderMegaPar(3);
+        setSliderMegaImpar(3);
+    }
+
+   const savedData = async () => {
         try {
-            // FavoritosDataBase.create({ titulo: text, numeros: JSON.stringify(props.numeros), associar: checked, concurso: parseInt(proxConcurso), loteria: loteria, dataProxConcurso: proxDataConcurso })
-            //     .then(id => {
-            //         console.log('Fav created with id: ' + id);
-            //         setText('');
-            //         setChecked(false)
-            //         onToggleSnackBar()
-            //         props.hideDialog();
-            //         Keyboard.dismiss()
-            //     })
-                // .catch(err => console.log(err))
+            const { loteria, valor } = getLoteria();
+            let data = {
+                nome: nome,
+                loteria: loteria,
+                qtadepar: sliderMegaPar,
+                qtadeimpar: sliderMegaImpar,
+                qtadedezenas: sliderDezenas,
+                soma: '0',
+                maiorocorrencia: maiorOcorrencia,
+                menorocorrencia: menorOcorrencia,
+                maioratraso: maiorAtraso,
+                menoratraso: menorAtraso,
+                valoraposta: valor
+            }
+            const response = await insertFiltro(data.nome, data.loteria, data.qtadepar, data.qtadeimpar, data.qtadedezenas, data.soma, data.maiorocorrencia, data.menorocorrencia, data.maioratraso, data.menoratraso, data.valoraposta)
+            if(response.rowsAffected === 1){
+                resetValues
+                Keyboard.dismiss();
+                onToggleSnackBar()
+                resetValues();
+            }
         } catch (error) {
             console.error(error)
         }
@@ -216,8 +246,8 @@ export default function CriarFiltro({ navigation, route }) {
 
             <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "space-evenly", alignContent: "center" }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: '50%' }}>
-                <Checkbox status={checkedMega ? 'checked' : 'unchecked'} color='#2b6212'  onPress={() => { setcheckedMega(!checkedMega); checkStateLoteria('megasena')}} />
-                <Text onPress={() => { setcheckedMega(!checkedMega); checkStateLoteria('megasena')}} style={{ textAlign: "center" }}>Mega Sena</Text>
+                <Checkbox status={checkedMega ? 'checked' : 'unchecked'} color='#2b6212'  onPress={() => { setcheckedMega(!checkedMega); checkStateLoteria('megasena'); }} />
+                <Text onPress={() => { setcheckedMega(!checkedMega); checkStateLoteria('megasena'); }} style={{ textAlign: "center" }}>Mega Sena</Text>
             </View>
 
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: '50%' }}>
@@ -253,13 +283,14 @@ export default function CriarFiltro({ navigation, route }) {
                         value={sliderDezenas}
                         onValueChange={(sliderDezenas) => {
                             setSliderDezenas(sliderDezenas)
-                            
+                            calculaJogo('megasena', sliderDezenas)
+                            controllerDezenas(sliderDezenas)
                         }}
                         />
                     <Text style={{ textAlign: "center" }}>Pares {sliderMegaPar}</Text>
                     <Slider
                         style={{width: 300, height: 25}}
-                        minimumValue={1}
+                        minimumValue={0}
                         maximumValue={sliderDezenas}
                         minimumTrackTintColor="#2b6212"
                         maximumTrackTintColor="#000000"
@@ -267,6 +298,7 @@ export default function CriarFiltro({ navigation, route }) {
                         value={sliderMegaPar}
                         onValueChange={(sliderMegaPar) => {
                             setSliderMegaPar(sliderMegaPar)
+                            truncParImpar(sliderMegaPar, sliderDezenas, true, false)
                         }}
                         />
                     </View>
@@ -275,15 +307,18 @@ export default function CriarFiltro({ navigation, route }) {
                     <Text style={{ textAlign: "center" }}>Ímpares {sliderMegaImpar}</Text>
                     <Slider
                         style={{width: 300, height: 25}}
-                        minimumValue={1}
+                        minimumValue={0}
                         maximumValue={sliderDezenas}
                         minimumTrackTintColor="#2b6212"
                         maximumTrackTintColor="#000000"
                         step={1}
                         value={sliderMegaImpar}
-                        onValueChange={(sliderMegaImpar) => setSliderMegaImpar(sliderMegaImpar)}
+                        onValueChange={(sliderMegaImpar) => {
+                            truncParImpar(sliderMegaImpar, sliderDezenas, false, true)
+                            setSliderMegaImpar(sliderMegaImpar)
+                        }}
                         />
-                        <Text style={{ margin: 5 }}>Valor do jogo: {ValueAposta.megasena}</Text>
+                        <Text style={{ margin: 5 }}>Valor do jogo: R$ {valueApostaMega}</Text>
                     </View>
                     </View>
                     : checkedFacil === true ?
@@ -302,12 +337,13 @@ export default function CriarFiltro({ navigation, route }) {
                         onValueChange={(sliderDezenas) => {
                             setSliderDezenas(sliderDezenas)
                             calculaJogo('lotofacil', sliderDezenas)
+                            controllerDezenas(sliderDezenas)
                         }}
                         />
                     <Text style={{ textAlign: "center" }}>Pares {sliderMegaPar}</Text>
                     <Slider
                         style={{width: 300, height: 25}}
-                        minimumValue={1}
+                        minimumValue={0}
                         maximumValue={sliderDezenas}
                         minimumTrackTintColor="#930989"
                         maximumTrackTintColor="#000000"
@@ -315,6 +351,7 @@ export default function CriarFiltro({ navigation, route }) {
                         value={sliderMegaPar}
                         onValueChange={(sliderMegaPar) => {
                             setSliderMegaPar(sliderMegaPar)
+                            truncParImpar(sliderMegaPar, sliderDezenas, true, false)
                         }}
                         />
                     </View>
@@ -323,15 +360,18 @@ export default function CriarFiltro({ navigation, route }) {
                     <Text style={{ textAlign: "center" }}>Ímpares {sliderMegaImpar}</Text>
                     <Slider
                         style={{width: 300, height: 25}}
-                        minimumValue={1}
+                        minimumValue={0}
                         maximumValue={sliderDezenas}
                         minimumTrackTintColor="#930989"
                         maximumTrackTintColor="#000000"
                         step={1}
                         value={sliderMegaImpar}
-                        onValueChange={(sliderMegaImpar) => setSliderMegaImpar(sliderMegaImpar)}
+                        onValueChange={(sliderMegaImpar) => {
+                            setSliderMegaImpar(sliderMegaImpar)
+                            truncParImpar(sliderMegaImpar, sliderDezenas, false, true)
+                        }}
                         />
-                        <Text style={{ margin: 5 }}>Valor do jogo: {ValueAposta.lotofacil}</Text>
+                        <Text style={{ margin: 5 }}>Valor do jogo: R$ {valueApostaFacil}</Text>
                     </View>
                     </View>
                     : checkedMania === true ? 
@@ -350,12 +390,13 @@ export default function CriarFiltro({ navigation, route }) {
                         onValueChange={(sliderDezenas) => {
                             setSliderDezenas(sliderDezenas)
                             calculaJogo('lotomania', sliderDezenas)
+                            controllerDezenas(sliderDezenas)
                         }}
                         />
                     <Text style={{ textAlign: "center" }}>Pares {sliderMegaPar}</Text>
                     <Slider
                         style={{width: 300, height: 25}}
-                        minimumValue={1}
+                        minimumValue={0}
                         maximumValue={sliderDezenas}
                         minimumTrackTintColor="#F78100"
                         maximumTrackTintColor="#000000"
@@ -363,6 +404,7 @@ export default function CriarFiltro({ navigation, route }) {
                         value={sliderMegaPar}
                         onValueChange={(sliderMegaPar) => {
                             setSliderMegaPar(sliderMegaPar)
+                            truncParImpar(sliderMegaPar, sliderDezenas, true, false)
                         }}
                         />
                     </View>
@@ -371,15 +413,18 @@ export default function CriarFiltro({ navigation, route }) {
                     <Text style={{ textAlign: "center" }}>Ímpares {sliderMegaImpar}</Text>
                     <Slider
                         style={{width: 300, height: 25}}
-                        minimumValue={1}
+                        minimumValue={0}
                         maximumValue={sliderDezenas}
                         minimumTrackTintColor="#F78100"
                         maximumTrackTintColor="#000000"
                         step={1}
                         value={sliderMegaImpar}
-                        onValueChange={(sliderMegaImpar) => setSliderMegaImpar(sliderMegaImpar)}
+                        onValueChange={(sliderMegaImpar) => {
+                            setSliderMegaImpar(sliderMegaImpar)
+                            truncParImpar(sliderMegaImpar, sliderDezenas, false, true)
+                        }}
                         />
-                        <Text style={{ margin: 5 }}>Valor do jogo: {ValueAposta.lotomania}</Text>
+                        <Text style={{ margin: 5 }}>Valor do jogo: R$ {valueApostaMania}</Text>
                     </View>
                     </View>
                     : checkedQuina === true ?
@@ -398,12 +443,13 @@ export default function CriarFiltro({ navigation, route }) {
                         onValueChange={(sliderDezenas) => {
                             setSliderDezenas(sliderDezenas)
                             calculaJogo('quina', sliderDezenas)
+                            controllerDezenas(sliderDezenas)
                         }}
                         />
                     <Text style={{ textAlign: "center" }}>Pares {sliderMegaPar}</Text>
                     <Slider
                         style={{width: 300, height: 25}}
-                        minimumValue={1}
+                        minimumValue={0}
                         maximumValue={sliderDezenas}
                         minimumTrackTintColor="#260085"
                         maximumTrackTintColor="#000000"
@@ -411,6 +457,7 @@ export default function CriarFiltro({ navigation, route }) {
                         value={sliderMegaPar}
                         onValueChange={(sliderMegaPar) => {
                             setSliderMegaPar(sliderMegaPar)
+                            truncParImpar(sliderMegaPar, sliderDezenas, true, false)
                         }}
                         />
                     </View>
@@ -419,43 +466,43 @@ export default function CriarFiltro({ navigation, route }) {
                     <Text style={{ textAlign: "center" }}>Ímpares {sliderMegaImpar}</Text>
                     <Slider
                         style={{width: 300, height: 25}}
-                        minimumValue={1}
+                        minimumValue={0}
                         maximumValue={sliderDezenas}
                         minimumTrackTintColor="#260085"
                         maximumTrackTintColor="#000000"
                         step={1}
                         value={sliderMegaImpar}
-                        onValueChange={(sliderMegaImpar) => setSliderMegaImpar(sliderMegaImpar)}
+                        onValueChange={(sliderMegaImpar) => {
+                            setSliderMegaImpar(sliderMegaImpar)
+                            truncParImpar(sliderMegaImpar, sliderDezenas, false, true)
+                        }}
                         />
-                        <Text style={{ margin: 5 }}>Valor do jogo: {ValueAposta.quina}</Text>
+                        <Text style={{ margin: 5 }}>Valor do jogo: R$ {valueApostaQuina}</Text>
                     </View>
                     </View>
                     : null
                 }
             </View>
-            
-
-
                 <Text style={{ textAlign: "center", fontWeight: "bold", marginTop: 10 }}>Estatisticas</Text>
                 <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "center", alignContent: "center" }}>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: '50%' }}>
-                    <Checkbox status={maiorOcorrencia ? 'checked' : 'unchecked'}  onPress={() => { setMaiorOcorrencia(!maiorOcorrencia)}} />
-                    <Text onPress={() => { setMaiorOcorrencia(!maiorOcorrencia)}} style={{ textAlign: "center" }}>Maior Ocorrência </Text>
+                    <Checkbox status={maiorOcorrencia ? 'checked' : 'unchecked'}  onPress={() => { setMaiorOcorrencia(!maiorOcorrencia); setMenorOcorrencia(false)}} />
+                    <Text onPress={() => { setMaiorOcorrencia(!maiorOcorrencia); setMenorOcorrencia(false)}} style={{ textAlign: "center" }}>Maior Ocorrência </Text>
                 </View>
 
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: '50%' }}>
-                    <Checkbox status={maiorAtraso ? 'checked' : 'unchecked'}  onPress={() => { setMaiorAtraso(!maiorAtraso)}} />
-                    <Text onPress={() => { setMaiorAtraso(!maiorAtraso)}} style={{ textAlign: "center" }}>Maior Atraso </Text>
+                    <Checkbox status={maiorAtraso ? 'checked' : 'unchecked'}  onPress={() => { setMaiorAtraso(!maiorAtraso); setMenorAtraso(false)}} />
+                    <Text onPress={() => { setMaiorAtraso(!maiorAtraso); setMenorAtraso(false)}} style={{ textAlign: "center" }}>Maior Atraso </Text>
                 </View>
 
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: '50%' }}>
-                    <Checkbox status={menorOcorrencia ? 'checked' : 'unchecked'}  onPress={() => { setMenorOcorrencia(!menorOcorrencia)}} />
-                    <Text onPress={() => { setMenorOcorrencia(!menorOcorrencia)}} style={{ textAlign: "center" }}>Menor Ocorrência </Text>
+                    <Checkbox status={menorOcorrencia ? 'checked' : 'unchecked'}  onPress={() => { setMenorOcorrencia(!menorOcorrencia); setMaiorOcorrencia(false)}} />
+                    <Text onPress={() => { setMenorOcorrencia(!menorOcorrencia); setMaiorOcorrencia(false)}} style={{ textAlign: "center" }}>Menor Ocorrência </Text>
                 </View>
 
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: '50%' }}>
-                    <Checkbox status={menorAtraso ? 'checked' : 'unchecked'}  onPress={() => { setMenorAtraso(!menorAtraso)}} />
-                    <Text onPress={() => { setMenorAtraso(!menorAtraso)}} style={{ textAlign: "center" }}>Menor Atraso </Text>
+                    <Checkbox status={menorAtraso ? 'checked' : 'unchecked'}  onPress={() => { setMenorAtraso(!menorAtraso); setMaiorAtraso(false)}} />
+                    <Text onPress={() => { setMenorAtraso(!menorAtraso); setMaiorAtraso(false)}} style={{ textAlign: "center" }}>Menor Atraso </Text>
                 </View>
                 </View>
 
@@ -464,15 +511,15 @@ export default function CriarFiltro({ navigation, route }) {
                 </View>
            
             <View>
-            {/* <Snackbar
+            <Snackbar
                 visible={visible}
                 onDismiss={onDismissSnackBar}
                 action={{
                     label: 'Fechar',
                     onPress: () => { onDismissSnackBar },
                 }}>
-                Números da gravado nos Favoritos.
-            </Snackbar> */}
+                Filtro salvo com sucesso !!
+            </Snackbar> 
             </View>
             </ScrollView>
         </View>
