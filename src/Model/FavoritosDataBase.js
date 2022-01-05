@@ -7,7 +7,6 @@ import db from "../services/SQLiteDataBase";
 db.transaction((tx) => {
   //<<<<<<<<<<<<<<<<<<<<<<<< USE ISSO APENAS DURANTE OS TESTES!!! >>>>>>>>>>>>>>>>>>>>>>>
   // tx.executeSql("DROP TABLE favoritos;");
-  // tx.executeSql("DROP TABLE filtro;");
   //<<<<<<<<<<<<<<<<<<<<<<<< USE ISSO APENAS DURANTE OS TESTES!!! >>>>>>>>>>>>>>>>>>>>>>>
 
   tx.executeSql(

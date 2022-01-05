@@ -11,8 +11,6 @@ import CardFilter from '../../Components/CardFilter'
 import Slider from '@react-native-community/slider';
 import FiltroDb from '../../Model/FiltroDb';
 
-import { useNavigation } from '@react-navigation/native';
-
 
 export default function CriarFiltro({ route }) {
        
@@ -36,6 +34,7 @@ export default function CriarFiltro({ route }) {
     const [sliderMaxDezenas, setSliderMaxDezenas] = React.useState(15);
     const [sliderMegaPar, setSliderMegaPar] = React.useState(3);
     const [sliderMegaImpar, setSliderMegaImpar] = React.useState(3);
+    const [ultimosconcurso, setUltimosConcurso] = React.useState(10)
 
     const [valueApostaMega, setValueApostaMega] = React.useState('4,50');
     const [valueApostaFacil, setValueApostaFacil] = React.useState('2,50');
@@ -203,6 +202,7 @@ export default function CriarFiltro({ route }) {
         setSliderMaxDezenas(15);
         setSliderMegaPar(3);
         setSliderMegaImpar(3);
+        setUltimosConcurso(10)
     }
 
    const savedData = async () => {
@@ -219,9 +219,10 @@ export default function CriarFiltro({ route }) {
                 menorocorrencia: menorOcorrencia,
                 maioratraso: maiorAtraso,
                 menoratraso: menorAtraso,
-                valoraposta: valor
+                valoraposta: valor,
+                ultimosconcurso: ultimosconcurso
             }
-            const response = await insertFiltro(data.nome, data.loteria, data.qtadepar, data.qtadeimpar, data.qtadedezenas, data.soma, data.maiorocorrencia, data.menorocorrencia, data.maioratraso, data.menoratraso, data.valoraposta)
+            const response = await insertFiltro(data.nome, data.loteria, data.qtadepar, data.qtadeimpar, data.qtadedezenas, data.soma, data.maiorocorrencia, data.menorocorrencia, data.maioratraso, data.menoratraso, data.valoraposta, data.ultimosconcurso)
             if(response.rowsAffected === 1){
                 resetValues
                 Keyboard.dismiss();
@@ -506,10 +507,26 @@ export default function CriarFiltro({ route }) {
                 </View>
                 </View>
 
-                <View style={{ margin: 5, alignItems: "center", justifyContent: "space-around", flexDirection: "row" }}>
-                    <Button icon="content-save-outline" mode="contained" style={{ borderRadius: 5, width: '50%' }} onPress={savedData}>Salvar Filtro</Button>
-                </View>
+                <View style={{ justifyContent: "center", alignItems: "center", marginTop: 10, marginBottom: 10 }}>
+                    <Text style={{ textAlign: "center" }}>Filtro sobre os últimos {ultimosconcurso} concursos</Text>
+                    <Slider
+                        style={{width: 300, height: 25}}
+                        minimumValue={10}
+                        maximumValue={200}
+                        minimumTrackTintColor="#260085"
+                        maximumTrackTintColor="#000000"
+                        step={10}
+                        value={ultimosconcurso}
+                        onValueChange={(ultimosconcurso) => {
+                            setUltimosConcurso(ultimosconcurso)
+                        }}
+                        />
+                    </View>
            
+           <View style={{ margin: 5, alignItems: "center", justifyContent: "space-around", flexDirection: "row" }}>
+                <Button icon="content-save-outline" mode="contained" style={{ borderRadius: 5, width: '50%' }} onPress={savedData}>Salvar Filtro</Button>
+            </View>
+
             <View>
             <Snackbar
                 visible={visible}

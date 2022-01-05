@@ -12,7 +12,7 @@ db.transaction((tx) => {
   tx.executeSql(
     `CREATE TABLE IF NOT EXISTS filtro (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, loteria TEXT, qtadepar INTEGER, 
         qtadeimpar INTEGER, qtadedezenas INTEGER, soma TEXT, maiorocorrencia BOOL, menorocorrencia BOOL, maioratraso BOOL, 
-        menoratraso BOOL, valoraposta TEXT);`
+        menoratraso BOOL, valoraposta TEXT, ultimosconcurso INTEGER);`
   );
 });
 
@@ -40,13 +40,13 @@ const create = (obj) => {
   });
 };
 
-export const insertFiltro = (nome, loteria, qtadepar, qtadeimpar, qtadedezenas, soma, maiorocorrencia, menorocorrencia, maioratraso, menoratraso, valoraposta) => {
+export const insertFiltro = (nome, loteria, qtadepar, qtadeimpar, qtadedezenas, soma, maiorocorrencia, menorocorrencia, maioratraso, menoratraso, valoraposta, ultimosconcurso) => {
   const promise = new Promise((resolve, reject) => {
       db.transaction(tx => {
         tx.executeSql(
-          `INSERT INTO filtro (nome, loteria, qtadepar, qtadeimpar, qtadedezenas, soma, maiorocorrencia, menorocorrencia, maioratraso, menoratraso, valoraposta) 
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
-          [nome, loteria, qtadepar, qtadeimpar, qtadedezenas, soma, maiorocorrencia, menorocorrencia, maioratraso, menoratraso, valoraposta],
+          `INSERT INTO filtro (nome, loteria, qtadepar, qtadeimpar, qtadedezenas, soma, maiorocorrencia, menorocorrencia, maioratraso, menoratraso, valoraposta, ultimosconcurso) 
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+          [nome, loteria, qtadepar, qtadeimpar, qtadedezenas, soma, maiorocorrencia, menorocorrencia, maioratraso, menoratraso, valoraposta, ultimosconcurso],
           (_, result) => {
             resolve(result);
           },
@@ -71,8 +71,8 @@ const update = (id, obj) => {
     db.transaction((tx) => {
       //comando SQL modificável
       tx.executeSql(
-        `UPDATE filtro SET nome=?, loteria=?, qtadepar=?, qtadeimpar=?, qtadedezenas=?, soma=?, maiorocorrencia=?, menorocorrencia=?, maioratraso=?, menoratraso=?, valoraposta=? WHERE id=?;`
-        [obj.nome, obj.loteria, obj.qtadepar, obj.qtadeimpar, obj.qtadedezenas, obj.soma, obj.maiorocorrencia, obj.menorocorrencia, obj.maioratraso, obj.menoratraso, obj.valoraposta, id],
+        `UPDATE filtro SET nome=?, loteria=?, qtadepar=?, qtadeimpar=?, qtadedezenas=?, soma=?, maiorocorrencia=?, menorocorrencia=?, maioratraso=?, menoratraso=?, valoraposta=?, ultimosconcurso=?  WHERE id=?;`
+        [obj.nome, obj.loteria, obj.qtadepar, obj.qtadeimpar, obj.qtadedezenas, obj.soma, obj.maiorocorrencia, obj.menorocorrencia, obj.maioratraso, obj.menoratraso, obj.valoraposta, obj.ultimosconcurso, id],
         //-----------------------
         (_, { rowsAffected }) => {
           if (rowsAffected > 0) resolve(rowsAffected);
