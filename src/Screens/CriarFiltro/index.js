@@ -507,7 +507,7 @@ export default function CriarFiltro({ route }) {
                 </View>
                 </View>
 
-                <View style={{ justifyContent: "center", alignItems: "center", marginTop: 10, marginBottom: 10 }}>
+                <View style={{ justifyContent: "center", alignItems: "center", marginTop: 15, marginBottom: 15 }}>
                     <Text style={{ textAlign: "center" }}>Filtro sobre os últimos {ultimosconcurso} concursos</Text>
                     <Slider
                         style={{width: 300, height: 25}}
@@ -523,7 +523,7 @@ export default function CriarFiltro({ route }) {
                         />
                     </View>
            
-           <View style={{ margin: 5, alignItems: "center", justifyContent: "space-around", flexDirection: "row" }}>
+           <View style={{ marginBottom: 25, marginTop: 10, alignItems: "center", justifyContent: "space-around", flexDirection: "row" }}>
                 <Button icon="content-save-outline" mode="contained" style={{ borderRadius: 5, width: '50%' }} onPress={savedData}>Salvar Filtro</Button>
             </View>
 

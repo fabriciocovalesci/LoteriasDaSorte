@@ -44,7 +44,7 @@ export default function CardGenerate(props) {
                 <View style={{  flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "center" }}>
 
                 {props.numeros !== undefined && props.numeros.length !== 0 ? props.numeros.map((dezena, index) => 
-                    <View key={index} style={styles.circle}>
+                    <View key={index} style={props.loteria === 'megasena' ? styles.circleMega : props.loteria === 'lotofacil' ? styles.circleFacil : props.loteria === 'lotomania' ? styles.circleMania : props.loteria === 'quina' ? styles.circleQuina : styles.circle}>
                         { dezena < 10 ? 
                         <Text style={styles.fontText}>{'0' + dezena}</Text>
                         :
@@ -95,6 +95,46 @@ const styles = StyleSheet.create({
         backgroundColor: "#3d85c6",
         justifyContent: "center",
         flexDirection: "row",
+        padding: 0,
+        margin: 5
+    },
+    circleQuina: {
+        width: 32,
+        height: 32,
+        borderRadius: 32 / 2,
+        backgroundColor: '#058ce1' ,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 0,
+        margin: 5
+    },
+    circleFacil: {
+        width: 32,
+        height: 32,
+        borderRadius: 32 / 2,
+        backgroundColor: '#930989' ,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 0,
+        margin: 5
+    },
+    circleMania: {
+        width: 32,
+        height: 32,
+        borderRadius: 32 / 2,
+        backgroundColor: '#F78100' ,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 0,
+        margin: 5
+    },
+    circleMega: {
+        width: 32,
+        height: 32,
+        borderRadius: 32 / 2,
+        backgroundColor: '#209869' ,
+        justifyContent: "center",
+        alignItems: "center",
         padding: 0,
         margin: 5
     },

@@ -84,13 +84,13 @@ export default function ListarFiltro({ route }) {
                             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                             <Title numberOfLines={1} ellipsizeMode="tail" style={{ width: 200 }}>{nome}</Title>
                             { loteria === 'megasena' ? 
-                            <Chip icon="information" style={{ backgroundColor: '#2b6212' }}><Text style={{ color: "#fff" }}>Mega Sena</Text></Chip>
+                            <Chip icon="information" style={{ backgroundColor: '#209869' }}><Text style={{ color: "#fff" }}>Mega Sena</Text></Chip>
                             : loteria === 'lotofacil' ?
                             <Chip icon="information" style={{ backgroundColor: '#930989' }}><Text style={{ color: "#fff" }}>Loto Fácil</Text></Chip>
                             : loteria === 'lotomania' ?
                             <Chip icon="information" style={{ backgroundColor: '#F78100' }}><Text style={{ color: "#fff" }}>Loto Mania</Text></Chip>
                             :  loteria === 'quina' ?
-                            <Chip icon="information" style={{ backgroundColor: '#260085', width: 100 }}><Text style={{ color: "#fff" }}>Quina</Text></Chip>
+                            <Chip icon="information" style={{ backgroundColor: '#058ce1', width: 100 }}><Text style={{ color: "#fff" }}>Quina</Text></Chip>
                             : null
                             }
                             </View>

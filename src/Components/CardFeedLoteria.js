@@ -385,7 +385,7 @@ export function CardFeedLoteriaQuina(props) {
         </React.Fragment>
     )
 }
-
+// #058ce1 quina bolas
 
 const styles = StyleSheet.create({
     circle: {
