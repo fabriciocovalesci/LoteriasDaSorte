@@ -83,19 +83,19 @@ const Resultados = () => {
 
             <ScrollView style={{ margin: 15 }}>
 
-                <CardFeedLoteriaMega acumulou={megasena.acumulou} acumuladaProxConcurso={megasena.acumuladaProxConcurso} premiacoes={megasena.premiacoes} dezenas={megasena.dezenas} nome={megasena.nome} concurso={megasena.concurso} data={megasena.data} />
+                <CardFeedLoteriaMega dataProxConcurso={megasena.dataProxConcurso} estadosPremiados={megasena.estadosPremiados} acumulou={megasena.acumulou} acumuladaProxConcurso={megasena.acumuladaProxConcurso} premiacoes={megasena.premiacoes} dezenas={megasena.dezenas} nome={megasena.nome} concurso={megasena.concurso} data={megasena.data} />
 
                 <Divider style={styles.divider} />
 
-                <CardFeedLoteriaLotoFacil acumulou={lotofacil.acumulou} acumuladaProxConcurso={lotofacil.acumuladaProxConcurso} premiacoes={lotofacil.premiacoes} dezenas={lotofacil.dezenas} nome={lotofacil.nome} concurso={lotofacil.concurso} data={lotofacil.data} />
+                <CardFeedLoteriaLotoFacil dataProxConcurso={lotofacil.dataProxConcurso} estadosPremiados={lotofacil.estadosPremiados} acumulou={lotofacil.acumulou} acumuladaProxConcurso={lotofacil.acumuladaProxConcurso} premiacoes={lotofacil.premiacoes} dezenas={lotofacil.dezenas} nome={lotofacil.nome} concurso={lotofacil.concurso} data={lotofacil.data} />
 
                 <Divider style={styles.divider} />
 
-                <CardFeedLoteriaLotoMania acumulou={lotoMania.acumulou} acumuladaProxConcurso={lotoMania.acumuladaProxConcurso} premiacoes={lotoMania.premiacoes} dezenas={lotoMania.dezenas} nome={lotoMania.nome} concurso={lotoMania.concurso} data={lotoMania.data} />
+                <CardFeedLoteriaLotoMania dataProxConcurso={lotoMania.dataProxConcurso} estadosPremiados={lotoMania.estadosPremiados} acumulou={lotoMania.acumulou} acumuladaProxConcurso={lotoMania.acumuladaProxConcurso} premiacoes={lotoMania.premiacoes} dezenas={lotoMania.dezenas} nome={lotoMania.nome} concurso={lotoMania.concurso} data={lotoMania.data} />
 
                 <Divider style={styles.divider} />
 
-                <CardFeedLoteriaQuina acumulou={quina.acumulou} acumuladaProxConcurso={quina.acumuladaProxConcurso} premiacoes={quina.premiacoes} dezenas={quina.dezenas} nome={quina.nome} concurso={quina.concurso} data={quina.data} />
+                <CardFeedLoteriaQuina dataProxConcurso={quina.dataProxConcurso} estadosPremiados={quina.estadosPremiados} acumulou={quina.acumulou} acumuladaProxConcurso={quina.acumuladaProxConcurso} premiacoes={quina.premiacoes} dezenas={quina.dezenas} nome={quina.nome} concurso={quina.concurso} data={quina.data} />
 
                 <Divider style={styles.divider} />
 
