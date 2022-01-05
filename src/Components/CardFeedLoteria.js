@@ -1,9 +1,9 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import { Avatar, Button, Card, Title, Paragraph, Divider } from 'react-native-paper';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
+import { Avatar, Button, Card, Title, Paragraph, Divider, DataTable } from 'react-native-paper';
 
 import ActionSheet from "react-native-actions-sheet";
-
+import { ScrollView } from 'react-native-gesture-handler';
 
 import ModalGanhadores from './ModalGanhadores';
 
@@ -18,85 +18,36 @@ const CircleNumber = (props) => {
 
 export function CardFeedLoteriaMega(props) {
 
-    const [visible, setVisible] = React.useState(false);
-
-    const showModal = () => setVisible(true);
-    const hideModal = () => setVisible(false);
-
-    console.log('====================================');
-    console.log(props);
-    console.log('====================================');
-    /*
-    
-    Object {
-  "acumuladaProxConcurso": "R$ 3 Milhões",
-  "acumulou": false,
-  "concurso": 2440,
-  "data": "31/12/2021",
-  "dezenas": Array [
-    "12",
-    "15",
-    "23",
-    "32",
-    "33",
-    "46",
-  ],
-  "nome": "Mega-Sena",
-  "premiacoes": Array [
-    Object {
-      "acertos": "Sena",
-      "premio": "189.062.363,74",
-      "vencedores": 2,
-    },
-    Object {
-      "acertos": "Quina",
-      "premio": "50.861,33",
-      "vencedores": 1712,
-    },
-    Object {
-      "acertos": "Quadra",
-      "premio": "866,88",
-      "vencedores": 143494,
-    },
-  ],
-}
-
-    
-    */
+    const scrollViewRef = React.createRef()
 
     const DetalhesConcurso = () => (
         <>
-        <View
-          style={{
-            backgroundColor: "#fff",
-            padding: 16,
-            height: 450,
-            alignSelf: "center"
-          }}
-        >
-          <Text style={{ }}>Premiacões da {props.nome}</Text>
-          {props.premiacoes.map(item => 
-            <View key={item.acertos}>
-                <View>
-                <Text>Acertos {item.acertos}</Text>
-                <Text>Prêmio R$ {item.premio}</Text>
-                <Text>Vencedores {item.vencedores}</Text>
-                </View>
+            <View ref={scrollViewRef}
+                style={{
+                    backgroundColor: '#74c053',
+                    padding: 16,
+                    width: "100%",
+                    height: 400,
+                }}
+            >
+                <FlatList data={props.premiacoes} keyExtractor={item => item.acertos}
+                    renderItem={({ item }) => (
+                        <View>
+                            <Text>Acertos: {item.acertos}</Text>
+                            <Text>Prêmio R$ {item.premio}</Text>
+                            <Text>Vencedores: {item.vencedores}</Text>
+                            <Divider style={{ margin: 10 }} />
+                        </View>
+                    )}
+                />
             </View>
-            )}
-        </View>
         </>
-      );
-
-      const sheetRef = React.useRef(null);
+    );
 
       const actionSheetRef = React.createRef();
 
     return (
         <React.Fragment>
-            <View>
-                <ModalGanhadores isVisible={visible} onDismiss={hideModal} name={props.nome} premiacoes={props.premiacoes} />
-            </View>
             <View style={{ flex: 1, height: 300 }}>
                 <View style={{ backgroundColor: '#2b6212', height: 30, justifyContent: "center" }}>
                     <Text style={{ alignSelf: "center", color: "#fff" }}>Concurso: {props.concurso}  Data: {props.data}</Text>
@@ -126,21 +77,34 @@ export function CardFeedLoteriaMega(props) {
                         <Text style={{ color: "#fff", alignSelf: "center", fontSize: 16 }}>Premiação {props.nome}</Text>
                     </Button>
                 </View>
-
-            <ActionSheet ref={actionSheetRef}
-            initialOffsetFromBottom={0.4}
-            statusBarTranslucent
-            bounceOnOpen={true}
-            drawUnderStatusBar={true}
-            bounciness={5}
-            gestureEnabled={true}
-            defaultOverlayOpacity={0.3}>
-            <View style={{ paddingHorizontal: 12 }}>
-            <View style={styles.container}>
-                < DetalhesConcurso />
-            </View>
-            </View>
-            </ActionSheet>
+                <ActionSheet ref={actionSheetRef}
+                    initialOffsetFromBottom={0.4}
+                    headerAlwaysVisible={true}
+                    statusBarTranslucent
+                    extraScroll={1}
+                    bounceOnOpen={true}
+                    drawUnderStatusBar={true}
+                    bounciness={5}
+                    gestureEnabled={true}
+                    defaultOverlayOpacity={0.3}>
+                    <ScrollView
+                        ref={scrollViewRef}
+                        nestedScrollEnabled={true}
+                        onScrollEndDrag={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }
+                        onScrollAnimationEnd={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }
+                        onMomentumScrollEnd={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }>
+                        <View style={{ paddingHorizontal: 12, backgroundColor: "#2b6212" }}>
+                            <Title style={{ textAlign: "center", fontSize: 16, color: "#fff" }}>Premiacões da {props.nome}</Title>
+                            <DetalhesConcurso />
+                        </View>
+                    </ScrollView>
+                </ActionSheet>
             </View>
 
         </React.Fragment>
@@ -149,16 +113,36 @@ export function CardFeedLoteriaMega(props) {
 
 export function CardFeedLoteriaLotoFacil(props) {
 
-    const [visible, setVisible] = React.useState(false);
+    const scrollViewRef = React.createRef()
 
-    const showModal = () => setVisible(true);
-    const hideModal = () => setVisible(false);
+    const DetalhesConcurso = () => (
+        <>
+            <View ref={scrollViewRef}
+                style={{
+                    backgroundColor: '#be6bb8',
+                    padding: 16,
+                    width: "100%",
+                    height: 480,
+                }}
+            >
+                <FlatList data={props.premiacoes} keyExtractor={item => item.acertos}
+                    renderItem={({ item }) => (
+                        <View>
+                            <Text>Acertos: {item.acertos}</Text>
+                            <Text>Prêmio R$ {item.premio}</Text>
+                            <Text>Vencedores: {item.vencedores}</Text>
+                            <Divider style={{ margin: 10 }} />
+                        </View>
+                    )}
+                />
+            </View>
+        </>
+    );
+
+      const actionSheetRef = React.createRef();
 
     return (
         <React.Fragment>
-            <View>
-                <ModalGanhadores isVisible={visible} onDismiss={hideModal} name={props.nome} premiacoes={props.premiacoes} />
-            </View>
             <View style={{ flex: 1, height: 300 }}>
                 <View style={{ backgroundColor: '#930989', height: 30, justifyContent: "center" }}>
                     <Text style={{ alignSelf: "center", color: "#fff" }}>Concurso: {props.concurso}  Data: {props.data}</Text>
@@ -180,10 +164,38 @@ export function CardFeedLoteriaLotoFacil(props) {
 
                 </View>
                 <View style={{ backgroundColor: "#930989" }}>
-                    <Button icon="table-eye" color='#fff' name="thumb-up-outline" text="Like" onPress={showModal}>
+                    <Button icon="table-eye" color='#fff' name="thumb-up-outline" text="Like" onPress={() => actionSheetRef.current?.setModalVisible()}>
                         <Text style={{ color: "#fff", alignSelf: "center", fontSize: 16 }}>Premiação {props.nome}</Text>
                     </Button>
                 </View>
+                <ActionSheet ref={actionSheetRef}
+                    initialOffsetFromBottom={0.4}
+                    headerAlwaysVisible={true}
+                    statusBarTranslucent
+                    extraScroll={1}
+                    bounceOnOpen={true}
+                    drawUnderStatusBar={true}
+                    bounciness={5}
+                    gestureEnabled={true}
+                    defaultOverlayOpacity={0.3}>
+                    <ScrollView
+                        ref={scrollViewRef}
+                        nestedScrollEnabled={true}
+                        onScrollEndDrag={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }
+                        onScrollAnimationEnd={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }
+                        onMomentumScrollEnd={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }>
+                        <View style={{ paddingHorizontal: 12, backgroundColor: "#930989" }}>
+                            <Title style={{ textAlign: "center", fontSize: 16, color: "#fff" }}>Premiacões da {props.nome}</Title>
+                            <DetalhesConcurso />
+                        </View>
+                    </ScrollView>
+                </ActionSheet>
             </View>
         </React.Fragment>
     )
@@ -191,15 +203,37 @@ export function CardFeedLoteriaLotoFacil(props) {
 
 
 export function CardFeedLoteriaLotoMania(props) {
-    const [visible, setVisible] = React.useState(false);
 
-    const showModal = () => setVisible(true);
-    const hideModal = () => setVisible(false);
+    const scrollViewRef = React.createRef()
+
+    const DetalhesConcurso = () => (
+        <>
+            <View ref={scrollViewRef}
+                style={{
+                    backgroundColor: "#ffb05a",
+                    padding: 16,
+                    width: "100%",
+                    height: 480,
+                }}
+            >
+                <FlatList data={props.premiacoes} keyExtractor={item => item.acertos}
+                    renderItem={({ item }) => (
+                        <View>
+                            <Text>Acertos: {item.acertos}</Text>
+                            <Text>Prêmio R$ {item.premio}</Text>
+                            <Text>Vencedores: {item.vencedores}</Text>
+                            <Divider style={{ margin: 10 }} />
+                        </View>
+                    )}
+                />
+            </View>
+        </>
+    );
+
+    const actionSheetRef = React.createRef();
+
     return (
         <React.Fragment>
-            <View>
-                <ModalGanhadores isVisible={visible} onDismiss={hideModal} name={props.nome} premiacoes={props.premiacoes} />
-            </View>
             <View style={{ flex: 1, height: 300 }}>
                 <View style={{ backgroundColor: '#F78100', height: 30, justifyContent: "center" }}>
                     <Text style={{ alignSelf: "center", color: "#fff" }}>Concurso: {props.concurso}  Data: {props.data}</Text>
@@ -220,25 +254,76 @@ export function CardFeedLoteriaLotoMania(props) {
 
                 </View>
                 <View style={{ backgroundColor: "#F78100" }}>
-                    <Button icon="table-eye" color='#fff' name="thumb-up-outline" text="Like" onPress={showModal}>
+                    <Button icon="table-eye" color='#fff' name="thumb-up-outline" text="Like" onPress={() => actionSheetRef.current?.setModalVisible()}>
                         <Text style={{ color: "#fff", alignSelf: "center", fontSize: 16 }}>Premiação {props.nome}</Text>
                     </Button>
                 </View>
+                <ActionSheet ref={actionSheetRef}
+                    initialOffsetFromBottom={0.4}
+                    headerAlwaysVisible={true}
+                    statusBarTranslucent
+                    extraScroll={1}
+                    bounceOnOpen={true}
+                    drawUnderStatusBar={true}
+                    bounciness={5}
+                    gestureEnabled={true}
+                    defaultOverlayOpacity={0.3}>
+                    <ScrollView
+                        ref={scrollViewRef}
+                        nestedScrollEnabled={true}
+                        onScrollEndDrag={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }
+                        onScrollAnimationEnd={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }
+                        onMomentumScrollEnd={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }>
+                        <View style={{ paddingHorizontal: 12, backgroundColor: "#F78100" }}>
+                            <Title style={{ textAlign: "center", fontSize: 16, color: "#fff" }}>Premiacões da {props.nome}</Title>
+                            <DetalhesConcurso />
+
+                        </View>
+                    </ScrollView>
+                </ActionSheet>
             </View>
         </React.Fragment>
     )
 }
 
 export function CardFeedLoteriaQuina(props) {
-    const [visible, setVisible] = React.useState(false);
 
-    const showModal = () => setVisible(true);
-    const hideModal = () => setVisible(false);
+    const scrollViewRef = React.createRef()
+
+    const DetalhesConcurso = () => (
+        <>
+            <View ref={scrollViewRef}
+                style={{
+                    backgroundColor: '#9F79FE',
+                    padding: 16,
+                    width: "100%",
+                    height: 400,
+                }}
+            >
+                <FlatList data={props.premiacoes} keyExtractor={item => item.acertos}
+                    renderItem={({ item }) => (
+                        <View>
+                            <Text>Acertos: {item.acertos}</Text>
+                            <Text>Prêmio R$ {item.premio}</Text>
+                            <Text>Vencedores: {item.vencedores}</Text>
+                            <Divider style={{ margin: 10 }} />
+                        </View>
+                    )}
+                />
+            </View>
+        </>
+    );
+
+      const actionSheetRef = React.createRef();
+
     return (
         <React.Fragment>
-            <View>
-                <ModalGanhadores isVisible={visible} onDismiss={hideModal} name={props.nome} premiacoes={props.premiacoes} />
-            </View>
             <View style={{ flex: 1, height: 300 }}>
                 <View style={{ backgroundColor: '#260085', height: 30, justifyContent: "center" }}>
                     <Text style={{ alignSelf: "center", color: "#fff" }}>Concurso: {props.concurso}  Data: {props.data}</Text>
@@ -263,10 +348,39 @@ export function CardFeedLoteriaQuina(props) {
 
                 </View>
                 <View style={{ backgroundColor: "#260085" }}>
-                    <Button icon="table-eye" color='#fff' name="thumb-up-outline" text="Like" onPress={showModal}>
+                    <Button icon="table-eye" color='#fff' name="thumb-up-outline" text="Like" onPress={() => actionSheetRef.current?.setModalVisible()}>
                         <Text style={{ color: "#fff", alignSelf: "center", fontSize: 16 }}>Premiação {props.nome}</Text>
                     </Button>
                 </View>
+                <ActionSheet ref={actionSheetRef}
+                    initialOffsetFromBottom={0.4}
+                    headerAlwaysVisible={true}
+                    statusBarTranslucent
+                    extraScroll={1}
+                    bounceOnOpen={true}
+                    drawUnderStatusBar={true}
+                    bounciness={5}
+                    gestureEnabled={true}
+                    defaultOverlayOpacity={0.3}>
+                    <ScrollView
+                        ref={scrollViewRef}
+                        nestedScrollEnabled={true}
+                        onScrollEndDrag={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }
+                        onScrollAnimationEnd={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }
+                        onMomentumScrollEnd={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }>
+                        <View style={{ paddingHorizontal: 12, backgroundColor: "#260085" }}>
+                            <Title style={{ textAlign: "center", fontSize: 16, color: "#fff" }}>Premiacões da {props.nome}</Title>
+                            <DetalhesConcurso />
+
+                        </View>
+                    </ScrollView>
+                </ActionSheet>
             </View>
         </React.Fragment>
     )
