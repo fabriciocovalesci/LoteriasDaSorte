@@ -1,6 +1,6 @@
 import React from 'react'
 import { ScrollView, View, StyleSheet } from 'react-native'
-import { Text, FAB, Dialog, Checkbox, Portal, Provider, Title, Card, Snackbar, Button, Divider, TextInput } from "react-native-paper";
+import { Text, FAB, Dialog, Checkbox, Portal, IconButton, Colors , Provider, Title, Card, Snackbar, Button, Divider, TextInput } from "react-native-paper";
 import FavoritosDataBase from '../../Model/FavoritosDataBase'
 import { CircleNumber } from '../../Components/CircleNumber'
 import { 
@@ -20,14 +20,11 @@ export default function CriarFavorito({ navigation, route }) {
 
     const [stateUp, setUpdate] = React.useState([])
 
-    const [valores, setValores] = React.useState(0.00)
     const [myarray1, setArray] = React.useState({ valor: '0.00', array: [] })
 
     const [arrayUpdate, setArrayUpdate] = React.useState([])
 
     const [loading, setLoading] = React.useState(true);
-
-    const [loadingUp, setLoadingUpdate] = React.useState(true);
 
     const [text, setText] = React.useState('');
 
@@ -44,7 +41,6 @@ export default function CriarFavorito({ navigation, route }) {
                 if (route.params.loteria) {
                     if (route.params.loteria.includes('Mega')) {
                         let mega = await ResultadoMegaSena()
-                        console.log(mega);
                         setProxConc(mega.data.proxConcurso)
                         setProxDataConc(mega.data.dataProxConcurso)
                         setLoteria('megasena')
@@ -217,7 +213,8 @@ export default function CriarFavorito({ navigation, route }) {
 
     const updateValues = async () => {
         let arr = []
-        if(route.params.hasOwnProperty('id')){
+        if(route.params.hasOwnProperty('id') && route.params.hasOwnProperty('selecionados')){
+            setArrayUpdate(route.params.selecionados)
        await FavoritosDataBase.find(route.params.id).then((value) =>{
             arr.push(JSON.parse(value[0].numeros))
             setArray({ valor: '0,00', array: JSON.parse(value[0].numeros) })
@@ -225,7 +222,6 @@ export default function CriarFavorito({ navigation, route }) {
             setProxConc(value[0].concurso)
             setProxDataConc(value[0].dataProxConcurso)
             setChecked(value[0].associar === 1 ? true : false)
-            setArrayUpdate(JSON.parse(value[0].numeros))
             filterTitle(route.params.loteria)
             setLoading(false);
         }).catch((err) => (console.error(err)))
@@ -239,7 +235,7 @@ export default function CriarFavorito({ navigation, route }) {
         
 
     React.useEffect(() => {
-        console.log('Updated State')
+        console.log('Updated State ')
     }, [myarray1])
 
     function filterTitle(value){
@@ -292,7 +288,16 @@ export default function CriarFavorito({ navigation, route }) {
     return (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
             <View>
+                <View style={{  flexDirection: "row", justifyContent: "center" }}>
                 <Text style={{ textAlign: "center", marginTop: 20, fontSize: 16, fontWeight: "bold" }}>{ loteriaTitle }</Text>
+                <IconButton
+                icon="filter-menu-outline"
+                style={{ marginBottom: 0, alignSelf: "flex-end" }}
+                color={Colors.black}
+                size={22}
+                onPress={() => alert('Meus Filtros')}
+            />
+                </View>
                 <TextInput style={{ margin: 10 }}
                     label="Titulo"
                     value={text}
@@ -310,7 +315,7 @@ export default function CriarFavorito({ navigation, route }) {
                 <View style={{ justifyContent: "center", flexDirection: "row", flexWrap: "wrap", margin: 5 }}>
                     {
                         Array(route.params.numeros).fill().map((elem, index) =>
-                            <CircleNumber numberSelected={arrayUpdate} isSelect={true} getNumber={(e, i) => getNumber(e, i)} key={index + 1} number={index + 1} />
+                            <CircleNumber loteria={loteria} numberSelected={arrayUpdate} isSelect={true} getNumber={(e, i) => getNumber(e, i)} key={index + 1} number={index + 1} />
                         )
                     }
                 </View>

@@ -5,10 +5,6 @@ import { useNavigation, useIsFocused } from '@react-navigation/native'
 
 export const CircleNumberFav = (props) => {
 
-    console.log('===============color=====================');
-    console.log(props);
-    console.log('====================================');
-
     const [state, setstate] = React.useState(false)
 
     const [stateUp, setUpdate] = React.useState([])
@@ -57,7 +53,7 @@ React.useEffect(() => {
 }, [dezenasState])
 
     return (
-        <View onStartShouldSetResponder={select} style={props.loteria === 'megasena' ? styles.circleMega : props.loteria === 'lotofacil' ? styles.circleFacil : props.loteria === 'lotomania' ? styles.circleMania : props.loteria === 'quina' ? styles.circleQuina : styles.circle}>
+        <View style={props.loteria === 'megasena' ? styles.circleMega : props.loteria === 'lotofacil' ? styles.circleFacil : props.loteria === 'lotomania' ? styles.circleMania : props.loteria === 'quina' ? styles.circleQuina : styles.circle}>
             <Text style={!state ? styles.fontText : styles.fontTextSelect}>{props.number}</Text>
         </View>
     )

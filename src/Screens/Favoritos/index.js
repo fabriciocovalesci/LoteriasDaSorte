@@ -60,19 +60,19 @@ const Favoritos = ({ navigation, route }) => {
             .catch((err) => (console.error(err)))
     }
 
-    function editFavorito(id, loteria) {
+    function editFavorito(id, loteria, selecionados) {
         switch (loteria) {
             case 'megasena':
-                navigation.navigate('CriarFavorito', { loteria: loteria, numeros: 60, id: id })
+                navigation.navigate('CriarFavorito', { loteria: 'megasena', numeros: 60, selecionados: selecionados, id: id })
                 break;
             case 'lotofacil':
-                navigation.navigate('CriarFavorito', { loteria: loteria, numeros: 25, id: id })
+                navigation.navigate('CriarFavorito', { loteria: 'lotofacil', numeros: 25, selecionados: selecionados, id: id })
                 break;
             case 'lotomania':
-                navigation.navigate('CriarFavorito', { loteria: loteria, numeros: 50, id: id })
+                navigation.navigate('CriarFavorito', { loteria: 'lotomania', numeros: 50, selecionados: selecionados, id: id })
                 break;
             case 'quina':
-                navigation.navigate('CriarFavorito', { loteria: loteria, numeros: 80, id: id })
+                navigation.navigate('CriarFavorito', { loteria: 'quina', numeros: 80, selecionados: selecionados, id: id })
                 break;
             default:
                 console.error("Error ao direcionar para edicao");
@@ -81,7 +81,6 @@ const Favoritos = ({ navigation, route }) => {
     }
 
     const CardList = ({ item }) => {
-        console.log(item);
         const { id, titulo, numeros, loteria, dataProxConcurso } = item;
         return (
             <>
@@ -112,7 +111,7 @@ const Favoritos = ({ navigation, route }) => {
                             </View>
                         </Card.Content>
                         <Card.Actions>
-                            <Button onPress={() => editFavorito(id, loteria)} icon="pencil" style={{ borderColor: "blue", margin: 5 }} mode="outlined">Editar</Button>
+                            <Button onPress={() => editFavorito(id, loteria, numeros)} icon="pencil" style={{ borderColor: "blue", margin: 5 }} mode="outlined">Editar</Button>
                             <Button onPress={() => deleteFavorito(id)} icon="delete-forever-outline" style={{ borderColor: "red", margin: 5 }} mode="outlined">Excluir</Button>
                         </Card.Actions>
                     </Card>
