@@ -2,6 +2,7 @@ import React from 'react'
 import { ScrollView, View, StyleSheet } from 'react-native'
 import { Text, FAB, Dialog, Checkbox, Portal, IconButton, Colors , Provider, Title, Card, Snackbar, Button, Divider, TextInput } from "react-native-paper";
 import FavoritosDataBase from '../../Model/FavoritosDataBase'
+import FiltroDb from '../../Model/FiltroDb';
 import { CircleNumber } from '../../Components/CircleNumber'
 import { 
     ResultadoLotoFacil,
@@ -34,17 +35,36 @@ export default function CriarFavorito({ navigation, route }) {
     const [proxDataConcurso, setProxDataConc] = React.useState('')
     const [loteria, setLoteria] = React.useState('')
     const [loteriaTitle, setLoteriaTitle] = React.useState('')
+    const [filtros, setFiltros] = React.useState([])
+
+
+    function returnFiltroCustom(loteria){
+        filtros.filter((elem, index) => {
+            console.log(elem);
+            if(elem.loteria.includes(loteria)){
+                console.log('====================================');
+                console.log(filtros[index]);
+                console.log('====================================');
+                setArray(filtros[index])
+                return;
+            }
+        })
+    }
 
     React.useEffect(() => {
         async function getLatestLoteria() {
             try {
+
                 if (route.params.loteria) {
+                    let filtro = await FiltroDb.all()
+                    setFiltros(filtro)
                     if (route.params.loteria.includes('Mega')) {
                         let mega = await ResultadoMegaSena()
                         setProxConc(mega.data.proxConcurso)
                         setProxDataConc(mega.data.dataProxConcurso)
                         setLoteria('megasena')
                         setLoteriaTitle("Mega Sena")
+                        returnFiltroCustom('megasena')
                     }
                    else if (route.params.loteria.includes('Fácil')) {
                         let facil = await ResultadoLotoFacil()
@@ -228,6 +248,10 @@ export default function CriarFavorito({ navigation, route }) {
     }
     // setLoading(false);
     }
+
+    // console.log('===========filtros=========================');
+    // console.log(filtros);
+    // console.log('====================================');
 
     React.useEffect(() => {
             updateValues()
