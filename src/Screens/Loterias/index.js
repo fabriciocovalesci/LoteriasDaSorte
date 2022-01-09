@@ -8,7 +8,8 @@ import {
     ResultadoLotoFacil,
     ResultadoLotoMania,
     ResultadoMegaSena,
-    ResultadoQuina    
+    ResultadoQuina,
+    LatestMegaSena
 } from '../../services';
 
 export default function CriarFavorito({ navigation, route }) {

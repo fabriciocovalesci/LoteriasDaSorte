@@ -126,7 +126,7 @@ const findByloteria = (loteria) => {
         [loteria],
         //-----------------------
         (_, { rows }) => {
-          if (rows.length > 0) resolve(rows);
+          if (rows.length > 0) resolve(rows._array);
           else reject("Obj not found: loteria=" + loteria); // nenhum registro encontrado
         },
         (_, error) => reject(error) // erro interno em tx.executeSql

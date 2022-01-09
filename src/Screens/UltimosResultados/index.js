@@ -10,7 +10,8 @@ import {
     ResultadoMegaSena,
     ResultadoLotoFacil,
     ResultadoLotoMania,
-    ResultadoQuina
+    ResultadoQuina,
+    LatestMegaSena
 }
     from "../../services";
 
@@ -52,8 +53,11 @@ const Resultados = () => {
 
     React.useEffect(() => {
         async function loadDataMega() {
-            Promise.all([ResultadoMegaSena(), ResultadoLotoFacil(), ResultadoLotoMania(), ResultadoQuina()]).then((values) => {
+            Promise.all([ResultadoMegaSena(), ResultadoLotoFacil(), ResultadoLotoMania(), ResultadoQuina(), LatestMegaSena()]).then((values) => {
                if(values !== undefined && values !== null){
+                //    console.log('==========retorna os dados do site da caixa==========================');
+                //    console.log(values[4]);
+                //    console.log('====================================');
                    setMega(values[0].data)
                    setLotoFacil(values[1].data)
                    setLotoMania(values[2].data)

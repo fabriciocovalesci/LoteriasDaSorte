@@ -13,6 +13,8 @@ import CardGenerate from '../../Components/CardGenerate';
 
 import UltimosResultadoDb from '../../Model/UltimosResultadoDb';
 
+import { getFilter } from '../../services/filtros';
+
 import {
     ResultadoMegaSena,
     ResultadoLotoFacil,
@@ -123,7 +125,7 @@ const GeradorLoteria = () => {
                 style={{  }}
                 color={Colors.black}
                 size={22}
-                onPress={() => alert('Meus Filtros')}
+                onPress={() => alert(getFilter(selected))}
             />
             </View>
             <View style={{ marginBottom: 0, marginTop: 5, marginLeft: 5, marginRight: 5 }}>
