@@ -117,16 +117,21 @@ const GeradorLoteria = () => {
     return (
         <>
         <TopBar subtitle="Gerador de loterias aleatórios" />
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <Title></Title>
-                <Title style={{ alignSelf: "center", textAlign: "center", marginLeft: 25 }}>Minha Surpresinha</Title>
+            <View style={{ flexDirection: "row", justifyContent: "flex-end", alignItems: 'center', marginBottom: 10 }}>
+                <View style={{ justifyContent: "center", alignItems: "flex-end", marginTop: 25 }}>
+                <Title style={{ textAlign: "center", fontSize: 20 }}>Minha Surpresinha</Title>
+                </View>
+                <TouchableOpacity onPress={() => alert(getFilter(selected))}>
+                <View onc style={{ flexDirection: "row", alignItems: "center", marginRight: 10 }}>
                 <IconButton
                 icon="filter-menu-outline"
-                style={{  }}
+                style={{ marginRight: 0 }}
                 color={Colors.black}
-                size={22}
-                onPress={() => alert(getFilter(selected))}
-            />
+                size={20}
+                />
+                <Text style={{ fontSize: 14 }}>Filtros</Text>
+                </View>
+                </TouchableOpacity>
             </View>
             <View style={{ marginBottom: 0, marginTop: 5, marginLeft: 5, marginRight: 5 }}>
                 <SegmentedControlTab

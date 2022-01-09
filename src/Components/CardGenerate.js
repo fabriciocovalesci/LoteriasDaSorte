@@ -39,7 +39,7 @@ export default function CardGenerate(props) {
         <>
             <View style={{flex: 0}}>
                 <Text style={{ alignSelf: "center", fontSize: 16, margin: 10, fontWeight: "bold" }}>{props.title}</Text>
-                <TextInput value={text} onChangeText={text => setText(text)} label="Titulo" mode="flat" />
+                <TextInput style={{ marginLeft: 5, marginRight: 5}} value={text} onChangeText={text => setText(text)} label="Titulo" mode="flat" />
 
                 <View style={{  flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "center" }}>
 
@@ -142,6 +142,6 @@ const styles = StyleSheet.create({
         color: "#fff", 
         alignSelf: "center",
         fontWeight: "bold" ,
-        textAlign: "center"
+        textAlign: "center",
     },
 });
