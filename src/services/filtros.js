@@ -108,18 +108,53 @@ export const getFilter = async (select) => {
 
     FiltroDb.findByloteria(loteria[0]).then(async(result) => {
         console.log('====================================');
-        let mariosOcorrencia = await findMaiorOcorrencia(result[0].maiorocorrencia, 10)
-        let menoresOcorrencia = await findMenorOcorrencia(result[0].menorocorrencia, 10)
-        let maiorAtrasos = await findMaiorAtraso(result[0].maioratraso, 10)
-        let menorAtraso = await findMenorAtraso(result[0].menoratraso, 10)
-        console.log('mariosOcorrencia ', mariosOcorrencia);
-        console.log('menoresOcorrencia ', menoresOcorrencia);
-        console.log('maiorAtrasos ', maiorAtrasos);
-        console.log('menorAtraso ', menorAtraso);
-        // findMaiorAtraso(result[0].maioratraso, resultLoteria)
-        // console.log( EstatisMegaAnalise);
-        // console.log(result[0].maioratraso);
-        // console.log(resultLoteria.length)
+        let dezenas = []
+        let mariosOcorrencia = await findMaiorOcorrencia(result[0].maiorocorrencia, result[0].qtadedezenas+4)
+        let menoresOcorrencia = await findMenorOcorrencia(result[0].menorocorrencia, result[0].qtadedezenas+4)
+        let maiorAtrasos = await findMaiorAtraso(result[0].maioratraso, result[0].qtadedezenas+4)
+        let menorAtraso = await findMenorAtraso(result[0].menoratraso, result[0].qtadedezenas+4)
+
+        if(maiorAtrasos !== null) dezenas = dezenas.concat(maiorAtrasos)
+        if(menorAtraso !== null) dezenas = dezenas.concat(menorAtraso)
+        if(mariosOcorrencia !== null) dezenas = dezenas.concat(mariosOcorrencia)
+        if(menoresOcorrencia !== null) dezenas = dezenas.concat(menoresOcorrencia)
+       
+        dezenas = [...new Set(dezenas)]
+        console.log('dezenas ', dezenas);
+
+        console.log('====================================');
+        console.log(result[0].qtadedezenas);
+        console.log(typeof result[0].qtadepar);
+        console.log('qtadeimpar ', result[0].qtadeimpar);
+        console.log('====================================');
+
+        let sorteadas = []
+        let pares = []
+        for (let index = 0; index < result[0].qtadedezenas; index++) {
+            let Generate = Math.floor((Math.random() * dezenas.length));
+            if(pares.length === result[0].qtadepar) break
+            else if(dezenas[Generate]%2===0 && pares.indexOf(dezenas[Generate]) === -1){
+                pares.push(dezenas[Generate])
+            }else continue;
+        }
+
+        let impares = []
+        for (let index = 0; index < result[0].qtadedezenas; index++) {
+            let Generate = Math.floor((Math.random() * dezenas.length));
+            if(impares.length === result[0].qtadeimpar) break
+            else if(dezenas[Generate]%2!==0 && impares.indexOf(dezenas[Generate]) === -1){
+                impares.push(dezenas[Generate])
+            }else continue;
+        }
+
+        console.log('pares ', pares);
+        console.log('impares ', impares);
+
+        sorteadas = sorteadas.concat(pares, impares).sort()
+
+        console.log('sorteadas ', sorteadas);
+       
+
         console.log('====================================');
         return result
     }).catch((err) => {
