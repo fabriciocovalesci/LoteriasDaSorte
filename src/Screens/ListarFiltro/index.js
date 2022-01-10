@@ -49,6 +49,7 @@ export default function ListarFiltro({ route }) {
     }, [getObject])
 
     const CardListFiltro = ({ item }) => {
+
         // nome: nome,
         // loteria: loteria,
         // qtadepar: sliderMegaPar,
@@ -63,11 +64,18 @@ export default function ListarFiltro({ route }) {
         // ultimosconcurso: ultimosconcurso
 
         function editFiltro(id, loteria){
+
             console.log(id, loteria);
         }
 
         function deleteFitro(id){
             console.log(id);
+            FiltroDb.remove(id)
+            .then((res) => {
+                console.log(`deletado com sucesso id ${id} - ${res}`)
+                getObject()
+            })
+            .catch((err) => (console.error(err)))
         }
 
         function viewFiltro(id){
@@ -75,7 +83,7 @@ export default function ListarFiltro({ route }) {
         }
 
 
-        const { id, nome, loteria, qtadedezenas } = item;
+        const { id, nome, loteria, qtadedezenas, qtadepar, qtadeimpar } = item;
         return (
             <>
                 <View key={id}>
@@ -97,6 +105,8 @@ export default function ListarFiltro({ route }) {
                             
                             <View>
                                 <Text style={{paddingTop: 5, paddingBottom: 5 }}>Quantidade de dezenas: {qtadedezenas}</Text> 
+                                <Text style={{paddingTop: 5, paddingBottom: 5 }}>Quantidade de Pares: {qtadepar}</Text> 
+                                <Text style={{paddingTop: 5, paddingBottom: 5 }}>Quantidade de Impares: {qtadeimpar}</Text> 
                             </View>
         
                         </Card.Content>

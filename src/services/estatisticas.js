@@ -684,8 +684,9 @@ export const EstatisMegaSomaParImpar = async () =>{
     }
 };
 
-export const EstatisMega = async () =>{
+export const EstatisMega = async (ultimosConcursos) =>{
     try {
+        // console.log('ultimosConcursos ', ultimosConcursos);
         const allMega = await AllResultMega();
         let somaParImpar = EstatisticaSomaParImpar(allMega);
         let percentSoma = filterParImpar(allMega);
