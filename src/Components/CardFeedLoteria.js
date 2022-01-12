@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions } from 'react-native'
 import { Avatar, Button, Card, Title, Paragraph, Divider, DataTable } from 'react-native-paper';
 
 import ActionSheet from "react-native-actions-sheet";
@@ -27,7 +27,7 @@ export function CardFeedLoteriaMega(props) {
                     backgroundColor: '#74c053',
                     padding: 16,
                     width: "100%",
-                    height: 400,
+                    height: "100%",
                 }}
             >
                 <FlatList data={props.premiacoes} keyExtractor={item => item.acertos}
@@ -90,6 +90,7 @@ export function CardFeedLoteriaMega(props) {
                     <ScrollView
                         ref={scrollViewRef}
                         nestedScrollEnabled={true}
+                        scrollEnabled={true}
                         onScrollEndDrag={() =>
                             actionSheetRef.current?.handleChildScrollEnd()
                         }
@@ -122,7 +123,7 @@ export function CardFeedLoteriaLotoFacil(props) {
                     backgroundColor: '#be6bb8',
                     padding: 16,
                     width: "100%",
-                    height: 480,
+                    height: "100%",
                 }}
             >
                 <FlatList data={props.premiacoes} keyExtractor={item => item.acertos}
@@ -181,6 +182,7 @@ export function CardFeedLoteriaLotoFacil(props) {
                     <ScrollView
                         ref={scrollViewRef}
                         nestedScrollEnabled={true}
+                        scrollEnabled={true}
                         onScrollEndDrag={() =>
                             actionSheetRef.current?.handleChildScrollEnd()
                         }
@@ -213,7 +215,7 @@ export function CardFeedLoteriaLotoMania(props) {
                     backgroundColor: "#ffb05a",
                     padding: 16,
                     width: "100%",
-                    height: 480,
+                    height: "100%"
                 }}
             >
                 <FlatList data={props.premiacoes} keyExtractor={item => item.acertos}
@@ -265,12 +267,14 @@ export function CardFeedLoteriaLotoMania(props) {
                     extraScroll={1}
                     bounceOnOpen={true}
                     drawUnderStatusBar={true}
-                    bounciness={5}
+                    bounciness={4}
                     gestureEnabled={true}
-                    defaultOverlayOpacity={0.3}>
+                    defaultOverlayOpacity={0.3}
+                    >
                     <ScrollView
                         ref={scrollViewRef}
                         nestedScrollEnabled={true}
+                        scrollEnabled={true}
                         onScrollEndDrag={() =>
                             actionSheetRef.current?.handleChildScrollEnd()
                         }
@@ -284,7 +288,7 @@ export function CardFeedLoteriaLotoMania(props) {
                             <Title style={{ textAlign: "center", fontSize: 16, color: "#fff" }}>Premiacões da {props.nome}</Title>
                             <DetalhesConcurso />
 
-                        </View>
+                        </View> 
                     </ScrollView>
                 </ActionSheet>
             </View>
@@ -303,7 +307,7 @@ export function CardFeedLoteriaQuina(props) {
                     backgroundColor: '#9F79FE',
                     padding: 16,
                     width: "100%",
-                    height: 400,
+                    height: "100%",
                 }}
             >
                 <FlatList data={props.premiacoes} keyExtractor={item => item.acertos}
@@ -355,7 +359,7 @@ export function CardFeedLoteriaQuina(props) {
                 <ActionSheet ref={actionSheetRef}
                     initialOffsetFromBottom={0.4}
                     headerAlwaysVisible={true}
-                    statusBarTranslucent
+                    statusBarTranslucent={false}
                     extraScroll={1}
                     bounceOnOpen={true}
                     drawUnderStatusBar={true}
@@ -365,6 +369,7 @@ export function CardFeedLoteriaQuina(props) {
                     <ScrollView
                         ref={scrollViewRef}
                         nestedScrollEnabled={true}
+                        scrollEnabled={true}
                         onScrollEndDrag={() =>
                             actionSheetRef.current?.handleChildScrollEnd()
                         }
