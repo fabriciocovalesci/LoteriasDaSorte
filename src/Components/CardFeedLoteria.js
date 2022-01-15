@@ -1,9 +1,11 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions } from 'react-native'
-import { Avatar, Button, Card, Title, Paragraph, Divider, DataTable } from 'react-native-paper';
+import { Avatar, Button, Card, Title, Paragraph, Divider, DataTable, IconButton, Colors } from 'react-native-paper';
 
 import ActionSheet from "react-native-actions-sheet";
 import { ScrollView } from 'react-native-gesture-handler';
+
+import { GetMegaSenaBeforeConcurso } from '../services';
 
 import ModalGanhadores from './ModalGanhadores';
 
@@ -20,17 +22,97 @@ export function CardFeedLoteriaMega(props) {
 
     const scrollViewRef = React.createRef()
 
-    const DetalhesConcurso = () => (
+    const DetalhesConcurso = () => {
+
+        const [stateConcurso, setstateConcurso] = React.useState(parseInt(props.concurso))
+        const [findConcurso, setFindConcurso] = React.useState([])
+        const [premiacoes, setstatePremiacoes] = React.useState(props.premiacoes)
+        const [estatistica, setEstaristica] = React.useState({soma: '', pares: '', impares: ''})
+
+        function clearData(){
+            setEstaristica({soma: '', pares: '', impares: ''})
+        }
+
+        function resultEstatistica(arr) {
+            let pares = 0;
+            let impares = 0
+            var soma = arr.reduce(function (soma, i) {
+                console.log(soma, i);
+                return parseInt(soma) + parseInt(i);
+            });
+            arr.filter(elem => {
+                if (parseInt(elem) % 2 == 0) pares++
+                else if (parseInt(elem) % 2 !== 0) impares++
+            })
+            return {
+                soma,
+                pares,
+                impares
+            }
+        }
+        
+       async function beforeConcurso(){
+            setstateConcurso(stateConcurso - 1)
+            const data = await GetMegaSenaBeforeConcurso(stateConcurso-1)
+            setstatePremiacoes(data.premiacoes)
+            clearData()
+            setEstaristica(resultEstatistica(data.dezenas))
+            console.log(estatistica);
+        }
+        
+       async function afterConcurso(){
+            setstateConcurso(stateConcurso + 1);
+            const data = await GetMegaSenaBeforeConcurso(stateConcurso+1)
+            const { soma, pares, impares } = resultEstatistica(data.dezenas)
+            setstatePremiacoes(data.premiacoes)
+            clearData()
+            setEstaristica(resultEstatistica(data.dezenas))
+            console.log(estatistica);
+        }
+
+        return(
         <>
             <View ref={scrollViewRef}
                 style={{
-                    backgroundColor: '#74c053',
+                    backgroundColor: '#FFF',
                     padding: 16,
                     width: "100%",
                     height: "100%",
                 }}
             >
-                <FlatList data={props.premiacoes} keyExtractor={item => item.acertos}
+                <View style={{ justifyContent: "center", flexDirection: "row", alignItems: "center" }}>
+                    <IconButton
+                        icon="arrow-left-circle"
+                        color={Colors.green400}
+                        size={24}
+                        disabled={setstateConcurso === 0 ? true : false}
+                        onPress={beforeConcurso}
+                    />
+                    <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "bold" }}>Concurso {stateConcurso}</Text>
+                    <IconButton
+                        icon="arrow-right-circle"
+                        color={Colors.green400}
+                        size={24}
+                        disabled={stateConcurso >= props.concurso ? true : false}
+                        onPress={afterConcurso}
+                    />
+                </View>
+
+                <DataTable>
+                <DataTable.Header>
+                    <DataTable.Title>Soma</DataTable.Title>
+                    <DataTable.Title numeric>Pares</DataTable.Title>
+                    <DataTable.Title numeric>Ímpares</DataTable.Title>
+                </DataTable.Header>
+                <DataTable.Row>
+                    <DataTable.Cell>{estatistica.soma}</DataTable.Cell>
+                    <DataTable.Cell numeric>{estatistica.pares}</DataTable.Cell>
+                    <DataTable.Cell numeric>{estatistica.impares}</DataTable.Cell>
+                </DataTable.Row>
+                </DataTable>
+                
+                
+                <FlatList data={premiacoes} keyExtractor={item => item.acertos}
                     renderItem={({ item }) => (
                         <View>
                             <Text>Acertos: {item.acertos}</Text>
@@ -43,6 +125,7 @@ export function CardFeedLoteriaMega(props) {
             </View>
         </>
     );
+    }
 
       const actionSheetRef = React.createRef();
 

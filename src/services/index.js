@@ -19,6 +19,8 @@ const FacilAll = 'https://loteriascaixa-api.herokuapp.com/api/lotofacil'
 const ManiaAll = 'https://loteriascaixa-api.herokuapp.com/api/lotomania'
 const QuinaAll = 'https://loteriascaixa-api.herokuapp.com/api/quina'
 
+
+const MegaBefore = `https://loteriascaixa-api.herokuapp.com/api/mega-sena/`
 const CORS = 'https://corsanywhere.herokuapp.com/'
 
 
@@ -67,6 +69,16 @@ export const ResultadoMegaSena = async () => {
     try {
         const response = await axios(Megalatest, { Headers: { 'Origin': Megalatest } })
         return response;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export const GetMegaSenaBeforeConcurso = async(concurso) => {
+    try {
+        const response = await axios(`${MegaBefore}${concurso}`)
+        return response.data;
     } catch (error) {
         console.error(error);
         return null;
