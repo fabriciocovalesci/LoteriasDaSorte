@@ -27,17 +27,19 @@ export function CardFeedLoteriaMega(props) {
         const [stateConcurso, setstateConcurso] = React.useState(parseInt(props.concurso))
         const [findConcurso, setFindConcurso] = React.useState([])
         const [premiacoes, setstatePremiacoes] = React.useState(props.premiacoes)
-        const [estatistica, setEstaristica] = React.useState({soma: '', pares: '', impares: ''})
+        const [estatistica, setEstaristica] = React.useState({soma: '', pares: '', impares: '', dezenas: []})
+        const [info, setInfo] = React.useState({acumuladaProxConcurso: '', acumulou: '', data: '', dataProxConcurso: ''})
 
         function clearData(){
-            setEstaristica({soma: '', pares: '', impares: ''})
+            setEstaristica({soma: '', pares: '', impares: ''});
+            setInfo({acumuladaProxConcurso: '', acumulou: '', data: '', dataProxConcurso: ''})
         }
 
         function resultEstatistica(arr) {
             let pares = 0;
             let impares = 0
+            let dezenas = arr
             var soma = arr.reduce(function (soma, i) {
-                console.log(soma, i);
                 return parseInt(soma) + parseInt(i);
             });
             arr.filter(elem => {
@@ -47,7 +49,8 @@ export function CardFeedLoteriaMega(props) {
             return {
                 soma,
                 pares,
-                impares
+                impares,
+                dezenas
             }
         }
         
@@ -57,18 +60,23 @@ export function CardFeedLoteriaMega(props) {
             setstatePremiacoes(data.premiacoes)
             clearData()
             setEstaristica(resultEstatistica(data.dezenas))
-            console.log(estatistica);
+            setInfo({acumuladaProxConcurso: data.acumuladaProxConcurso, acumulou: data.acumulou, data: data.data, dataProxConcurso: data.dataProxConcurso})
         }
         
        async function afterConcurso(){
             setstateConcurso(stateConcurso + 1);
             const data = await GetMegaSenaBeforeConcurso(stateConcurso+1)
-            const { soma, pares, impares } = resultEstatistica(data.dezenas)
             setstatePremiacoes(data.premiacoes)
             clearData()
             setEstaristica(resultEstatistica(data.dezenas))
-            console.log(estatistica);
+            setInfo({acumuladaProxConcurso: data.acumuladaProxConcurso, acumulou: data.acumulou, data: data.data, dataProxConcurso: data.dataProxConcurso})
         }
+
+        React.useEffect(() => {
+            clearData()
+            setInfo({acumuladaProxConcurso: props.acumuladaProxConcurso, acumulou: props.acumulou, data: props.data, dataProxConcurso: props.dataProxConcurso })
+            setEstaristica(resultEstatistica(props.dezenas))
+        }, [])
 
         return(
         <>
@@ -98,11 +106,23 @@ export function CardFeedLoteriaMega(props) {
                     />
                 </View>
 
-                <DataTable>
-                <DataTable.Header>
-                    <DataTable.Title>Soma</DataTable.Title>
-                    <DataTable.Title numeric>Pares</DataTable.Title>
-                    <DataTable.Title numeric>Ímpares</DataTable.Title>
+                <View>
+                    <Text style={{ fontWeight: "800", textAlign: "center" }}>{info.acumuladaProxConcurso !== "" ? `Estimativa de prêmio: ${info.acumuladaProxConcurso}` : null}</Text>
+                </View>
+
+                <View style={{  flexDirection: "row", flexWrap: "wrap", marginTop: 10, marginBottom: 10, justifyContent: "center" }}>
+                {estatistica.dezenas !== undefined && estatistica.dezenas.length !== 0 ? estatistica.dezenas.map((dezena, index) => 
+                    <View key={index} style={styles.circleMega}>
+                        <Text style={styles.fontText}>{dezena}</Text>
+                    </View>
+                ): null}
+                </View>
+
+                <DataTable style={styles.containerTable}>
+                <DataTable.Header style={{ backgroundColor: Colors.green200 }}>
+                    <DataTable.Title style={styles.headerText}>Soma</DataTable.Title>
+                    <DataTable.Title style={styles.headerText} numeric>Pares</DataTable.Title>
+                    <DataTable.Title style={styles.headerText} numeric>Ímpares</DataTable.Title>
                 </DataTable.Header>
                 <DataTable.Row>
                     <DataTable.Cell>{estatistica.soma}</DataTable.Cell>
@@ -111,12 +131,12 @@ export function CardFeedLoteriaMega(props) {
                 </DataTable.Row>
                 </DataTable>
                 
-                
+                <Text style={{ color: Colors.blueGrey900, fontSize: 16, fontWeight: "bold", textAlign: "center", margin: 5, backgroundColor: Colors.green200 }}>Premiações</Text>
                 <FlatList data={premiacoes} keyExtractor={item => item.acertos}
                     renderItem={({ item }) => (
-                        <View>
-                            <Text>Acertos: {item.acertos}</Text>
-                            <Text>Prêmio R$ {item.premio}</Text>
+                        <View style={{ marginLeft: 20 }}> 
+                            <Text style={{ fontWeight: "800" }} >Acertos: {item.acertos}</Text>
+                            <Text >Prêmio R$ {item.premio}</Text>
                             <Text>Vencedores: {item.vencedores}</Text>
                             <Divider style={{ margin: 10 }} />
                         </View>
@@ -183,8 +203,8 @@ export function CardFeedLoteriaMega(props) {
                         onMomentumScrollEnd={() =>
                             actionSheetRef.current?.handleChildScrollEnd()
                         }>
-                        <View style={{ paddingHorizontal: 12, backgroundColor: "#2b6212" }}>
-                            <Title style={{ textAlign: "center", fontSize: 16, color: "#fff" }}>Premiacões da {props.nome}</Title>
+                        <View style={{ paddingHorizontal: 12 }}>
+                            <Title style={{ textAlign: "center", fontSize: 16, backgroundColor: Colors.green200, color: Colors.blueGrey900 }}>Premiacões da {props.nome}</Title>
                             <DetalhesConcurso />
                         </View>
                     </ScrollView>
@@ -491,5 +511,60 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 15,
-      },
+    },
+    headerText: {
+          color: "#FFF"
+    },
+    containerTable: {
+        marginBottom: 10, 
+        borderBottomColor: Colors.green400, 
+        borderStyle: "solid", 
+        borderWidth: 0.5 
+    },
+    circleQuina: {
+        width: 32,
+        height: 32,
+        borderRadius: 32 / 2,
+        backgroundColor: '#058ce1' ,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 0,
+        margin: 5
+    },
+    circleFacil: {
+        width: 32,
+        height: 32,
+        borderRadius: 32 / 2,
+        backgroundColor: '#930989' ,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 0,
+        margin: 5
+    },
+    circleMania: {
+        width: 32,
+        height: 32,
+        borderRadius: 32 / 2,
+        backgroundColor: '#F78100' ,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 0,
+        margin: 5
+    },
+    circleMega: {
+        width: 32,
+        height: 32,
+        borderRadius: 32 / 2,
+        backgroundColor: '#209869' ,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 0,
+        margin: 5
+    },
+    fontText: {
+        color: "#fff", 
+        alignSelf: "center",
+        fontWeight: "bold" ,
+        textAlign: "center",
+    },
 })
