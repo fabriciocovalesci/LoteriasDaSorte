@@ -169,7 +169,7 @@ export function CardFeedLoteriaMega(props) {
                 <Text style={{ color: Colors.blueGrey900, fontSize: 16, fontWeight: "bold", textAlign: "center", margin: 5, backgroundColor: Colors.green200 }}>Premiações</Text>
                 <FlatList data={premiacoes} keyExtractor={item => item.acertos}
                     renderItem={({ item }) => (
-                        <View style={{ marginLeft: 20 }}> 
+                        <View style={styles.cardShadow}> 
                             <Text style={{ fontWeight: "800" }} >Acertos: {item.acertos}</Text>
                             <Text >Prêmio R$ {item.premio}</Text>
                             <Text>Vencedores: {item.vencedores}</Text>
@@ -249,6 +249,7 @@ export function CardFeedLoteriaMega(props) {
         </React.Fragment>
     )
 }
+
 
 export function CardFeedLoteriaLotoFacil(props) {
 
@@ -400,7 +401,7 @@ export function CardFeedLoteriaLotoFacil(props) {
                 <Text style={{ color: Colors.white, fontSize: 16, fontWeight: "bold", textAlign: "center", margin: 5, backgroundColor: Colors.purple400 }}>Premiações</Text>
                 <FlatList data={premiacoes} keyExtractor={item => item.acertos}
                     renderItem={({ item }) => (
-                        <View style={{ marginLeft: 20 }}> 
+                        <View style={styles.cardShadow}>  
                             <Text style={{ fontWeight: "800" }} >Acertos: {item.acertos}</Text>
                             <Text >Prêmio R$ {item.premio}</Text>
                             <Text>Vencedores: {item.vencedores}</Text>
@@ -627,7 +628,7 @@ export function CardFeedLoteriaLotoMania(props) {
                 <Text style={{ color: Colors.blueGrey700, fontSize: 16, fontWeight: "bold", textAlign: "center", margin: 5, backgroundColor: Colors.orange200 }}>Premiações</Text>
                 <FlatList data={premiacoes} keyExtractor={item => item.acertos}
                     renderItem={({ item }) => (
-                        <View style={{ marginLeft: 20 }}> 
+                        <View style={styles.cardShadow}> 
                             <Text style={{ fontWeight: "800" }} >Acertos: {item.acertos}</Text>
                             <Text >Prêmio R$ {item.premio}</Text>
                             <Text>Vencedores: {item.vencedores}</Text>
@@ -703,6 +704,7 @@ export function CardFeedLoteriaLotoMania(props) {
         </React.Fragment>
     )
 }
+
 
 export function CardFeedLoteriaQuina(props) {
 
@@ -854,7 +856,7 @@ export function CardFeedLoteriaQuina(props) {
                 <Text style={{ color: Colors.white, fontSize: 16, fontWeight: "bold", textAlign: "center", margin: 5, backgroundColor: "#260085" }}>Premiações</Text>
                 <FlatList data={premiacoes} keyExtractor={item => item.acertos}
                     renderItem={({ item }) => (
-                        <View style={{ marginLeft: 20 }}> 
+                        <View style={styles.cardShadow}> 
                             <Text style={{ fontWeight: "800" }} >Acertos: {item.acertos}</Text>
                             <Text >Prêmio R$ {item.premio}</Text>
                             <Text>Vencedores: {item.vencedores}</Text>
@@ -1007,4 +1009,16 @@ const styles = StyleSheet.create({
         fontWeight: "bold" ,
         textAlign: "center",
     },
+    cardShadow :{
+        paddingLeft: 20, 
+        backgroundColor: Colors.white, 
+        borderRadius: 10, 
+        marginBottom: 10, 
+        paddingTop: 10, 
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,  
+        elevation: 7
+    }
 })
