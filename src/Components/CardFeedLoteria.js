@@ -5,7 +5,7 @@ import { Avatar, Button, Card, Title, Paragraph, Divider, DataTable, IconButton,
 import ActionSheet from "react-native-actions-sheet";
 import { ScrollView } from 'react-native-gesture-handler';
 
-import { GetMegaSenaBeforeConcurso } from '../services';
+import { GetBeforeConcurso } from '../services';
 
 import ModalGanhadores from './ModalGanhadores';
 
@@ -56,7 +56,7 @@ export function CardFeedLoteriaMega(props) {
         
        async function beforeConcurso(){
             setstateConcurso(stateConcurso - 1)
-            const data = await GetMegaSenaBeforeConcurso(stateConcurso-1)
+            const data = await GetBeforeConcurso('mega-sena',stateConcurso-1)
             setstatePremiacoes(data.premiacoes)
             clearData()
             setEstaristica(resultEstatistica(data.dezenas))
@@ -65,7 +65,7 @@ export function CardFeedLoteriaMega(props) {
         
        async function afterConcurso(){
             setstateConcurso(stateConcurso + 1);
-            const data = await GetMegaSenaBeforeConcurso(stateConcurso+1)
+            const data = await GetBeforeConcurso('mega-sena',stateConcurso+1)
             setstatePremiacoes(data.premiacoes)
             clearData()
             setEstaristica(resultEstatistica(data.dezenas))
@@ -219,21 +219,121 @@ export function CardFeedLoteriaLotoFacil(props) {
 
     const scrollViewRef = React.createRef()
 
-    const DetalhesConcurso = () => (
+    const DetalhesConcurso = () => {
+
+        const [stateConcurso, setstateConcurso] = React.useState(parseInt(props.concurso))
+        const [findConcurso, setFindConcurso] = React.useState([])
+        const [premiacoes, setstatePremiacoes] = React.useState(props.premiacoes)
+        const [estatistica, setEstaristica] = React.useState({soma: '', pares: '', impares: '', dezenas: []})
+        const [info, setInfo] = React.useState({acumuladaProxConcurso: '', acumulou: '', data: '', dataProxConcurso: ''})
+
+        function clearData(){
+            setEstaristica({soma: '', pares: '', impares: ''});
+            setInfo({acumuladaProxConcurso: '', acumulou: '', data: '', dataProxConcurso: ''})
+        }
+
+        function resultEstatistica(arr) {
+            let pares = 0;
+            let impares = 0
+            let dezenas = arr
+            var soma = arr.reduce(function (soma, i) {
+                return parseInt(soma) + parseInt(i);
+            });
+            arr.filter(elem => {
+                if (parseInt(elem) % 2 == 0) pares++
+                else if (parseInt(elem) % 2 !== 0) impares++
+            })
+            return {
+                soma,
+                pares,
+                impares,
+                dezenas
+            }
+        }
+        
+       async function beforeConcurso(){
+            setstateConcurso(stateConcurso - 1)
+            const data = await GetBeforeConcurso('lotofacil',stateConcurso-1)
+            setstatePremiacoes(data.premiacoes)
+            clearData()
+            setEstaristica(resultEstatistica(data.dezenas))
+            setInfo({acumuladaProxConcurso: data.acumuladaProxConcurso, acumulou: data.acumulou, data: data.data, dataProxConcurso: data.dataProxConcurso})
+        }
+        
+       async function afterConcurso(){
+            setstateConcurso(stateConcurso + 1);
+            const data = await GetBeforeConcurso('lotofacil',stateConcurso+1)
+            setstatePremiacoes(data.premiacoes)
+            clearData()
+            setEstaristica(resultEstatistica(data.dezenas))
+            setInfo({acumuladaProxConcurso: data.acumuladaProxConcurso, acumulou: data.acumulou, data: data.data, dataProxConcurso: data.dataProxConcurso})
+        }
+
+        React.useEffect(() => {
+            clearData()
+            setInfo({acumuladaProxConcurso: props.acumuladaProxConcurso, acumulou: props.acumulou, data: props.data, dataProxConcurso: props.dataProxConcurso })
+            setEstaristica(resultEstatistica(props.dezenas))
+        }, [])
+
+        return(
         <>
             <View ref={scrollViewRef}
                 style={{
-                    backgroundColor: '#be6bb8',
+                    backgroundColor: '#FFF',
                     padding: 16,
                     width: "100%",
                     height: "100%",
                 }}
             >
-                <FlatList data={props.premiacoes} keyExtractor={item => item.acertos}
+                <View style={{ justifyContent: "center", flexDirection: "row", alignItems: "center" }}>
+                    <IconButton
+                        icon="arrow-left-circle"
+                        color={Colors.deepPurple400}
+                        size={24}
+                        disabled={setstateConcurso === 0 ? true : false}
+                        onPress={beforeConcurso}
+                    />
+                    <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "bold" }}>Concurso {stateConcurso}</Text>
+                    <IconButton
+                        icon="arrow-right-circle"
+                        color={Colors.deepPurple400}
+                        size={24}
+                        disabled={stateConcurso >= props.concurso ? true : false}
+                        onPress={afterConcurso}
+                    />
+                </View>
+
+                <View>
+                    <Text style={{ fontWeight: "800", textAlign: "center" }}>{info.acumuladaProxConcurso !== "" ? `Estimativa de prêmio: ${info.acumuladaProxConcurso}` : null}</Text>
+                </View>
+
+                <View style={{  flexDirection: "row", flexWrap: "wrap", marginTop: 10, marginBottom: 10, justifyContent: "center" }}>
+                {estatistica.dezenas !== undefined && estatistica.dezenas.length !== 0 ? estatistica.dezenas.map((dezena, index) => 
+                    <View key={index} style={styles.circleFacil}>
+                        <Text style={styles.fontText}>{dezena}</Text>
+                    </View>
+                ): null}
+                </View>
+
+                <DataTable style={styles.containerTable}>
+                <DataTable.Header style={{ backgroundColor: Colors.purple200 }}>
+                    <DataTable.Title style={styles.headerText}>Soma</DataTable.Title>
+                    <DataTable.Title style={styles.headerText} numeric>Pares</DataTable.Title>
+                    <DataTable.Title style={styles.headerText} numeric>Ímpares</DataTable.Title>
+                </DataTable.Header>
+                <DataTable.Row>
+                    <DataTable.Cell>{estatistica.soma}</DataTable.Cell>
+                    <DataTable.Cell numeric>{estatistica.pares}</DataTable.Cell>
+                    <DataTable.Cell numeric>{estatistica.impares}</DataTable.Cell>
+                </DataTable.Row>
+                </DataTable>
+                
+                <Text style={{ color: Colors.white, fontSize: 16, fontWeight: "bold", textAlign: "center", margin: 5, backgroundColor: Colors.purple400 }}>Premiações</Text>
+                <FlatList data={premiacoes} keyExtractor={item => item.acertos}
                     renderItem={({ item }) => (
-                        <View>
-                            <Text>Acertos: {item.acertos}</Text>
-                            <Text>Prêmio R$ {item.premio}</Text>
+                        <View style={{ marginLeft: 20 }}> 
+                            <Text style={{ fontWeight: "800" }} >Acertos: {item.acertos}</Text>
+                            <Text >Prêmio R$ {item.premio}</Text>
                             <Text>Vencedores: {item.vencedores}</Text>
                             <Divider style={{ margin: 10 }} />
                         </View>
@@ -242,6 +342,7 @@ export function CardFeedLoteriaLotoFacil(props) {
             </View>
         </>
     );
+    }
 
       const actionSheetRef = React.createRef();
 
@@ -295,8 +396,8 @@ export function CardFeedLoteriaLotoFacil(props) {
                         onMomentumScrollEnd={() =>
                             actionSheetRef.current?.handleChildScrollEnd()
                         }>
-                        <View style={{ paddingHorizontal: 12, backgroundColor: "#930989" }}>
-                            <Title style={{ textAlign: "center", fontSize: 16, color: "#fff" }}>Premiacões da {props.nome}</Title>
+                        <View style={{ paddingHorizontal: 12 }}>
+                            <Title style={{ textAlign: "center", fontSize: 16, backgroundColor: Colors.purple400, color: Colors.white  }}>Premiacões da {props.nome}</Title>
                             <DetalhesConcurso />
                         </View>
                     </ScrollView>
@@ -513,7 +614,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     headerText: {
-          color: "#FFF"
+          color: Colors.white
     },
     containerTable: {
         marginBottom: 10, 
