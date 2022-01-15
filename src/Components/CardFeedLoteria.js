@@ -57,6 +57,7 @@ export function CardFeedLoteriaMega(props) {
        async function beforeConcurso(){
             setstateConcurso(stateConcurso - 1)
             const data = await GetBeforeConcurso('mega-sena',stateConcurso-1)
+            console.log(data);
             setstatePremiacoes(data.premiacoes)
             clearData()
             setEstaristica(resultEstatistica(data.dezenas))
@@ -96,7 +97,7 @@ export function CardFeedLoteriaMega(props) {
                         disabled={setstateConcurso === 0 ? true : false}
                         onPress={beforeConcurso}
                     />
-                    <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "bold" }}>Concurso {stateConcurso}</Text>
+                    <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "bold" }}>Concurso {stateConcurso} Data {info.data}</Text>
                     <IconButton
                         icon="arrow-right-circle"
                         color={Colors.green400}
@@ -293,7 +294,7 @@ export function CardFeedLoteriaLotoFacil(props) {
                         disabled={setstateConcurso === 0 ? true : false}
                         onPress={beforeConcurso}
                     />
-                    <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "bold" }}>Concurso {stateConcurso}</Text>
+                    <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "bold" }}>Concurso {stateConcurso} Data {info.data}</Text>
                     <IconButton
                         icon="arrow-right-circle"
                         color={Colors.deepPurple400}
@@ -486,7 +487,7 @@ export function CardFeedLoteriaLotoMania(props) {
                         disabled={setstateConcurso === 0 ? true : false}
                         onPress={beforeConcurso}
                     />
-                    <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "bold" }}>Concurso {stateConcurso}</Text>
+                    <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "bold" }}>Concurso {stateConcurso} Data {info.data}</Text>
                     <IconButton
                         icon="arrow-right-circle"
                         color={Colors.orange400}
@@ -679,7 +680,7 @@ export function CardFeedLoteriaQuina(props) {
                         disabled={setstateConcurso === 0 ? true : false}
                         onPress={beforeConcurso}
                     />
-                    <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "bold" }}>Concurso {stateConcurso}</Text>
+                    <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "bold" }}>Concurso {stateConcurso} Data {info.data}</Text>
                     <IconButton
                         icon="arrow-right-circle"
                         color={Colors.blue400}
