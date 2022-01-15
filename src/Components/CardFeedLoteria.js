@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions } from 'react-native'
-import { Avatar, Button, Card, Title, Paragraph, Divider, DataTable, IconButton, Colors } from 'react-native-paper';
+import { Avatar, Button, TextInput, Card, Title, Paragraph, Divider, DataTable, IconButton, Colors } from 'react-native-paper';
 
 import ActionSheet from "react-native-actions-sheet";
 import { ScrollView } from 'react-native-gesture-handler';
@@ -29,6 +29,8 @@ export function CardFeedLoteriaMega(props) {
         const [premiacoes, setstatePremiacoes] = React.useState(props.premiacoes)
         const [estatistica, setEstaristica] = React.useState({soma: '', pares: '', impares: '', dezenas: []})
         const [info, setInfo] = React.useState({acumuladaProxConcurso: '', acumulou: '', data: '', dataProxConcurso: ''})
+        const [text, setText] = React.useState('');
+        const [error, setError] = React.useState(false)
 
         function clearData(){
             setEstaristica({soma: '', pares: '', impares: ''});
@@ -56,8 +58,8 @@ export function CardFeedLoteriaMega(props) {
         
        async function beforeConcurso(){
             setstateConcurso(stateConcurso - 1)
+            setText('')
             const data = await GetBeforeConcurso('mega-sena',stateConcurso-1)
-            console.log(data);
             setstatePremiacoes(data.premiacoes)
             clearData()
             setEstaristica(resultEstatistica(data.dezenas))
@@ -66,11 +68,33 @@ export function CardFeedLoteriaMega(props) {
         
        async function afterConcurso(){
             setstateConcurso(stateConcurso + 1);
+            setText('')
             const data = await GetBeforeConcurso('mega-sena',stateConcurso+1)
             setstatePremiacoes(data.premiacoes)
             clearData()
             setEstaristica(resultEstatistica(data.dezenas))
             setInfo({acumuladaProxConcurso: data.acumuladaProxConcurso, acumulou: data.acumulou, data: data.data, dataProxConcurso: data.dataProxConcurso})
+        }
+
+
+        async function getConcurso() {
+            if(text.length <= 0){
+                setError(false)
+            }
+            if (parseInt(text) > props.concurso || text === undefined || text === null) {
+                setError(true)
+            } 
+            if(text.length !== 0) {
+                setError(false)
+                const data = await GetBeforeConcurso('mega-sena', parseInt(text))
+                setstateConcurso(parseInt(text))
+                setstatePremiacoes(data.premiacoes)
+                clearData()
+                setEstaristica(resultEstatistica(data.dezenas))
+                setInfo({ acumuladaProxConcurso: data.acumuladaProxConcurso, acumulou: data.acumulou, data: data.data, dataProxConcurso: data.dataProxConcurso })
+            }else{
+                setError(false)
+            }
         }
 
         React.useEffect(() => {
@@ -94,7 +118,7 @@ export function CardFeedLoteriaMega(props) {
                         icon="arrow-left-circle"
                         color={Colors.green400}
                         size={24}
-                        disabled={setstateConcurso === 0 ? true : false}
+                        disabled={stateConcurso === 1 ? true : false}
                         onPress={beforeConcurso}
                     />
                     <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "bold" }}>Concurso {stateConcurso} Data {info.data}</Text>
@@ -107,8 +131,18 @@ export function CardFeedLoteriaMega(props) {
                     />
                 </View>
 
-                <View>
-                    <Text style={{ fontWeight: "800", textAlign: "center" }}>{info.acumuladaProxConcurso !== "" ? `Estimativa de prêmio: ${info.acumuladaProxConcurso}` : null}</Text>
+                <TextInput
+                label="Buscar concurso Mega Sena"
+                mode='outlined'
+                error={error}
+                value={text}
+                keyboardType="numeric"
+                onBlur={getConcurso}
+                onChangeText={text => setText(text)}
+                />
+
+                <View style={{ marginTop: 10 }}>
+                    <Text style={{ fontWeight: "800", textAlign: "center", fontSize: 15 }}>{info.acumuladaProxConcurso !== "" ? `Estimativa de prêmio: ${info.acumuladaProxConcurso}` : null}</Text>
                 </View>
 
                 <View style={{  flexDirection: "row", flexWrap: "wrap", marginTop: 10, marginBottom: 10, justifyContent: "center" }}>
@@ -227,6 +261,8 @@ export function CardFeedLoteriaLotoFacil(props) {
         const [premiacoes, setstatePremiacoes] = React.useState(props.premiacoes)
         const [estatistica, setEstaristica] = React.useState({soma: '', pares: '', impares: '', dezenas: []})
         const [info, setInfo] = React.useState({acumuladaProxConcurso: '', acumulou: '', data: '', dataProxConcurso: ''})
+        const [text, setText] = React.useState('');
+        const [error, setError] = React.useState(false)
 
         function clearData(){
             setEstaristica({soma: '', pares: '', impares: ''});
@@ -254,6 +290,7 @@ export function CardFeedLoteriaLotoFacil(props) {
         
        async function beforeConcurso(){
             setstateConcurso(stateConcurso - 1)
+            setText('')
             const data = await GetBeforeConcurso('lotofacil',stateConcurso-1)
             setstatePremiacoes(data.premiacoes)
             clearData()
@@ -263,11 +300,32 @@ export function CardFeedLoteriaLotoFacil(props) {
         
        async function afterConcurso(){
             setstateConcurso(stateConcurso + 1);
+            setText('')
             const data = await GetBeforeConcurso('lotofacil',stateConcurso+1)
             setstatePremiacoes(data.premiacoes)
             clearData()
             setEstaristica(resultEstatistica(data.dezenas))
             setInfo({acumuladaProxConcurso: data.acumuladaProxConcurso, acumulou: data.acumulou, data: data.data, dataProxConcurso: data.dataProxConcurso})
+        }
+
+        async function getConcurso() {
+            if(text.length <= 0){
+                setError(false)
+            }
+            if (parseInt(text) > props.concurso || text === undefined || text === null) {
+                setError(true)
+            } 
+            if(text.length !== 0) {
+                setError(false)
+                const data = await GetBeforeConcurso('lotofacil', parseInt(text))
+                setstateConcurso(parseInt(text))
+                setstatePremiacoes(data.premiacoes)
+                clearData()
+                setEstaristica(resultEstatistica(data.dezenas))
+                setInfo({ acumuladaProxConcurso: data.acumuladaProxConcurso, acumulou: data.acumulou, data: data.data, dataProxConcurso: data.dataProxConcurso })
+            }else{
+                setError(false)
+            }
         }
 
         React.useEffect(() => {
@@ -291,7 +349,7 @@ export function CardFeedLoteriaLotoFacil(props) {
                         icon="arrow-left-circle"
                         color={Colors.deepPurple400}
                         size={24}
-                        disabled={setstateConcurso === 0 ? true : false}
+                        disabled={stateConcurso === 1 ? true : false}
                         onPress={beforeConcurso}
                     />
                     <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "bold" }}>Concurso {stateConcurso} Data {info.data}</Text>
@@ -304,7 +362,17 @@ export function CardFeedLoteriaLotoFacil(props) {
                     />
                 </View>
 
-                <View>
+                <TextInput
+                label="Buscar concurso Loto Fácil"
+                mode='outlined'
+                error={error}
+                value={text}
+                keyboardType="numeric"
+                onBlur={getConcurso}
+                onChangeText={text => setText(text)}
+                />
+
+                <View style={{ marginTop: 10 }}>
                     <Text style={{ fontWeight: "800", textAlign: "center" }}>{info.acumuladaProxConcurso !== "" ? `Estimativa de prêmio: ${info.acumuladaProxConcurso}` : null}</Text>
                 </View>
 
@@ -420,6 +488,8 @@ export function CardFeedLoteriaLotoMania(props) {
         const [premiacoes, setstatePremiacoes] = React.useState(props.premiacoes)
         const [estatistica, setEstaristica] = React.useState({soma: '', pares: '', impares: '', dezenas: []})
         const [info, setInfo] = React.useState({acumuladaProxConcurso: '', acumulou: '', data: '', dataProxConcurso: ''})
+        const [text, setText] = React.useState('');
+        const [error, setError] = React.useState(false)
 
         function clearData(){
             setEstaristica({soma: '', pares: '', impares: ''});
@@ -447,6 +517,7 @@ export function CardFeedLoteriaLotoMania(props) {
         
        async function beforeConcurso(){
             setstateConcurso(stateConcurso - 1)
+            setText('')
             const data = await GetBeforeConcurso('lotomania',stateConcurso-1)
             setstatePremiacoes(data.premiacoes)
             clearData()
@@ -456,11 +527,32 @@ export function CardFeedLoteriaLotoMania(props) {
         
        async function afterConcurso(){
             setstateConcurso(stateConcurso + 1);
+            setText('')
             const data = await GetBeforeConcurso('lotomania',stateConcurso+1)
             setstatePremiacoes(data.premiacoes)
             clearData()
             setEstaristica(resultEstatistica(data.dezenas))
             setInfo({acumuladaProxConcurso: data.acumuladaProxConcurso, acumulou: data.acumulou, data: data.data, dataProxConcurso: data.dataProxConcurso})
+        }
+
+        async function getConcurso() {
+            if(text.length <= 0){
+                setError(false)
+            }
+            if (parseInt(text) > props.concurso || text === undefined || text === null) {
+                setError(true)
+            } 
+            if(text.length !== 0) {
+                setError(false)
+                const data = await GetBeforeConcurso('lotomania', parseInt(text))
+                setstateConcurso(parseInt(text))
+                setstatePremiacoes(data.premiacoes)
+                clearData()
+                setEstaristica(resultEstatistica(data.dezenas))
+                setInfo({ acumuladaProxConcurso: data.acumuladaProxConcurso, acumulou: data.acumulou, data: data.data, dataProxConcurso: data.dataProxConcurso })
+            }else{
+                setError(false)
+            }
         }
 
         React.useEffect(() => {
@@ -484,7 +576,7 @@ export function CardFeedLoteriaLotoMania(props) {
                         icon="arrow-left-circle"
                         color={Colors.orange400}
                         size={24}
-                        disabled={setstateConcurso === 0 ? true : false}
+                        disabled={stateConcurso === 1 ? true : false}
                         onPress={beforeConcurso}
                     />
                     <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "bold" }}>Concurso {stateConcurso} Data {info.data}</Text>
@@ -497,7 +589,17 @@ export function CardFeedLoteriaLotoMania(props) {
                     />
                 </View>
 
-                <View>
+                <TextInput
+                label="Buscar concurso Loto Mania"
+                mode='outlined'
+                error={error}
+                value={text}
+                keyboardType="numeric"
+                onBlur={getConcurso}
+                onChangeText={text => setText(text)}
+                />
+
+                <View style={{ marginTop: 10 }}>
                     <Text style={{ fontWeight: "800", textAlign: "center" }}>{info.acumuladaProxConcurso !== "" ? `Estimativa de prêmio: ${info.acumuladaProxConcurso}` : null}</Text>
                 </View>
 
@@ -613,6 +715,8 @@ export function CardFeedLoteriaQuina(props) {
         const [premiacoes, setstatePremiacoes] = React.useState(props.premiacoes)
         const [estatistica, setEstaristica] = React.useState({soma: '', pares: '', impares: '', dezenas: []})
         const [info, setInfo] = React.useState({acumuladaProxConcurso: '', acumulou: '', data: '', dataProxConcurso: ''})
+        const [text, setText] = React.useState('');
+        const [error, setError] = React.useState(false)
 
         function clearData(){
             setEstaristica({soma: '', pares: '', impares: ''});
@@ -640,6 +744,7 @@ export function CardFeedLoteriaQuina(props) {
         
        async function beforeConcurso(){
             setstateConcurso(stateConcurso - 1)
+            setText('')
             const data = await GetBeforeConcurso('quina',stateConcurso-1)
             setstatePremiacoes(data.premiacoes)
             clearData()
@@ -649,11 +754,32 @@ export function CardFeedLoteriaQuina(props) {
         
        async function afterConcurso(){
             setstateConcurso(stateConcurso + 1);
+            setText('')
             const data = await GetBeforeConcurso('quina',stateConcurso+1)
             setstatePremiacoes(data.premiacoes)
             clearData()
             setEstaristica(resultEstatistica(data.dezenas))
             setInfo({acumuladaProxConcurso: data.acumuladaProxConcurso, acumulou: data.acumulou, data: data.data, dataProxConcurso: data.dataProxConcurso})
+        }
+
+        async function getConcurso() {
+            if(text.length <= 0){
+                setError(false)
+            }
+            if (parseInt(text) > props.concurso || text === undefined || text === null) {
+                setError(true)
+            } 
+            if(text.length !== 0) {
+                setError(false)
+                const data = await GetBeforeConcurso('quina', parseInt(text))
+                setstateConcurso(parseInt(text))
+                setstatePremiacoes(data.premiacoes)
+                clearData()
+                setEstaristica(resultEstatistica(data.dezenas))
+                setInfo({ acumuladaProxConcurso: data.acumuladaProxConcurso, acumulou: data.acumulou, data: data.data, dataProxConcurso: data.dataProxConcurso })
+            }else{
+                setError(false)
+            }
         }
 
         React.useEffect(() => {
@@ -677,7 +803,7 @@ export function CardFeedLoteriaQuina(props) {
                         icon="arrow-left-circle"
                         color={Colors.blue400}
                         size={24}
-                        disabled={setstateConcurso === 0 ? true : false}
+                        disabled={stateConcurso === 1 ? true : false}
                         onPress={beforeConcurso}
                     />
                     <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "bold" }}>Concurso {stateConcurso} Data {info.data}</Text>
@@ -690,7 +816,17 @@ export function CardFeedLoteriaQuina(props) {
                     />
                 </View>
 
-                <View>
+                <TextInput
+                label="Buscar concurso Quina"
+                mode='outlined'
+                error={error}
+                value={text}
+                keyboardType="numeric"
+                onBlur={getConcurso}
+                onChangeText={text => setText(text)}
+                />
+
+                <View style={{ marginTop: 10 }}>
                     <Text style={{ fontWeight: "800", textAlign: "center" }}>{info.acumuladaProxConcurso !== "" ? `Estimativa de prêmio: ${info.acumuladaProxConcurso}` : null}</Text>
                 </View>
 
