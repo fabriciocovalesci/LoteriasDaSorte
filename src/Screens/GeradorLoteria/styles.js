@@ -15,6 +15,46 @@ export const styles = StyleSheet.create({
         borderColor: "thistle",
         borderRadius: 10,
     },
+    circleMega: {
+        width: 32,
+        height: 32,
+        borderRadius: 32 / 2,
+        backgroundColor: '#209869' ,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 0,
+        margin: 5
+    },
+    circleFacil: {
+        width: 32,
+        height: 32,
+        borderRadius: 32 / 2,
+        backgroundColor: '#930989' ,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 0,
+        margin: 5
+    },
+    circleMania: {
+        width: 32,
+        height: 32,
+        borderRadius: 32 / 2,
+        backgroundColor: '#F78100' ,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 0,
+        margin: 5
+    },
+    circleQuina: {
+        width: 32,
+        height: 32,
+        borderRadius: 32 / 2,
+        backgroundColor: '#058ce1' ,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 0,
+        margin: 5
+    },
     surfaceFacil: {
         padding: 8,
         height: 80,
@@ -56,5 +96,11 @@ export const styles = StyleSheet.create({
     },
     surfaceText:{
         color: "#fff"
+    },
+    fontText: {
+        color: "#fff", 
+        alignSelf: "center",
+        fontWeight: "bold" ,
+        textAlign: "center",
     }
 });

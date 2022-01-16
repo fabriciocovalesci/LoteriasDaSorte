@@ -10,6 +10,8 @@ import Filtro from "../../Screens/ListarFiltro";
 import CriarFavorito from "../../Screens/Loterias/index";
 import FiltroRoute from "../FilterRouter";
 
+import GeradorRoute from "../GeradorRouter";
+
 const Stack = createNativeStackNavigator();
 
 const StackFavoritos = () => {
@@ -35,7 +37,7 @@ export const TabScreen = () => {
 
   const renderScene = BottomNavigation.SceneMap({
     home: Resultados,
-    gerador: GeradorLoteria,
+    gerador: GeradorRoute,
     estatistica: EstatisticaRoute,
     favorito: StackFavoritos,
     filtro: FiltroRoute,

@@ -173,7 +173,6 @@ export function CardFeedLoteriaMega(props) {
                             <Text style={{ fontWeight: "800" }} >Acertos: {item.acertos}</Text>
                             <Text >Prêmio R$ {item.premio}</Text>
                             <Text>Vencedores: {item.vencedores}</Text>
-                            <Divider style={{ margin: 10 }} />
                         </View>
                     )}
                 />
@@ -405,7 +404,6 @@ export function CardFeedLoteriaLotoFacil(props) {
                             <Text style={{ fontWeight: "800" }} >Acertos: {item.acertos}</Text>
                             <Text >Prêmio R$ {item.premio}</Text>
                             <Text>Vencedores: {item.vencedores}</Text>
-                            <Divider style={{ margin: 10 }} />
                         </View>
                     )}
                 />
@@ -632,7 +630,6 @@ export function CardFeedLoteriaLotoMania(props) {
                             <Text style={{ fontWeight: "800" }} >Acertos: {item.acertos}</Text>
                             <Text >Prêmio R$ {item.premio}</Text>
                             <Text>Vencedores: {item.vencedores}</Text>
-                            <Divider style={{ margin: 10 }} />
                         </View>
                     )}
                 />
@@ -860,7 +857,6 @@ export function CardFeedLoteriaQuina(props) {
                             <Text style={{ fontWeight: "800" }} >Acertos: {item.acertos}</Text>
                             <Text >Prêmio R$ {item.premio}</Text>
                             <Text>Vencedores: {item.vencedores}</Text>
-                            <Divider style={{ margin: 10 }} />
                         </View>
                     )}
                 />
@@ -1010,7 +1006,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
     cardShadow :{
-        paddingLeft: 20, 
+        padding: 20, 
         backgroundColor: Colors.white, 
         borderRadius: 10, 
         marginBottom: 10, 

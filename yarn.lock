@@ -5549,6 +5549,11 @@
   "resolved" "https://registry.npmjs.org/react-native-segmented-control-tab/-/react-native-segmented-control-tab-4.0.0.tgz"
   "version" "4.0.0"
 
+"react-native-share@^7.3.3":
+  "integrity" "sha512-46JW7lfZMy7Xcw/wOXUtjgoioEJ0IAEmm4bK01M4wt/lVCntxZ0IVXUA6vWSnxN66p51bNywZMxPV1zqRSDxPQ=="
+  "resolved" "https://registry.npmjs.org/react-native-share/-/react-native-share-7.3.3.tgz"
+  "version" "7.3.3"
+
 "react-native-svg@*", "react-native-svg@> 6.4.1":
   "integrity" "sha512-NIAJ8jCnXGCqGWXkkJ1GTzO4a3Md5at5sagYV8Vh4MXYnL4z5Rh428Wahjhh+LIjx40EE5xM5YtwyJBqOIba2Q=="
   "resolved" "https://registry.npmjs.org/react-native-svg/-/react-native-svg-12.1.1.tgz"

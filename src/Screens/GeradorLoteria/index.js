@@ -23,7 +23,9 @@ import {
 }
     from "../../services";
 
-const GeradorLoteria = () => {
+const GeradorLoteria = ({ route }) => {
+
+    console.log(route);
 
     const [selected, setStateBtn] = React.useState(0)
     const [loteriaMega, setloteriaMega] = React.useState({ nome: '', numeros: '' });
@@ -116,7 +118,6 @@ const GeradorLoteria = () => {
 
     return (
         <>
-        <TopBar subtitle="Gerador de loterias aleatórios" />
             <View style={{ flexDirection: "row", justifyContent: "flex-end", alignItems: 'center', marginBottom: 10 }}>
                 <View style={{ justifyContent: "center", alignItems: "flex-end", marginTop: 25 }}>
                 <Title style={{ textAlign: "center", fontSize: 20 }}>Minha Surpresinha</Title>

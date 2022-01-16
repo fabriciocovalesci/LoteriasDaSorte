@@ -76,7 +76,7 @@ const findMaiorOcorrencia = async(getDataLoteria, status, quantidadeDezenas) => 
 }
 
 
-const returnDataFiltro = async (maiorocorrencia, menorocorrencia, maioratraso, menoratraso, qtadepar, qtadeimpar, qtadedezenas, getDataLoteria) => {
+export const returnDataFiltro = async (maiorocorrencia, menorocorrencia, maioratraso, menoratraso, qtadepar, qtadeimpar, qtadedezenas, getDataLoteria) => {
     let dezenas = []
     let sorteadas = []
     let pares = []

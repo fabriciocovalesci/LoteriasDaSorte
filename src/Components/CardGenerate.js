@@ -37,7 +37,7 @@ export default function CardGenerate(props) {
 
     return (
         <>
-            <View style={{flex: 0}}>
+            <View>
                 <Text style={{ alignSelf: "center", fontSize: 16, margin: 10, fontWeight: "bold" }}>{props.title}</Text>
                 <TextInput style={{ marginLeft: 5, marginRight: 5}} value={text} onChangeText={text => setText(text)} label="Titulo" mode="flat" />
 
@@ -75,7 +75,7 @@ export default function CardGenerate(props) {
                     label: 'Fechar',
                     onPress: () => { onDismissSnackBar },
                 }}>
-                Números da {props.title} gravado nos Favoritos.
+                Números da {props.title} salvo nos Favoritos.
             </Snackbar>
             </View>
         </>
