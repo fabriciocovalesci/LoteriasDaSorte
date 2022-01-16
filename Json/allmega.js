@@ -1,4 +1,4 @@
-[
+export let allMega = [
   {
     "loteria": "mega-sena",
     "nome": "Mega-Sena",

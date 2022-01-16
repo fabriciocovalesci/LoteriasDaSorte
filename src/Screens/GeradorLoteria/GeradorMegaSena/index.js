@@ -1,22 +1,27 @@
 import * as React from 'react';
-import { Surface, Text, Title, IconButton, Colors , Checkbox, Chip, TextInput, Snackbar, Button, Paragraph, Dialog, Portal, Provider} from 'react-native-paper';
-import { StyleSheet, View, TouchableOpacity, Dimensions, ScrollView, Keyboard, Share } from 'react-native';
+import { Surface, Text, DataTable, Title, IconButton, Colors , Checkbox, Chip, TextInput, Snackbar, Button, Paragraph, Dialog, Portal, Provider} from 'react-native-paper';
+import { StyleSheet, View, TouchableOpacity, Dimensions, Keyboard, Share } from 'react-native';
 
 import { styles } from '../styles'
 import FiltroDb from '../../../Model/FiltroDb';
 import FavoritosDataBase from '../../../Model/FavoritosDataBase';
 import { returnDataFiltro } from '../../../services/filtros';
-import { EstatisMega } from '../../../services/estatisticas';
+import { EstatisMega, compareJogo } from '../../../services/estatisticas';
 
+import ActionSheet from "react-native-actions-sheet";
+import { ScrollView } from 'react-native-gesture-handler';
+import { Col, Row, Grid } from "react-native-easy-grid";
 
 import {
     ResultadoMegaSena,
+    AllResultMega,
     ResultadoLotoFacil,
     ResultadoLotoMania,
     ResultadoQuina
 } from '../../../services';
 
-const GeradorMegaSena = ({ route }) => {
+const GeradorMegaSena = (navigation, route ) => {
+
 
     const [selected, setStateBtn] = React.useState(0)
     const [loteriaMega, setloteriaMega] = React.useState({ nome: '', numeros: '' });
@@ -32,6 +37,18 @@ const GeradorMegaSena = ({ route }) => {
     const [enableBtnGerar, setEnableBtnGerar] = React.useState(false)
 
     const [visibleModal, setVisibleModal] = React.useState(false);
+
+    const [allMega, setAllMega] = React.useState([]);
+    const [acertos, setAcertos] = React.useState([])
+
+    async function getAllResult() {
+        try {
+            const data = await AllResultMega();             
+            setAllMega(data);
+        } catch (error) {
+            console.error(error)
+        }
+    }
       
     const showDialog = () => setVisibleModal(true);
   
@@ -90,6 +107,15 @@ const GeradorMegaSena = ({ route }) => {
         }
       };
 
+      async function compareMeuJogo() {
+        try {
+           let acertosMega = await compareJogo(loteriaMega.numeros)
+           setAcertos(acertosMega)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     function setGenerate(){
         setloteriaMega({ nome: 'Mega Sena', numeros: generate(1, 60, 6) })
     }
@@ -129,6 +155,7 @@ const GeradorMegaSena = ({ route }) => {
         async function loadDataMega() {
             const data = await ResultadoMegaSena();
             setMega(data.data)
+            getAllResult()
         }
         loadDataMega();
     }, []);
@@ -139,6 +166,147 @@ const GeradorMegaSena = ({ route }) => {
         }
         initial()
     }, []);
+
+    console.log('====================================');
+    console.log(acertos);
+    console.log('====================================');
+
+
+    const scrollViewRef = React.createRef();
+
+    const DetalhesConcurso = () => {
+
+
+
+
+        const [objAcerto, setObjectAcerto] = React.useState([])
+
+        /*
+         "acumuladaProxConcurso": "",
+    "acumulou": true,
+    "concurso": 2433,
+    "data": "01/12/2021",
+    "dataProxConcurso": "",
+    "dezenas": Array [
+      "08",
+      "09",
+      "32",
+      "52",
+      "53",
+      "57",
+    ],        
+        */
+
+ 
+
+        // React.useEffect(() => {
+        //     compareMeuJogo()
+        // }, [])
+
+        return (
+            <>
+                <View ref={scrollViewRef}
+                    style={{
+                        backgroundColor: '#FFF',
+                        padding: 5,
+                        width: "100%",
+                        height: "100%",
+                        marginBottom: 20
+                    }}
+                >
+                    <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "center" }}>
+                    {loteriaMega.numeros !== undefined && loteriaMega.numeros.length !== 0 ? loteriaMega.numeros.map((dezena, index) =>
+                        <View key={index} style={styles.circleMega}>
+                            {dezena < 10 ?
+                                <Text style={styles.fontText}>{'0' + dezena}</Text>
+                                :
+                                <Text style={styles.fontText}>{dezena}</Text>
+                            }
+                        </View>
+                    ) : <Text></Text>}
+                </View>
+
+
+                {/* <Grid>
+                <Col>
+                    <Text>Data</Text>
+                </Col>
+                <Col>
+                    <Text>Concurso</Text>
+                </Col>
+                <Col>
+                    <Text>Dezenas</Text>
+                    <Text>Concurso</Text>
+                    <Text>Concurso</Text>
+                    <Text>Concurso</Text>
+                </Col>
+                <Col>
+                    <Text>Acertos</Text>
+                </Col>
+            </Grid> */}
+
+       
+
+                    <Text style={{ color: Colors.blueGrey900, fontSize: 16, fontWeight: "bold", textAlign: "center", marginTop: 5, backgroundColor: Colors.green200 }}>Premiações</Text>
+           
+
+                    <View style={{ marginLeft: 0, marginRight: 0, paddingLeft: 0, paddingRight: 0 }}>
+                        <View style={{ flexDirection: "row", justifyContent: "space-around",  marginLeft: 0, marginRight: 0, paddingLeft: 0, paddingRight: 0  }}>
+                            <Text>Data</Text>
+                            <Text>Concurso</Text>
+                            {/* <Text>12 - 34 - 35 - 40 - 46 - 55</Text> */}
+                            <Text>Dezenas</Text>
+                            <Text>Acertos</Text>
+                        </View>
+                        <View>
+                              <Grid>
+                              {
+                               acertos.length !== 0 ? acertos.map(elem => 
+                                <View style={{ flexDirection: "row", justifyContent: "space-around" }} key={elem.concurso}>
+                                  
+                                <Col>
+                                <Row>
+                                    <Text>{elem.data}</Text>
+                                </Row>
+                                </Col>
+                                <Col>
+                                <Row>
+                                    <Text>{elem.concurso}</Text>
+                                </Row>
+                                </Col>
+                                <Col>
+                                <Row>
+                                    <Text>{elem.dezenas}</Text>
+                                </Row>
+                                </Col>
+                                <Col>
+                                <Row>
+                                    <Text>{elem.acertos.length}</Text>
+                                </Row>
+                                </Col>
+                                </View>
+                                )
+                            : null }
+                            </Grid>
+                           {
+                               acertos.length !== 0 ? acertos.map(elem => 
+                                <View style={{ flexDirection: "row", justifyContent: "space-around" }} key={elem.concurso}>
+                                    <Text >{elem.data}</Text>
+                                    <Text>{elem.concurso}</Text>
+                                    <Text>{elem.dezenas.length}</Text>
+                                    <Text>{elem.acertos.length}</Text>
+                                </View>
+                                )
+                            : null }
+                            </View>
+                    </View>
+
+                </View>
+            </>
+        );
+    }
+
+    const actionSheetRef = React.createRef();
 
 
     // modal filter
@@ -237,7 +405,8 @@ const GeradorMegaSena = ({ route }) => {
                 <Button icon="share" mode="contained" style={{ borderRadius: 5, width: '50%', marginLeft: 10, marginRight: 10 }} onPress={onShare}>Compartilhar</Button>
                 <Button icon="refresh" mode="contained" disabled={enableBtnGerar} style={{ borderRadius: 5, width: '30%', marginLeft: 10, marginRight: 10 }} onPress={setGenerate}>Gerar</Button>
                 </View>
-                <Button icon="content-save-outline" mode="contained" style={{ borderRadius: 5, width: '85%', margin: 10, marginTop: 15  }} onPress={savedData}>Salvar favoritos</Button>
+                <Button icon="equal" mode="contained" style={{ borderRadius: 5, width: '85%', margin: 10, marginTop: 15  }} onPress={() => {actionSheetRef.current?.setModalVisible(); compareMeuJogo()}}>Comparar jogo</Button>
+                <Button icon="content-save-outline" mode="contained" style={{ borderRadius: 5, width: '85%', margin: 10, marginTop: 5  }} onPress={savedData}>Salvar favoritos</Button>
             </View>
             <Snackbar
                 visible={visible}
@@ -249,6 +418,35 @@ const GeradorMegaSena = ({ route }) => {
                 Números da {loteriaMega.title} salvo nos Favoritos.
             </Snackbar>
             </ScrollView>
+            <ActionSheet ref={actionSheetRef}
+                    initialOffsetFromBottom={0.4}
+                    headerAlwaysVisible={true}
+                    statusBarTranslucent
+                    extraScroll={1}
+                    bounceOnOpen={true}
+                    drawUnderStatusBar={true}
+                    bounciness={5}
+                    gestureEnabled={true}
+                    defaultOverlayOpacity={0.3}>
+                    <ScrollView
+                        ref={scrollViewRef}
+                        nestedScrollEnabled={true}
+                        scrollEnabled={true}
+                        onScrollEndDrag={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }
+                        onScrollAnimationEnd={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }
+                        onMomentumScrollEnd={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }>
+                        <View style={{ paddingHorizontal: 12 }}>
+                            <Title style={{ textAlign: "center", fontSize: 16, backgroundColor: Colors.green200, color: Colors.blueGrey900 }}>Comparar jogo</Title>
+                            <DetalhesConcurso />
+                        </View>
+                    </ScrollView>
+            </ActionSheet>
         </>
     );
 }

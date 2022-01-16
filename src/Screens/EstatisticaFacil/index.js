@@ -5,8 +5,6 @@ import { MyBarChart, MyBarChartAtraso, BarChartSomaPercent } from '../../Compone
 import MyPieChart from '../../Components/PieChart';
 import { DataTable, Divider } from 'react-native-paper';
 
-const megaAll = require('../../../Json/allmega.json')
-
 import * as Progress from 'react-native-progress';
 
 import SegmentedControlTab from "react-native-segmented-control-tab";

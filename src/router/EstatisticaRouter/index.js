@@ -5,8 +5,6 @@ import { TabView, SceneMap } from 'react-native-tab-view';
 
 import TopBar from "../../Components/TopBar";
 
-
-
 import EstatisticaMega from "../../Screens/EstatisticaMega";
 import EstatisticaFacil from "../../Screens/EstatisticaFacil";
 import EstatisticaMania from "../../Screens/EstatisticaMania";
@@ -27,7 +25,7 @@ const EstatisticaRoute = () => {
       { key: 'first', title: 'Mega Sena' },
       { key: 'second', title: 'Loto Fácil' },
       { key: 'tree', title: 'Loto Mania' },
-      { key: 'fourt', title: 'Quina' },
+      { key: 'fourt', title: 'Quina' }
     ]);
   
 

@@ -807,3 +807,52 @@ export const EstatisQuina = async () =>{
     }
 };
 
+
+
+export const compareJogo = async (array) => {
+    try {
+
+        // console.log(array;
+        array = array.map(el => el.trim());
+
+        let allData = []
+        const data = await AllResultMega();
+
+        function validarIgualdade(array_1, array_2) {
+     
+            var apenasNoR1 = array_1.filter(function (element, index, array) {
+                if(array_2.includes(element))
+                    return element;
+            });
+    
+            var apenasNoR2 = array_2.filter(function (element, index, array) {
+                if(array_1.includes(element))
+                    return element;
+            });
+    
+            var todasAsDiferencas = apenasNoR1.concat(apenasNoR2);
+    
+            return todasAsDiferencas
+        }
+
+        data.filter(obj => {
+            let equal = validarIgualdade(obj.dezenas, array)
+            equal = [...new Set(equal)]
+            if(equal.length !== 0 && equal.length >= 3){
+            let data = {
+                "concurso": obj.concurso,
+                "data": obj.data,
+                "dezenas": obj.dezenas,
+                "acertos": equal
+            }
+            allData.push(data)
+            }   
+        });
+
+        allData = allData.sort((a, b) => b.acertos.length - a.acertos.length);
+        
+        return allData
+    } catch (error) {
+        console.error(error);
+    }
+}
