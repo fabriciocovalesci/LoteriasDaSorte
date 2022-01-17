@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { StyleSheet  } from 'react-native';
+import { Colors } from 'react-native-paper'
 
 export const styles = StyleSheet.create({
     surfaceMega: {
@@ -55,6 +56,16 @@ export const styles = StyleSheet.create({
         padding: 0,
         margin: 5
     },
+    circle: {
+        width: 36,
+        height: 36,
+        borderRadius: 36 / 2,
+        backgroundColor: Colors.green900,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 5,
+        margin: 5
+    },
     surfaceFacil: {
         padding: 8,
         height: 80,
@@ -102,5 +113,17 @@ export const styles = StyleSheet.create({
         alignSelf: "center",
         fontWeight: "bold" ,
         textAlign: "center",
+    },
+    cardShadow :{
+        padding: 20, 
+        backgroundColor: Colors.white, 
+        borderRadius: 10, 
+        marginBottom: 10, 
+        paddingTop: 10, 
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,  
+        elevation: 7
     }
 });

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Surface, Text, DataTable, Title, IconButton, Colors , Checkbox, Chip, TextInput, Snackbar, Button, Paragraph, Dialog, Portal, Provider} from 'react-native-paper';
+import { Surface, Text, DataTable, Title, IconButton, Colors, Checkbox, Chip, TextInput, Snackbar, Button, Paragraph, Dialog, Portal, Provider } from 'react-native-paper';
 import { StyleSheet, View, TouchableOpacity, Dimensions, Keyboard, Share } from 'react-native';
 
 import { styles } from '../styles'
@@ -20,7 +20,7 @@ import {
     ResultadoQuina
 } from '../../../services';
 
-const GeradorMegaSena = (navigation, route ) => {
+const GeradorMegaSena = (navigation, route) => {
 
 
     const [selected, setStateBtn] = React.useState(0)
@@ -43,15 +43,15 @@ const GeradorMegaSena = (navigation, route ) => {
 
     async function getAllResult() {
         try {
-            const data = await AllResultMega();             
+            const data = await AllResultMega();
             setAllMega(data);
         } catch (error) {
             console.error(error)
         }
     }
-      
+
     const showDialog = () => setVisibleModal(true);
-  
+
     const hideDialog = () => setVisibleModal(false);
 
     async function savedData() {
@@ -73,59 +73,59 @@ const GeradorMegaSena = (navigation, route ) => {
 
     function generate(min, max, quantidade) {
         let numbers = []
-        while(numbers.length < quantidade){
+        while (numbers.length < quantidade) {
             min = Math.ceil(min);
             max = Math.floor(max);
             let aleatorio = Math.floor(Math.random() * (max - min + 1)) + min;
-            if(numbers.indexOf(aleatorio + ' ') === -1) numbers.push(aleatorio + ' ');
+            if (numbers.indexOf(aleatorio + ' ') === -1) numbers.push(aleatorio + ' ');
         }
-        return numbers.sort((a, b) => {return a-b});
-    } 
+        return numbers.sort((a, b) => { return a - b });
+    }
 
-    function returnMSG(){
+    function returnMSG() {
         let message = `Palpite Mega Sena para o concurso ${megasena.proxConcurso}:`
         loteriaMega.numeros.filter(elem => message = message + ' ' + elem)
         return message;
     }
- 
+
     const onShare = async () => {
         try {
-          const result = await Share.share({
-            message: returnMSG(),
-          });
-          if (result.action === Share.sharedAction) {
-            if (result.activityType) {
-              // shared with activity type of result.activityType
-            } else {
-              // shared
+            const result = await Share.share({
+                message: returnMSG(),
+            });
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared
+                }
+            } else if (result.action === Share.dismissedAction) {
+                // dismissed
             }
-          } else if (result.action === Share.dismissedAction) {
-            // dismissed
-          }
         } catch (error) {
-          alert(error.message);
+            alert(error.message);
         }
-      };
+    };
 
-      async function compareMeuJogo() {
+    async function compareMeuJogo() {
         try {
-           let acertosMega = await compareJogo(loteriaMega.numeros)
-           setAcertos(acertosMega)
+            let acertosMega = await compareJogo(loteriaMega.numeros)
+            setAcertos(acertosMega)
         } catch (error) {
             console.error(error);
         }
     }
 
-    function setGenerate(){
+    function setGenerate() {
         setloteriaMega({ nome: 'Mega Sena', numeros: generate(1, 60, 6) })
     }
 
-    function removeFilter(){
+    function removeFilter() {
         setSelectedDB([])
         setEnableBtnGerar(false)
     }
 
-    async function getFilters(){
+    async function getFilters() {
         try {
             const filters = await FiltroDb.findByloteria('megasena');
             setFilterDB(filters)
@@ -135,7 +135,7 @@ const GeradorMegaSena = (navigation, route ) => {
         }
     }
 
-    async function returnIdChildrenAplicarFiltro(id){
+    async function returnIdChildrenAplicarFiltro(id) {
         setSelectedDB([])
         const data = filterDB.filter(filter => filter.id === id);
         setSelectedDB(data)
@@ -161,47 +161,18 @@ const GeradorMegaSena = (navigation, route ) => {
     }, []);
 
     React.useEffect(() => {
-        function initial(){
+        function initial() {
             setloteriaMega({ nome: 'Mega Sena', numeros: generate(1, 60, 6) })
         }
         initial()
     }, []);
 
-    console.log('====================================');
-    console.log(acertos);
-    console.log('====================================');
-
-
     const scrollViewRef = React.createRef();
 
     const DetalhesConcurso = () => {
 
-
-
-
         const [objAcerto, setObjectAcerto] = React.useState([])
-
-        /*
-         "acumuladaProxConcurso": "",
-    "acumulou": true,
-    "concurso": 2433,
-    "data": "01/12/2021",
-    "dataProxConcurso": "",
-    "dezenas": Array [
-      "08",
-      "09",
-      "32",
-      "52",
-      "53",
-      "57",
-    ],        
-        */
-
- 
-
-        // React.useEffect(() => {
-        //     compareMeuJogo()
-        // }, [])
+        const [nenhumJogo, setNenhumJogo] = React.useState(false)
 
         return (
             <>
@@ -215,92 +186,44 @@ const GeradorMegaSena = (navigation, route ) => {
                     }}
                 >
                     <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "center" }}>
-                    {loteriaMega.numeros !== undefined && loteriaMega.numeros.length !== 0 ? loteriaMega.numeros.map((dezena, index) =>
-                        <View key={index} style={styles.circleMega}>
-                            {dezena < 10 ?
-                                <Text style={styles.fontText}>{'0' + dezena}</Text>
-                                :
-                                <Text style={styles.fontText}>{dezena}</Text>
-                            }
-                        </View>
-                    ) : <Text></Text>}
-                </View>
-
-
-                {/* <Grid>
-                <Col>
-                    <Text>Data</Text>
-                </Col>
-                <Col>
-                    <Text>Concurso</Text>
-                </Col>
-                <Col>
-                    <Text>Dezenas</Text>
-                    <Text>Concurso</Text>
-                    <Text>Concurso</Text>
-                    <Text>Concurso</Text>
-                </Col>
-                <Col>
-                    <Text>Acertos</Text>
-                </Col>
-            </Grid> */}
-
-       
-
-                    <Text style={{ color: Colors.blueGrey900, fontSize: 16, fontWeight: "bold", textAlign: "center", marginTop: 5, backgroundColor: Colors.green200 }}>Premiações</Text>
-           
-
-                    <View style={{ marginLeft: 0, marginRight: 0, paddingLeft: 0, paddingRight: 0 }}>
-                        <View style={{ flexDirection: "row", justifyContent: "space-around",  marginLeft: 0, marginRight: 0, paddingLeft: 0, paddingRight: 0  }}>
-                            <Text>Data</Text>
-                            <Text>Concurso</Text>
-                            {/* <Text>12 - 34 - 35 - 40 - 46 - 55</Text> */}
-                            <Text>Dezenas</Text>
-                            <Text>Acertos</Text>
-                        </View>
-                        <View>
-                              <Grid>
-                              {
-                               acertos.length !== 0 ? acertos.map(elem => 
-                                <View style={{ flexDirection: "row", justifyContent: "space-around" }} key={elem.concurso}>
-                                  
-                                <Col>
-                                <Row>
-                                    <Text>{elem.data}</Text>
-                                </Row>
-                                </Col>
-                                <Col>
-                                <Row>
-                                    <Text>{elem.concurso}</Text>
-                                </Row>
-                                </Col>
-                                <Col>
-                                <Row>
-                                    <Text>{elem.dezenas}</Text>
-                                </Row>
-                                </Col>
-                                <Col>
-                                <Row>
-                                    <Text>{elem.acertos.length}</Text>
-                                </Row>
-                                </Col>
-                                </View>
-                                )
-                            : null }
-                            </Grid>
-                           {
-                               acertos.length !== 0 ? acertos.map(elem => 
-                                <View style={{ flexDirection: "row", justifyContent: "space-around" }} key={elem.concurso}>
-                                    <Text >{elem.data}</Text>
-                                    <Text>{elem.concurso}</Text>
-                                    <Text>{elem.dezenas.length}</Text>
-                                    <Text>{elem.acertos.length}</Text>
-                                </View>
-                                )
-                            : null }
+                        {loteriaMega.numeros !== undefined && loteriaMega.numeros.length !== 0 ? loteriaMega.numeros.map((dezena, index) =>
+                            <View key={index} style={styles.circleMega}>
+                                {dezena < 10 ?
+                                    <Text style={styles.fontText}>{'0' + dezena}</Text>
+                                    :
+                                    <Text style={styles.fontText}>{dezena}</Text>
+                                }
                             </View>
+                        ) : <Text></Text>}
                     </View>
-
+                    <Text style={{ color: Colors.blueGrey900, fontSize: 16, fontWeight: "bold", textAlign: "center", marginTop: 5, backgroundColor: Colors.green200 }}>Concursos anteriores</Text>
+                    <View style={{ marginLeft: 0, marginRight: 0, paddingLeft: 0, paddingRight: 0, marginTop: 10 }}>
+                        <View>
+                            {
+                                acertos.length !== 0 ? acertos.map(elem =>
+                                    <View style={{ flexDirection: "column", justifyContent: "space-around" }} key={elem.concurso}>
+                                        {
+                                            elem.acertos.length >= 3 ?
+                                                <View style={styles.cardShadow}>
+                                                    <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                                                        <Text style={{ fontWeight: "bold" }}>Concurso: {elem.concurso}</Text>
+                                                        <Text style={{ fontWeight: "bold" }}> Data: {elem.data}</Text>
+                                                        <Text style={{ fontWeight: "bold" }}> Acertos: {elem.acertos.length}</Text>
+                                                    </View>
+                                                    <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "center" }}>
+                                                        {elem.dezenas.length !== 0 ? elem.dezenas.map((dezena, index) =>
+                                                            <View key={index} style={loteriaMega.numeros.toString().replace(/\s*\,\s*/g, ",").trim().split(",").includes(dezena) ? styles.circle : styles.circleMega}>
+                                                                <Text style={styles.fontText}>{dezena}</Text>
+                                                            </View>
+                                                        ) : null}
+                                                    </View>
+                                                </View>
+                                                : null}
+                                    </View>
+                                )
+                                    : null}
+                        </View>
+                    </View>
                 </View>
             </>
         );
@@ -311,45 +234,45 @@ const GeradorMegaSena = (navigation, route ) => {
 
     // modal filter
     const ModalFilter = (props) => {
-        
+
         const [stateCheck, setCheck] = React.useState('')
 
-        function getFilter(id){
+        function getFilter(id) {
             setCheck(id)
         }
 
-        function fechar(){
+        function fechar() {
             props.func(stateCheck)
             props.hideDialog()
         }
 
         return (
             <View>
-              <Portal>
-                <Dialog visible={props.visible} onDismiss={props.hideDialog}>
-                  <Dialog.Title style={{ textAlign: "center", color: Colors.green600 }}>Filtros Mega Sena</Dialog.Title>
-                  <Dialog.Content>
-                    <ScrollView>
-                  {props.filterDB.map((filter)=>
-                  <View key={filter.id} style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Checkbox status={filter.id === stateCheck ? 'checked' : 'unchecked'} 
-                    onPress={() => getFilter(filter.id)}/>
-                    <Paragraph onPress={() => getFilter(filter.id)}>{filter.nome}</Paragraph>
-                  </View>
-                    )}
-                    </ScrollView>
-                    </Dialog.Content>
-                  <Dialog.Actions>
-                    <Button onPress={fechar}>Aplicar Filtro</Button>
-                  </Dialog.Actions>
-                </Dialog>
-              </Portal>
+                <Portal>
+                    <Dialog visible={props.visible} onDismiss={props.hideDialog}>
+                        <Dialog.Title style={{ textAlign: "center", color: Colors.green600 }}>Filtros Mega Sena</Dialog.Title>
+                        <Dialog.Content>
+                            <ScrollView>
+                                {props.filterDB.map((filter) =>
+                                    <View key={filter.id} style={{ flexDirection: "row", alignItems: "center" }}>
+                                        <Checkbox status={filter.id === stateCheck ? 'checked' : 'unchecked'}
+                                            onPress={() => getFilter(filter.id)} />
+                                        <Paragraph onPress={() => getFilter(filter.id)}>{filter.nome}</Paragraph>
+                                    </View>
+                                )}
+                            </ScrollView>
+                        </Dialog.Content>
+                        <Dialog.Actions>
+                            <Button onPress={fechar}>Aplicar Filtro</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+                </Portal>
             </View>
         );
-      };
+    };
 
     return (
-        <> 
+        <>
             <View style={{ flexDirection: "row", justifyContent: "flex-end", alignItems: 'center', marginBottom: 10 }}>
                 <View style={{ justifyContent: "center", alignItems: "flex-end", marginTop: 25 }}>
                     <Title style={{ textAlign: "center", fontSize: 18 }}>Surpresinha Mega Sena</Title>
@@ -366,86 +289,86 @@ const GeradorMegaSena = (navigation, route ) => {
                     </View>
                 </TouchableOpacity>
             </View>
-            <ModalFilter func={(e) => returnIdChildrenAplicarFiltro(e)} filterDB={filterDB} visible={visibleModal}  showDialog={showDialog} hideDialog={hideDialog}/>
+            <ModalFilter func={(e) => returnIdChildrenAplicarFiltro(e)} filterDB={filterDB} visible={visibleModal} showDialog={showDialog} hideDialog={hideDialog} />
 
             <ScrollView>
-            <TextInput mode="outlined" style={{ marginLeft: 5, marginRight: 5 }} value={text} onChangeText={text => setText(text)} label="Titulo" />
-            <View style={{ marginTop: 30, alignItems: "center"}}>
+                <TextInput mode="outlined" style={{ marginLeft: 5, marginRight: 5 }} value={text} onChangeText={text => setText(text)} label="Titulo" />
+                <View style={{ marginTop: 30, alignItems: "center" }}>
 
-            <View style={{ justifyContent: "center", alignContent: "space-around", flexDirection: "row" }}>
-                {SelectedDB.length !== 0 ?
-                    <Chip icon="close" onPress={removeFilter} style={{ alignItems: "baseline", backgroundColor: '#209869', height: 40 }}><Text style={{ color: "#fff", textAlign: "center", textAlignVertical: "center" }}>{SelectedDB[0].nome}</Text></Chip>
-                : null}
-            </View>
+                    <View style={{ justifyContent: "center", alignContent: "space-around", flexDirection: "row" }}>
+                        {SelectedDB.length !== 0 ?
+                            <Chip icon="close" onPress={removeFilter} style={{ alignItems: "baseline", backgroundColor: '#209869', height: 40 }}><Text style={{ color: "#fff", textAlign: "center", textAlignVertical: "center" }}>{SelectedDB[0].nome}</Text></Chip>
+                            : null}
+                    </View>
 
-                <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "center" }}>
-                    {loteriaMega.numeros !== undefined && loteriaMega.numeros.length !== 0 ? loteriaMega.numeros.map((dezena, index) =>
-                        <View key={index} style={styles.circleMega}>
-                            {dezena < 10 ?
-                                <Text style={styles.fontText}>{'0' + dezena}</Text>
-                                :
-                                <Text style={styles.fontText}>{dezena}</Text>
-                            }
-                        </View>
-                    ) : <Text></Text>}
+                    <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "center" }}>
+                        {loteriaMega.numeros !== undefined && loteriaMega.numeros.length !== 0 ? loteriaMega.numeros.map((dezena, index) =>
+                            <View key={index} style={styles.circleMega}>
+                                {dezena < 10 ?
+                                    <Text style={styles.fontText}>{'0' + dezena}</Text>
+                                    :
+                                    <Text style={styles.fontText}>{dezena}</Text>
+                                }
+                            </View>
+                        ) : <Text></Text>}
+                    </View>
+
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                        <Checkbox
+                            status={checked ? 'checked' : 'unchecked'}
+                            onPress={() => { setChecked(!checked) }}
+                        />
+                        <Text onPress={() => { setChecked(!checked) }} style={{ textAlign: "center" }}>Associar ao próximo concurso: {megasena.proxConcurso}</Text>
+                    </View>
+                    <Text style={{ textAlign: "center" }}>Data próximo sorteio: {megasena.dataProxConcurso}</Text>
                 </View>
 
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
-                    <Checkbox
-                        status={checked ? 'checked' : 'unchecked'}
-                        onPress={() => { setChecked(!checked) }}
-                    />
-                    <Text onPress={() => { setChecked(!checked) }} style={{ textAlign: "center" }}>Associar ao próximo concurso: {megasena.proxConcurso}</Text>
+                <View style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", marginBottom: 10, marginTop: 10 }}>
+                    <View style={{ flexDirection: "row" }}>
+                        <Button icon="share" mode="contained" style={{ borderRadius: 5, width: '50%', marginLeft: 10, marginRight: 10 }} onPress={onShare}>Compartilhar</Button>
+                        <Button icon="refresh" mode="contained" disabled={enableBtnGerar} style={{ borderRadius: 5, width: '30%', marginLeft: 10, marginRight: 10 }} onPress={setGenerate}>Gerar</Button>
+                    </View>
+                    <Button icon="equal" mode="contained" style={{ borderRadius: 5, width: '85%', margin: 10, marginTop: 15 }} onPress={() => { actionSheetRef.current?.setModalVisible(); compareMeuJogo() }}>Consultar jogo</Button>
+                    <Button icon="content-save-outline" mode="contained" style={{ borderRadius: 5, width: '85%', margin: 10, marginTop: 5 }} onPress={savedData}>Salvar favoritos</Button>
                 </View>
-                <Text style={{ textAlign: "center" }}>Data próximo sorteio: {megasena.dataProxConcurso}</Text>
-            </View>
-
-            <View style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", marginBottom: 10, marginTop: 10 }}>
-                <View style={{ flexDirection: "row" }}>
-                <Button icon="share" mode="contained" style={{ borderRadius: 5, width: '50%', marginLeft: 10, marginRight: 10 }} onPress={onShare}>Compartilhar</Button>
-                <Button icon="refresh" mode="contained" disabled={enableBtnGerar} style={{ borderRadius: 5, width: '30%', marginLeft: 10, marginRight: 10 }} onPress={setGenerate}>Gerar</Button>
-                </View>
-                <Button icon="equal" mode="contained" style={{ borderRadius: 5, width: '85%', margin: 10, marginTop: 15  }} onPress={() => {actionSheetRef.current?.setModalVisible(); compareMeuJogo()}}>Comparar jogo</Button>
-                <Button icon="content-save-outline" mode="contained" style={{ borderRadius: 5, width: '85%', margin: 10, marginTop: 5  }} onPress={savedData}>Salvar favoritos</Button>
-            </View>
-            <Snackbar
-                visible={visible}
-                onDismiss={onDismissSnackBar}
-                action={{
-                    label: 'Fechar',
-                    onPress: () => { onDismissSnackBar },
-                }}>
-                Números da {loteriaMega.title} salvo nos Favoritos.
-            </Snackbar>
+                <Snackbar
+                    visible={visible}
+                    onDismiss={onDismissSnackBar}
+                    action={{
+                        label: 'Fechar',
+                        onPress: () => { onDismissSnackBar },
+                    }}>
+                    Números da {loteriaMega.title} salvo nos Favoritos.
+                </Snackbar>
             </ScrollView>
             <ActionSheet ref={actionSheetRef}
-                    initialOffsetFromBottom={0.4}
-                    headerAlwaysVisible={true}
-                    statusBarTranslucent
-                    extraScroll={1}
-                    bounceOnOpen={true}
-                    drawUnderStatusBar={true}
-                    bounciness={5}
-                    gestureEnabled={true}
-                    defaultOverlayOpacity={0.3}>
-                    <ScrollView
-                        ref={scrollViewRef}
-                        nestedScrollEnabled={true}
-                        scrollEnabled={true}
-                        onScrollEndDrag={() =>
-                            actionSheetRef.current?.handleChildScrollEnd()
-                        }
-                        onScrollAnimationEnd={() =>
-                            actionSheetRef.current?.handleChildScrollEnd()
-                        }
-                        onMomentumScrollEnd={() =>
-                            actionSheetRef.current?.handleChildScrollEnd()
-                        }>
-                        <View style={{ paddingHorizontal: 12 }}>
-                            <Title style={{ textAlign: "center", fontSize: 16, backgroundColor: Colors.green200, color: Colors.blueGrey900 }}>Comparar jogo</Title>
-                            <DetalhesConcurso />
-                        </View>
-                    </ScrollView>
+                initialOffsetFromBottom={0.4}
+                headerAlwaysVisible={true}
+                statusBarTranslucent
+                extraScroll={1}
+                bounceOnOpen={true}
+                drawUnderStatusBar={true}
+                bounciness={5}
+                gestureEnabled={true}
+                defaultOverlayOpacity={0.3}>
+                <ScrollView
+                    ref={scrollViewRef}
+                    nestedScrollEnabled={true}
+                    scrollEnabled={true}
+                    onScrollEndDrag={() =>
+                        actionSheetRef.current?.handleChildScrollEnd()
+                    }
+                    onScrollAnimationEnd={() =>
+                        actionSheetRef.current?.handleChildScrollEnd()
+                    }
+                    onMomentumScrollEnd={() =>
+                        actionSheetRef.current?.handleChildScrollEnd()
+                    }>
+                    <View style={{ paddingHorizontal: 12 }}>
+                        <Title style={{ textAlign: "center", fontSize: 16, backgroundColor: Colors.green200, color: Colors.blueGrey900 }}>Comparar jogos</Title>
+                        <DetalhesConcurso />
+                    </View>
+                </ScrollView>
             </ActionSheet>
         </>
     );
