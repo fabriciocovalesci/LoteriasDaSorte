@@ -171,6 +171,24 @@ const GeradorMegaSena = (navigation, route) => {
 
     const DetalhesConcurso = () => {
 
+        function somarArr(array){
+            var total = array.reduce((total, numero) => parseInt(total) + parseInt(numero), 0);
+            return total;
+        }
+
+        function countParImpar(array){
+            let par = 0;
+            let impar = 0;
+            array.filter(elem => {
+                if(parseInt(elem)%2===0) par++
+                else if(parseInt(elem)%2!==0) impar++
+            });
+            return {
+                par,
+                impar
+            }
+        }
+
         const [objAcerto, setObjectAcerto] = React.useState([])
         const [nenhumJogo, setNenhumJogo] = React.useState(false)
 
@@ -207,8 +225,24 @@ const GeradorMegaSena = (navigation, route) => {
                                                 <View style={styles.cardShadow}>
                                                     <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
                                                         <Text style={{ fontWeight: "bold" }}>Concurso: {elem.concurso}</Text>
-                                                        <Text style={{ fontWeight: "bold" }}> Data: {elem.data}</Text>
-                                                        <Text style={{ fontWeight: "bold" }}> Acertos: {elem.acertos.length}</Text>
+                                                        <Text style={{ fontWeight: "bold" }}> {elem.data}</Text>
+                                                        <Text style={{ fontWeight: "bold", alignSelf: "flex-end" }}> Acertos: {elem.acertos.length}</Text>
+                                                    </View>
+                                                    <View style={{ marginLeft: 20 }}>
+                                                       <Grid>
+                                                           <Col>
+                                                           <Row><Text style={{ fontWeight: "bold" }}>Soma</Text></Row>
+                                                           <Row style={{ marginLeft: 10 }}><Text>{somarArr(elem.dezenas)}</Text></Row>
+                                                           </Col>
+                                                           <Col>
+                                                           <Row><Text style={{ fontWeight: "bold" }}>Pares</Text></Row>
+                                                           <Row style={{ marginLeft: 15 }}><Text>{countParImpar(elem.dezenas).par}</Text></Row>
+                                                           </Col>
+                                                           <Col>
+                                                           <Row><Text style={{ fontWeight: "bold" }}>Ímpares</Text></Row>
+                                                           <Row style={{ marginLeft: 15 }}><Text>{countParImpar(elem.dezenas).impar}</Text></Row>
+                                                           </Col>
+                                                       </Grid>
                                                     </View>
                                                     <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "center" }}>
                                                         {elem.dezenas.length !== 0 ? elem.dezenas.map((dezena, index) =>
@@ -325,11 +359,11 @@ const GeradorMegaSena = (navigation, route) => {
 
                 <View style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", marginBottom: 10, marginTop: 10 }}>
                     <View style={{ flexDirection: "row" }}>
-                        <Button icon="share" mode="contained" style={{ borderRadius: 5, width: '50%', marginLeft: 10, marginRight: 10 }} onPress={onShare}>Compartilhar</Button>
-                        <Button icon="refresh" mode="contained" disabled={enableBtnGerar} style={{ borderRadius: 5, width: '30%', marginLeft: 10, marginRight: 10 }} onPress={setGenerate}>Gerar</Button>
+                        <Button icon="share" mode="outlined" style={{ borderRadius: 5, width: '50%', marginLeft: 10, marginRight: 10, borderColor: Colors.green900, borderWidth: 1, borderStyle: "solid" }} onPress={onShare}>Compartilhar</Button>
+                        <Button icon="refresh" mode="outlined" disabled={enableBtnGerar} style={{ borderRadius: 5, width: '30%', marginLeft: 10, marginRight: 10,  borderColor: Colors.green900, borderWidth: 1, borderStyle: "solid" }} onPress={setGenerate}>Gerar</Button>
                     </View>
-                    <Button icon="equal" mode="contained" style={{ borderRadius: 5, width: '85%', margin: 10, marginTop: 15 }} onPress={() => { actionSheetRef.current?.setModalVisible(); compareMeuJogo() }}>Consultar jogo</Button>
-                    <Button icon="content-save-outline" mode="contained" style={{ borderRadius: 5, width: '85%', margin: 10, marginTop: 5 }} onPress={savedData}>Salvar favoritos</Button>
+                    <Button icon="equal" mode="outlined" style={{ borderRadius: 5, width: '85%', margin: 10, marginTop: 15, borderColor: Colors.green900, borderWidth: 1, borderStyle: "solid" }} onPress={() => { actionSheetRef.current?.setModalVisible(); compareMeuJogo() }}>Consultar jogo</Button>
+                    <Button icon="content-save-outline" mode="outlined" style={{ borderRadius: 5, width: '85%', margin: 10, marginTop: 5, borderColor: Colors.blue900, borderWidth: 1, borderStyle: "solid" }} onPress={savedData}>Salvar favoritos</Button>
                 </View>
                 <Snackbar
                     visible={visible}
