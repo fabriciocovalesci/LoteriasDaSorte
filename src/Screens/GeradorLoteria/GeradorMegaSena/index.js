@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Surface, Text, DataTable, Title, IconButton, Colors, Checkbox, Chip, TextInput, Snackbar, Button, Paragraph, Dialog, Portal, Provider } from 'react-native-paper';
+import { Surface, Text, DataTable, Title, IconButton, Colors, Checkbox, Chip, TextInput, Snackbar, Button, Paragraph, Dialog, Portal, Provider, Divider } from 'react-native-paper';
 import { StyleSheet, View, TouchableOpacity, Dimensions, Keyboard, Share } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 
 import { styles } from '../styles'
 import FiltroDb from '../../../Model/FiltroDb';
@@ -8,9 +9,12 @@ import FavoritosDataBase from '../../../Model/FavoritosDataBase';
 import { returnDataFiltro } from '../../../services/filtros';
 import { EstatisMega, compareJogo } from '../../../services/estatisticas';
 
+import Slider from '@react-native-community/slider';
 import ActionSheet from "react-native-actions-sheet";
 import { ScrollView } from 'react-native-gesture-handler';
 import { Col, Row, Grid } from "react-native-easy-grid";
+
+import { BarChartScreen } from '../../../Components/Graficos';
 
 import {
     ResultadoMegaSena,
@@ -40,15 +44,34 @@ const GeradorMegaSena = (navigation, route) => {
 
     const [allMega, setAllMega] = React.useState([]);
     const [acertos, setAcertos] = React.useState([])
+    const [filterAllMega, setFilterAllMega] = React.useState([])
+
+    // slider
+    const [sliderDezenas, setSliderDezenas] = React.useState(6);
+    const [sliderMegaPar, setSliderMegaPar] = React.useState(3);
+    const [sliderMegaImpar, setSliderMegaImpar] = React.useState(3);
 
     async function getAllResult() {
         try {
             const data = await AllResultMega();
+                let jogos = []
+                data.slice(Math.max(data.length-10,0)).filter((elem, index) => {
+                    let data = {
+                        "concurso": elem.concurso,
+                        "data": elem.data,
+                        "dezenas": elem.dezenas.map(i=>Number(i))
+                    }
+                    jogos.push(data)
+                })
+            setFilterAllMega(jogos)
             setAllMega(data);
         } catch (error) {
             console.error(error)
         }
     }
+
+
+
 
     const showDialog = () => setVisibleModal(true);
 
@@ -71,21 +94,42 @@ const GeradorMegaSena = (navigation, route) => {
     }
 
 
-    function generate(min, max, quantidade) {
+    function generate(min, max, quantidade, par, impar) {
         let numbers = []
+        let arrayPar = []
+        let arrayImpar = []
         while (numbers.length < quantidade) {
             min = Math.ceil(min);
             max = Math.floor(max);
             let aleatorio = Math.floor(Math.random() * (max - min + 1)) + min;
-            if (numbers.indexOf(aleatorio + ' ') === -1) numbers.push(aleatorio + ' ');
+            if(numbers.indexOf(aleatorio + ' ') === -1) numbers.push(aleatorio + ' ');
+
+            // if(par !== null && impar !== null){
+            //     if(aleatorio%2===0 && numbers.indexOf(aleatorio) === -1 && par === arrayPar.length) {
+            //         arrayPar.push(aleatorio)
+            //         numbers.push(aleatorio);
+            //     }
+            //     else if(aleatorio%2!==0 && numbers.indexOf(aleatorio) === -1 && impar === arrayImpar.length) {
+            //         arrayImpar.push(aleatorio)
+            //         numbers.push(aleatorio);
+            //     }
+            // }else {
+            //     if(numbers.indexOf(aleatorio) === -1) numbers.push(aleatorio);
+            // }
         }
         return numbers.sort((a, b) => { return a - b });
     }
+
+
 
     function returnMSG() {
         let message = `Palpite Mega Sena para o concurso ${megasena.proxConcurso}:`
         loteriaMega.numeros.filter(elem => message = message + ' ' + elem)
         return message;
+    }
+
+    function setGenerate() {
+        setloteriaMega({ nome: 'Mega Sena', numeros: generate(1, 60, 6, sliderMegaPar, sliderMegaImpar) })
     }
 
     const onShare = async () => {
@@ -116,10 +160,8 @@ const GeradorMegaSena = (navigation, route) => {
         }
     }
 
-    function setGenerate() {
-        setloteriaMega({ nome: 'Mega Sena', numeros: generate(1, 60, 6) })
-    }
 
+  
     function removeFilter() {
         setSelectedDB([])
         setEnableBtnGerar(false)
@@ -143,6 +185,35 @@ const GeradorMegaSena = (navigation, route) => {
         setEnableBtnGerar(true)
     }
 
+    function truncParImpar(value, dezenas, par, impar){
+        const numero = Math.abs(value-dezenas)
+        if(par && !impar){
+            setSliderMegaPar(value)
+            setSliderMegaImpar(numero)
+        }
+        if(!par && impar){
+            setSliderMegaPar(numero)
+            setSliderMegaImpar(value)
+        }
+    }
+
+    function controllerDezenas(value){
+        if(value%2===0){
+            setSliderMegaPar(value/2)
+            setSliderMegaImpar(value/2)
+        }else{
+            let par = value / 2;
+            let impar = Math.abs(par-value)
+            setSliderMegaPar(Math.trunc(par))
+            setSliderMegaImpar(Math.round(impar))
+        }
+    }
+
+
+    const copyJogo = () => {
+        Clipboard.setString(returnMSG());
+      };
+
 
     let [megasena, setMega] = React.useState({
         acumuladaProxConcurso: '', acumulou: '',
@@ -162,7 +233,8 @@ const GeradorMegaSena = (navigation, route) => {
 
     React.useEffect(() => {
         function initial() {
-            setloteriaMega({ nome: 'Mega Sena', numeros: generate(1, 60, 6) })
+            setloteriaMega({ nome: 'Mega Sena', numeros: generate(1, 60, 6, null, null) })
+
         }
         initial()
     }, []);
@@ -206,13 +278,9 @@ const GeradorMegaSena = (navigation, route) => {
                     <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "center" }}>
                         {loteriaMega.numeros !== undefined && loteriaMega.numeros.length !== 0 ? loteriaMega.numeros.map((dezena, index) =>
                             <View key={index} style={styles.circleMega}>
-                                {dezena < 10 ?
-                                    <Text style={styles.fontText}>{'0' + dezena}</Text>
-                                    :
-                                    <Text style={styles.fontText}>{dezena}</Text>
-                                }
+                                <Text style={styles.fontText}>{dezena}</Text>
                             </View>
-                        ) : <Text></Text>}
+                        ) : null }
                     </View>
                     <Text style={{ color: Colors.blueGrey900, fontSize: 16, fontWeight: "bold", textAlign: "center", marginTop: 5, backgroundColor: Colors.green200 }}>Concursos anteriores</Text>
                     <View style={{ marginLeft: 0, marginRight: 0, paddingLeft: 0, paddingRight: 0, marginTop: 10 }}>
@@ -264,7 +332,6 @@ const GeradorMegaSena = (navigation, route) => {
     }
 
     const actionSheetRef = React.createRef();
-
 
     // modal filter
     const ModalFilter = (props) => {
@@ -327,13 +394,18 @@ const GeradorMegaSena = (navigation, route) => {
 
             <ScrollView>
                 <TextInput mode="outlined" style={{ marginLeft: 5, marginRight: 5 }} value={text} onChangeText={text => setText(text)} label="Titulo" />
-                <View style={{ marginTop: 30, alignItems: "center" }}>
+                <View style={{ marginLeft: 10, marginRight: 10 }}>
+                {/* <BarChartScreen dezenas={loteriaMega.numeros} array={allMega}/> */}
+                </View>
+                <View style={{ marginBottom: 20, alignItems: "center", justifyContent: "space-around" }}>
 
-                    <View style={{ justifyContent: "center", alignContent: "space-around", flexDirection: "row" }}>
+
+                    <View style={{ justifyContent: "center", alignContent: "space-around", flexDirection: "row", marginTop: 10 }}>
                         {SelectedDB.length !== 0 ?
                             <Chip icon="close" onPress={removeFilter} style={{ alignItems: "baseline", backgroundColor: '#209869', height: 40 }}><Text style={{ color: "#fff", textAlign: "center", textAlignVertical: "center" }}>{SelectedDB[0].nome}</Text></Chip>
                             : null}
                     </View>
+                    <View style={{ justifyContent: "center", alignItems: "center" }}>
 
                     <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "center" }}>
                         {loteriaMega.numeros !== undefined && loteriaMega.numeros.length !== 0 ? loteriaMega.numeros.map((dezena, index) =>
@@ -344,10 +416,32 @@ const GeradorMegaSena = (navigation, route) => {
                                     <Text style={styles.fontText}>{dezena}</Text>
                                 }
                             </View>
-                        ) : <Text></Text>}
+                        ) : null }
+                        
                     </View>
 
+                    </View>
+                    
+                    <View style={{ flexDirection: "row", justifyContent: "space-around", alignItems: "center", marginTop: 10 }}>
+                    <Button icon="refresh" mode="outlined" disabled={enableBtnGerar} style={{ borderRadius: 5, width: '50%', height: 40, borderColor: Colors.green900, borderWidth: 1, borderStyle: "solid" }} onPress={setGenerate}>Gerar</Button>
+                        <View style={{ justifyContent: "flex-end", flexDirection: "row" }}>
+                            <IconButton
+                                icon="content-copy"
+                                color={Colors.blue600}
+                                size={22}
+                                onPress={copyJogo}
+                            />
+                            <IconButton
+                                icon="share"
+                                color={Colors.blue600}
+                                size={22}
+                                onPress={onShare}
+                            />
+                        </View>
+                </View>                   
+
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                        
                         <Checkbox
                             status={checked ? 'checked' : 'unchecked'}
                             onPress={() => { setChecked(!checked) }}
@@ -355,16 +449,13 @@ const GeradorMegaSena = (navigation, route) => {
                         <Text onPress={() => { setChecked(!checked) }} style={{ textAlign: "center" }}>Associar ao próximo concurso: {megasena.proxConcurso}</Text>
                     </View>
                     <Text style={{ textAlign: "center" }}>Data próximo sorteio: {megasena.dataProxConcurso}</Text>
-                </View>
 
-                <View style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", marginBottom: 10, marginTop: 10 }}>
-                    <View style={{ flexDirection: "row" }}>
-                        <Button icon="share" mode="outlined" style={{ borderRadius: 5, width: '50%', marginLeft: 10, marginRight: 10, borderColor: Colors.green900, borderWidth: 1, borderStyle: "solid" }} onPress={onShare}>Compartilhar</Button>
-                        <Button icon="refresh" mode="outlined" disabled={enableBtnGerar} style={{ borderRadius: 5, width: '30%', marginLeft: 10, marginRight: 10,  borderColor: Colors.green900, borderWidth: 1, borderStyle: "solid" }} onPress={setGenerate}>Gerar</Button>
-                    </View>
-                    <Button icon="equal" mode="outlined" style={{ borderRadius: 5, width: '85%', margin: 10, marginTop: 15, borderColor: Colors.green900, borderWidth: 1, borderStyle: "solid" }} onPress={() => { actionSheetRef.current?.setModalVisible(); compareMeuJogo() }}>Consultar jogo</Button>
-                    <Button icon="content-save-outline" mode="outlined" style={{ borderRadius: 5, width: '85%', margin: 10, marginTop: 5, borderColor: Colors.blue900, borderWidth: 1, borderStyle: "solid" }} onPress={savedData}>Salvar favoritos</Button>
                 </View>
+                    <View style={{ alignItems: "center", justifyContent: "center", flexDirection: "row", marginBottom: 10, marginTop: 10 }}>
+                    <Button icon="file-find-outline" mode="outlined" style={{ borderRadius: 5,  margin: 10, marginTop: 5, borderColor: Colors.green900, borderWidth: 1, borderStyle: "solid" }} onPress={() => { actionSheetRef.current?.setModalVisible(); compareMeuJogo() }}>Consultar</Button>
+                    <Button icon="content-save-outline" mode="outlined" style={{ borderRadius: 5,  margin: 10, marginTop: 5, borderColor: Colors.blue900, borderWidth: 1, borderStyle: "solid" }} onPress={savedData}>Salvar</Button>
+                    </View>
+
                 <Snackbar
                     visible={visible}
                     onDismiss={onDismissSnackBar}

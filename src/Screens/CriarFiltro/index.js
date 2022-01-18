@@ -319,7 +319,7 @@ export default function CriarFiltro({ route }) {
                             setSliderMegaImpar(sliderMegaImpar)
                         }}
                         />
-                        <Text style={{ margin: 5 }}>Valor do jogo: R$ {valueApostaMega}</Text>
+                        {/* <Text style={{ margin: 5 }}>Valor do jogo: R$ {valueApostaMega}</Text> */}
                     </View>
                     </View>
                     : checkedFacil === true ?

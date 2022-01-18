@@ -812,7 +812,6 @@ export const EstatisQuina = async () =>{
 export const compareJogo = async (array) => {
     try {
 
-        // console.log(array;
         array = array.map(el => el.trim());
 
         let allData = []
@@ -855,4 +854,20 @@ export const compareJogo = async (array) => {
     } catch (error) {
         console.error(error);
     }
+}
+
+
+async function Jogos(periodo){
+    let jogos = []
+    const data = await AllResultMega();
+    console.log(data[0]);
+//   array.reverse().slice(Math.max(array.length-periodo,0)).filter((elem, index) => {
+//       let data = {
+//           "concurso": elem.concurso,
+//           "data": elem.data,
+//           "dezenas": elem.dezenas.map(i=>Number(i))
+//       }
+//       jogos.push(data)
+//   })
+//   return jogos
 }
