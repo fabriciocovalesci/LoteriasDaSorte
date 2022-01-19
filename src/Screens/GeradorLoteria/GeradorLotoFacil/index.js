@@ -7,7 +7,7 @@ import { styles } from '../styles'
 import FiltroDb from '../../../Model/FiltroDb';
 import FavoritosDataBase from '../../../Model/FavoritosDataBase';
 import { returnDataFiltro } from '../../../services/filtros';
-import { EstatisMega, compareJogo } from '../../../services/estatisticas';
+import { EstatisMega, compareJogo, EstatisFacil } from '../../../services/estatisticas';
 
 import Slider from '@react-native-community/slider';
 import ActionSheet from "react-native-actions-sheet";
@@ -154,7 +154,7 @@ const GeradorLotoFacil = (navigation, route) => {
 
     async function compareMeuJogo() {
         try {
-            let acertosMega = await compareJogo(loteriaMega.numeros)
+            let acertosMega = await compareJogo(loteriaMega.numeros, AllResultFacil, 11)
             setAcertos(acertosMega)
         } catch (error) {
             console.error(error);
@@ -182,7 +182,7 @@ const GeradorLotoFacil = (navigation, route) => {
         setSelectedDB([])
         const data = filterDB.filter(filter => filter.id === id);
         setSelectedDB(data)
-        setloteriaMega({ nome: 'Loto Fácil', numeros: await returnDataFiltro(data[0].maiorocorrencia, data[0].menorocorrencia, data[0].maioratraso, data[0].menoratraso, data[0].qtadepar, data[0].qtadeimpar, data[0].qtadedezenas, EstatisMega) })
+        setloteriaMega({ nome: 'Loto Fácil', numeros: await returnDataFiltro(data[0].maiorocorrencia, data[0].menorocorrencia, data[0].maioratraso, data[0].menoratraso, data[0].qtadepar, data[0].qtadeimpar, data[0].qtadedezenas, EstatisFacil) })
         setEnableBtnGerar(true)
     }
 
@@ -283,7 +283,17 @@ const GeradorLotoFacil = (navigation, route) => {
                             </View>
                         ) : null }
                     </View>
-                    <Text style={{ color: Colors.blueGrey900, fontSize: 16, fontWeight: "bold", textAlign: "center", marginTop: 5, backgroundColor: Colors.purple200 }}>Concursos anteriores</Text>
+                    <Text style={{ color: Colors.black, fontSize: 16, fontWeight: "bold", textAlign: "center", marginTop: 5, backgroundColor: Colors.purple200 }}>Concursos anteriores</Text>
+                    <View style={{ marginBottom: 15, marginTop: 15, flexDirection: "row", justifyContent: "center" }}>
+                        <View style={{ flexDirection: "row", alignItems: "center", marginRight: 10 }}>
+                        <View style={{ width: 30, height: 15, backgroundColor: Colors.purple600}}></View>
+                        <View><Text style={{ color: Colors.green500, marginLeft: 5 }}>Acertos</Text></View>
+                        </View>
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <View style={{ width: 30, height: 15, backgroundColor: Colors.red300 }}></View>
+                        <View><Text style={{ color: Colors.red500, marginLeft: 5 }}>Erros</Text></View>
+                        </View>
+                    </View>
                     <View style={{ marginLeft: 0, marginRight: 0, paddingLeft: 0, paddingRight: 0, marginTop: 10 }}>
                         <View>
                             {
@@ -324,7 +334,11 @@ const GeradorLotoFacil = (navigation, route) => {
                                                 : null}
                                     </View>
                                 )
-                                    : null}
+                            :  
+                            <View style={styles.cardShadow}>
+                                <Text style={{ padding: 10, fontWeight: "bold" }}>Nenhuma aposta anterior atingiu no minimo 11 acertos nesse jogo</Text>
+                            </View>
+                            }
                         </View>
                     </View>
                 </View>
@@ -491,7 +505,7 @@ const GeradorLotoFacil = (navigation, route) => {
                         actionSheetRef.current?.handleChildScrollEnd()
                     }>
                     <View style={{ paddingHorizontal: 12 }}>
-                        <Title style={{ textAlign: "center", fontSize: 16, backgroundColor: Colors.purple200, color: Colors.blue400 }}>Comparar jogos</Title>
+                        <Title style={{ textAlign: "center", fontSize: 16, backgroundColor: Colors.purple200, color: Colors.black }}>Comparar jogos</Title>
                         <DetalhesConcurso />
                     </View>
                 </ScrollView>

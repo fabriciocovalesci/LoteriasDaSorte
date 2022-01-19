@@ -809,13 +809,13 @@ export const EstatisQuina = async () =>{
 
 
 
-export const compareJogo = async (array) => {
+export const compareJogo = async (array, AllDataLoteria, quantidadeMinimaAcertos) => {
     try {
 
         array = array.map(el => el.trim());
 
         let allData = []
-        const data = await AllResultMega();
+        const data = await AllDataLoteria();
 
         function validarIgualdade(array_1, array_2) {
      
@@ -837,7 +837,7 @@ export const compareJogo = async (array) => {
         data.filter(obj => {
             let equal = validarIgualdade(obj.dezenas, array)
             equal = [...new Set(equal)]
-            if(equal.length !== 0 && equal.length >= 3){
+            if(equal.length !== 0 && equal.length >= quantidadeMinimaAcertos){
             let data = {
                 "concurso": obj.concurso,
                 "data": obj.data,
@@ -850,7 +850,7 @@ export const compareJogo = async (array) => {
 
         allData = allData.sort((a, b) => b.acertos.length - a.acertos.length);
         
-        return allData
+        return allData;
     } catch (error) {
         console.error(error);
     }

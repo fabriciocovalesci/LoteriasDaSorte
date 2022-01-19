@@ -153,7 +153,7 @@ const GeradorMegaSena = (navigation, route) => {
 
     async function compareMeuJogo() {
         try {
-            let acertosMega = await compareJogo(loteriaMega.numeros)
+            let acertosMega = await compareJogo(loteriaMega.numeros, AllResultMega, 3)
             setAcertos(acertosMega)
         } catch (error) {
             console.error(error);
@@ -283,6 +283,16 @@ const GeradorMegaSena = (navigation, route) => {
                         ) : null }
                     </View>
                     <Text style={{ color: Colors.blueGrey900, fontSize: 16, fontWeight: "bold", textAlign: "center", marginTop: 5, backgroundColor: Colors.green200 }}>Concursos anteriores</Text>
+                    <View style={{ marginBottom: 15, marginTop: 15, flexDirection: "row", justifyContent: "center" }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", marginRight: 10 }}>
+                        <View style={{ width: 30, height: 15, backgroundColor: '#209869'}}></View>
+                        <View><Text style={{ color: Colors.green500, marginLeft: 5 }}>Acertos</Text></View>
+                        </View>
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <View style={{ width: 30, height: 15, backgroundColor: Colors.red300 }}></View>
+                        <View><Text style={{ color: Colors.red500, marginLeft: 5 }}>Erros</Text></View>
+                        </View>
+                    </View>
                     <View style={{ marginLeft: 0, marginRight: 0, paddingLeft: 0, paddingRight: 0, marginTop: 10 }}>
                         <View>
                             {
@@ -314,13 +324,17 @@ const GeradorMegaSena = (navigation, route) => {
                                                     </View>
                                                     <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "center" }}>
                                                         {elem.dezenas.length !== 0 ? elem.dezenas.map((dezena, index) =>
-                                                            <View key={index} style={loteriaMega.numeros.toString().replace(/\s*\,\s*/g, ",").trim().split(",").includes(dezena) ? styles.circle : styles.circleMega}>
+                                                            <View key={index} style={loteriaMega.numeros.toString().replace(/\s*\,\s*/g, ",").trim().split(",").includes(dezena) ? styles.circleMega : styles.circle }>
                                                                 <Text style={styles.fontText}>{dezena}</Text>
                                                             </View>
                                                         ) : null}
                                                     </View>
                                                 </View>
-                                                : null}
+                                        : 
+                                        <View style={styles.cardShadow}>
+                                            <Text style={{ padding: 10, fontWeight: "bold" }}>Nenhuma aposta anterior atingiu no minimo 3 acertos nesse jogo</Text>
+                                        </View>
+                                        }
                                     </View>
                                 )
                                     : null}
