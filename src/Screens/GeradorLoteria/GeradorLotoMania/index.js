@@ -496,7 +496,6 @@ const GeradorLotoMania = (navigation, route) => {
                 <Snackbar
                     visible={visibleCopy}
                     onDismiss={onDismissSnackBarCopy}
-                    style={{ marginBottom: 55 }}
                     action={{
                         label: 'Fechar',
                         onPress: () => { onDismissSnackBarCopy },

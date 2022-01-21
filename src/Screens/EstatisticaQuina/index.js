@@ -1,10 +1,10 @@
 
 import React from 'react'
-import { View, Text, ScrollView, Dimensions, StyleSheet } from 'react-native'
+import { View, Text, ScrollView, Dimensions, StyleSheet, ActivityIndicator } from 'react-native'
 import { EstatisQuina } from '../../services/estatisticas';
 import { MyBarChart, MyBarChartAtraso, BarChartSomaPercent } from '../../Components/BarChart';
 import MyPieChart from '../../Components/PieChart';
-import { DataTable, Divider } from 'react-native-paper';
+import { DataTable, Divider, Colors } from 'react-native-paper';
 
 import * as Progress from 'react-native-progress';
 
@@ -58,6 +58,14 @@ export default function EstatisticaMega() {
             <ScrollView>
                 {selected === 0 ?
                     <>
+                    {
+                          QuinaChart.length === 0 && tableQuina.length === 0 ?
+                          <View style={{ flex: 1, height: Dimensions.get('screen').height / 2, justifyContent: "center", alignContent: "center" }}>
+                              <Text style={{ color: Colors.black, fontWeight: "bold", textAlign: "center" }}>Carregando dados ...</Text>
+                              <ActivityIndicator size="large" color="#0000ff" />
+                          </View>
+                          :
+                          <>
                         <View>
                             <MyBarChart dezenas={QuinaChart} tituloBar="Maior Ocorrências" subtituloBar="10 dezenas Mais sorteadas" />
                         </View>
@@ -75,8 +83,10 @@ export default function EstatisticaMega() {
                                 )}
                             </ScrollView>
                         </DataTable>
+                          </>
+                    }
                     </>
-                    : <Text></Text>}
+                    : null }
                 {selected === 1 ?
                     <>
                         <View>
