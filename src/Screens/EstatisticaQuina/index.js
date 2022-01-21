@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { View, Text, ScrollView, Dimensions } from 'react-native'
+import { View, Text, ScrollView, Dimensions, StyleSheet } from 'react-native'
 import { EstatisQuina } from '../../services/estatisticas';
 import { MyBarChart, MyBarChartAtraso, BarChartSomaPercent } from '../../Components/BarChart';
 import MyPieChart from '../../Components/PieChart';
@@ -9,6 +9,14 @@ import { DataTable, Divider } from 'react-native-paper';
 import * as Progress from 'react-native-progress';
 
 import SegmentedControlTab from "react-native-segmented-control-tab";
+
+const CircleNumber = (props) => {
+    return (
+        <View style={styles.circleQuina}>
+            <Text style={{ color: "#fff", alignSelf: "center", fontWeight: "bold" }}>{props.number}</Text>
+        </View>
+    )
+}
 
 export default function EstatisticaMega() {
 
@@ -61,7 +69,7 @@ export default function EstatisticaMega() {
                             <ScrollView>
                                 {tableQuina.map((elem, index) =>
                                     <DataTable.Row key={index}>
-                                        <DataTable.Cell >{elem[0]}</DataTable.Cell>
+                                        <DataTable.Cell ><CircleNumber number={elem[0]}/></DataTable.Cell>
                                         <DataTable.Cell >{elem[1]}</DataTable.Cell>
                                     </DataTable.Row>
                                 )}
@@ -84,7 +92,7 @@ export default function EstatisticaMega() {
                             <ScrollView>
                                 {tableQuinaAnalise.map((elem, index) =>
                                     <DataTable.Row key={index + elem.dezena}>
-                                        <DataTable.Cell >{elem.dezena}</DataTable.Cell>
+                                        <DataTable.Cell ><CircleNumber number={elem.dezena}/></DataTable.Cell>
                                         <DataTable.Cell >{elem.atraso}</DataTable.Cell>
                                         <DataTable.Cell >{elem.maxAtraso}</DataTable.Cell>
                                         <DataTable.Cell >{elem.mediaAtraso} %</DataTable.Cell>
@@ -109,7 +117,7 @@ export default function EstatisticaMega() {
                             <ScrollView>
                                 {tableQuinaAnalise.map((elem, index) =>
                                     <DataTable.Row key={index + elem.dezena}>
-                                        <DataTable.Cell >{elem.dezena}</DataTable.Cell>
+                                        <DataTable.Cell ><CircleNumber number={elem.dezena}/></DataTable.Cell>
                                         <DataTable.Cell >{elem.sequencia}</DataTable.Cell>
                                         <DataTable.Cell >{elem.maxSequencia}</DataTable.Cell>
                                         <DataTable.Cell >{elem.mediaSequencia} %</DataTable.Cell>
@@ -172,9 +180,9 @@ export default function EstatisticaMega() {
                                 <DataTable.Title numeric>Soma</DataTable.Title>
                             </DataTable.Header>
                             <ScrollView>
-                                {QuinaSomaParImpar.map((elem, index) =>
+                                {QuinaSomaParImpar.reverse().map((elem, index) =>
                                     <DataTable.Row key={index}>
-                                        <DataTable.Cell >{elem.concurso}</DataTable.Cell>
+                                        <DataTable.Cell ><Text style={{ fontWeight: "bold" }}>{elem.concurso}</Text></DataTable.Cell>
                                         <DataTable.Cell numeric>{elem.impar}</DataTable.Cell>
                                         <DataTable.Cell numeric>{elem.par}</DataTable.Cell>
                                         <DataTable.Cell numeric>{elem.soma}</DataTable.Cell>
@@ -188,3 +196,16 @@ export default function EstatisticaMega() {
         </>
     )
 }
+
+export const styles = StyleSheet.create({
+    circleQuina: {
+        width: 30,
+        height: 30,
+        borderRadius: 30 / 2,
+        backgroundColor: '#058ce1' ,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 0,
+        margin: 5
+    },
+});
