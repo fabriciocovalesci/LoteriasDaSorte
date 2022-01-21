@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions } from 'react-native'
+import { View, ActivityIndicator, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions } from 'react-native'
 import { Avatar, Button, TextInput, Card, Title, Paragraph, Divider, DataTable, IconButton, Colors } from 'react-native-paper';
 
 import ActionSheet from "react-native-actions-sheet";
@@ -167,7 +167,7 @@ export function CardFeedLoteriaMega(props) {
                 </DataTable>
                 
                 <Text style={{ color: Colors.blueGrey900, fontSize: 16, fontWeight: "bold", textAlign: "center", margin: 5, backgroundColor: Colors.green200 }}>Premiações</Text>
-                <FlatList data={premiacoes} keyExtractor={item => item.acertos}
+                <FlatList data={premiacoes} keyExtractor={item => item.acertos} style={{ marginBottom: 10, marginTop: 10 }}
                     renderItem={({ item }) => (
                         <View style={styles.cardShadow}> 
                             <Text style={{ fontWeight: "800" }} >Acertos: {item.acertos}</Text>
@@ -189,6 +189,7 @@ export function CardFeedLoteriaMega(props) {
                 <View style={{ backgroundColor: '#2b6212', height: 30, justifyContent: "center" }}>
                     <Text style={{ alignSelf: "center", color: "#fff" }}>Concurso: {props.concurso}  Data: {props.data}</Text>
                 </View>
+               
                 <View style={{ backgroundColor: "#74c053", flexDirection: "column", flex: 1, justifyContent: 'center', alignItems: "center", alignContent: "center", flexWrap: "wrap", padding: 10 }}>
 
                     {props.acumulou ?
@@ -203,9 +204,16 @@ export function CardFeedLoteriaMega(props) {
 
 
                     <View style={{ flexDirection: "row", flex: 1, justifyContent: 'center', alignItems: "center", alignContent: "center", flexWrap: "wrap" }}>
-                        {props.dezenas.map((elem, index) =>
+                        { props.dezenas.length !== 0 ? props.dezenas.map((elem, index) =>
                             <CircleNumber key={index} number={elem} />
-                        )}
+                        ) 
+                        : 
+                        <View style={{ justifyContent: "center", alignContent: "center" }}>
+                            <Text style={{ color: Colors.white }}>Carregando dados ...</Text>
+                            <ActivityIndicator size="large" color="#0000ff" />
+                        </View> 
+                        
+                        }
                     </View>
 
                 </View>
@@ -398,7 +406,7 @@ export function CardFeedLoteriaLotoFacil(props) {
                 </DataTable>
                 
                 <Text style={{ color: Colors.white, fontSize: 16, fontWeight: "bold", textAlign: "center", margin: 5, backgroundColor: Colors.purple400 }}>Premiações</Text>
-                <FlatList data={premiacoes} keyExtractor={item => item.acertos}
+                <FlatList data={premiacoes} keyExtractor={item => item.acertos} style={{ marginBottom: 10, marginTop: 10 }}
                     renderItem={({ item }) => (
                         <View style={styles.cardShadow}>  
                             <Text style={{ fontWeight: "800" }} >Acertos: {item.acertos}</Text>
@@ -430,9 +438,16 @@ export function CardFeedLoteriaLotoFacil(props) {
                         </View> : <Text></Text>}
 
                     <View style={{ flexDirection: "row", flex: 1, justifyContent: 'center', alignItems: "center", alignContent: "center", flexWrap: "wrap" }}>
-                        {props.dezenas.map((elem, index) =>
-                            <CircleNumber key={index} number={elem} />
-                        )}
+                    {
+                            props.dezenas.length !== 0 ? props.dezenas.map((elem, index) =>
+                                <CircleNumber key={index} number={elem} />
+                            )
+                                :
+                                <View style={{ justifyContent: "center", alignContent: "center" }}>
+                                    <Text style={{ color: Colors.white }}>Carregando dados ...</Text>
+                                    <ActivityIndicator size="large" color="#0000ff" />
+                                </View>
+                        }
                     </View>
 
                 </View>
@@ -624,7 +639,7 @@ export function CardFeedLoteriaLotoMania(props) {
                 </DataTable>
                 
                 <Text style={{ color: Colors.blueGrey700, fontSize: 16, fontWeight: "bold", textAlign: "center", margin: 5, backgroundColor: Colors.orange200 }}>Premiações</Text>
-                <FlatList data={premiacoes} keyExtractor={item => item.acertos}
+                <FlatList data={premiacoes} keyExtractor={item => item.acertos} style={{ marginBottom: 10, marginTop: 10 }}
                     renderItem={({ item }) => (
                         <View style={styles.cardShadow}> 
                             <Text style={{ fontWeight: "800" }} >Acertos: {item.acertos}</Text>
@@ -655,9 +670,16 @@ export function CardFeedLoteriaLotoMania(props) {
                         </View> : <Text></Text>}
 
                     <View style={{ flexDirection: "row", flex: 1, justifyContent: 'center', alignItems: "center", alignContent: "center", flexWrap: "wrap" }}>
-                        {props.dezenas.map((elem, index) =>
-                            <CircleNumber key={index} number={elem} />
-                        )}
+                        {
+                            props.dezenas.length !== 0 ? props.dezenas.map((elem, index) =>
+                                <CircleNumber key={index} number={elem} />
+                            )
+                                :
+                                <View style={{ justifyContent: "center", alignContent: "center" }}>
+                                    <Text style={{ color: Colors.white }}>Carregando dados ...</Text>
+                                    <ActivityIndicator size="large" color="#0000ff" />
+                                </View>
+                        }
                     </View>
 
                 </View>
@@ -851,7 +873,7 @@ export function CardFeedLoteriaQuina(props) {
                 </DataTable>
                 
                 <Text style={{ color: Colors.white, fontSize: 16, fontWeight: "bold", textAlign: "center", margin: 5, backgroundColor: "#260085" }}>Premiações</Text>
-                <FlatList data={premiacoes} keyExtractor={item => item.acertos}
+                <FlatList data={premiacoes} keyExtractor={item => item.acertos} style={{ marginBottom: 10, marginTop: 10 }}
                     renderItem={({ item }) => (
                         <View style={styles.cardShadow}> 
                             <Text style={{ fontWeight: "800" }} >Acertos: {item.acertos}</Text>
@@ -886,9 +908,16 @@ export function CardFeedLoteriaQuina(props) {
                         </View> : <Text></Text>}
 
                     <View style={{ flexDirection: "row", flex: 1, justifyContent: 'center', alignItems: "center", alignContent: "center", flexWrap: "wrap" }}>
-                        {props.dezenas.map((elem, index) =>
-                            <CircleNumber key={index} number={elem} />
-                        )}
+                    {
+                            props.dezenas.length !== 0 ? props.dezenas.map((elem, index) =>
+                                <CircleNumber key={index} number={elem} />
+                            )
+                                :
+                                <View style={{ justifyContent: "center", alignContent: "center" }}>
+                                    <Text style={{ color: Colors.white }}>Carregando dados ...</Text>
+                                    <ActivityIndicator size="large" color="#0000ff" />
+                                </View>
+                        }
                     </View>
 
                 </View>
@@ -1009,7 +1038,7 @@ const styles = StyleSheet.create({
         padding: 20, 
         backgroundColor: Colors.white, 
         borderRadius: 10, 
-        marginBottom: 10, 
+        marginBottom: 10,
         paddingTop: 10, 
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 3 },

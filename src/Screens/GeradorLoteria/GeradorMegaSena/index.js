@@ -34,6 +34,11 @@ const GeradorMegaSena = (navigation, route) => {
     const [visible, setVisible] = React.useState(false);
     const onToggleSnackBar = () => setVisible(!visible);
     const onDismissSnackBar = () => setVisible(false);
+
+    const [visibleCopy, setVisibleCopy] = React.useState(false);
+    const onToggleSnackBarCopy = () => setVisibleCopy(!visibleCopy);
+    const onDismissSnackBarCopy = () => setVisibleCopy(false);
+
     const [checked, setChecked] = React.useState(false)
     const [text, setText] = React.useState('');
     const [filterDB, setFilterDB] = React.useState([])
@@ -211,8 +216,13 @@ const GeradorMegaSena = (navigation, route) => {
 
 
     const copyJogo = () => {
-        Clipboard.setString(returnMSG());
-      };
+        try {
+            Clipboard.setString(returnMSG());
+            onToggleSnackBarCopy()
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
 
     let [megasena, setMega] = React.useState({
@@ -307,33 +317,33 @@ const GeradorMegaSena = (navigation, route) => {
                                                         <Text style={{ fontWeight: "bold", alignSelf: "flex-end" }}> Acertos: {elem.acertos.length}</Text>
                                                     </View>
                                                     <View style={{ marginLeft: 20 }}>
-                                                       <Grid>
-                                                           <Col>
-                                                           <Row><Text style={{ fontWeight: "bold" }}>Soma</Text></Row>
-                                                           <Row style={{ marginLeft: 10 }}><Text>{somarArr(elem.dezenas)}</Text></Row>
-                                                           </Col>
-                                                           <Col>
-                                                           <Row><Text style={{ fontWeight: "bold" }}>Pares</Text></Row>
-                                                           <Row style={{ marginLeft: 15 }}><Text>{countParImpar(elem.dezenas).par}</Text></Row>
-                                                           </Col>
-                                                           <Col>
-                                                           <Row><Text style={{ fontWeight: "bold" }}>Ímpares</Text></Row>
-                                                           <Row style={{ marginLeft: 15 }}><Text>{countParImpar(elem.dezenas).impar}</Text></Row>
-                                                           </Col>
-                                                       </Grid>
+                                                        <Grid>
+                                                            <Col>
+                                                                <Row><Text style={{ fontWeight: "bold" }}>Soma</Text></Row>
+                                                                <Row style={{ marginLeft: 10 }}><Text>{somarArr(elem.dezenas)}</Text></Row>
+                                                            </Col>
+                                                            <Col>
+                                                                <Row><Text style={{ fontWeight: "bold" }}>Pares</Text></Row>
+                                                                <Row style={{ marginLeft: 15 }}><Text>{countParImpar(elem.dezenas).par}</Text></Row>
+                                                            </Col>
+                                                            <Col>
+                                                                <Row><Text style={{ fontWeight: "bold" }}>Ímpares</Text></Row>
+                                                                <Row style={{ marginLeft: 15 }}><Text>{countParImpar(elem.dezenas).impar}</Text></Row>
+                                                            </Col>
+                                                        </Grid>
                                                     </View>
                                                     <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "center" }}>
                                                         {elem.dezenas.length !== 0 ? elem.dezenas.map((dezena, index) =>
-                                                            <View key={index} style={loteriaMega.numeros.toString().replace(/\s*\,\s*/g, ",").trim().split(",").includes(dezena) ? styles.circleMega : styles.circle }>
+                                                            <View key={index} style={loteriaMega.numeros.toString().replace(/\s*\,\s*/g, ",").trim().split(",").includes(dezena) ? styles.circleMega : styles.circle}>
                                                                 <Text style={styles.fontText}>{dezena}</Text>
                                                             </View>
                                                         ) : null}
                                                     </View>
                                                 </View>
-                                        : 
-                                        <View style={styles.cardShadow}>
-                                            <Text style={{ padding: 10, fontWeight: "bold" }}>Nenhuma aposta anterior atingiu no minimo 3 acertos nesse jogo</Text>
-                                        </View>
+                                                :
+                                                <View style={styles.cardShadow}>
+                                                    <Text style={{ padding: 10, fontWeight: "bold" }}>Nenhuma aposta anterior atingiu no minimo 3 acertos nesse jogo</Text>
+                                                </View>
                                         }
                                     </View>
                                 )
@@ -478,6 +488,16 @@ const GeradorMegaSena = (navigation, route) => {
                         onPress: () => { onDismissSnackBar },
                     }}>
                     Números da {loteriaMega.title} salvo nos Favoritos.
+                </Snackbar>
+
+                <Snackbar
+                    visible={visibleCopy}
+                    onDismiss={onDismissSnackBarCopy}
+                    action={{
+                        label: 'Fechar',
+                        onPress: () => { onDismissSnackBarCopy },
+                    }}>
+                    Números copiado com sucesso !!
                 </Snackbar>
             </ScrollView>
             <ActionSheet ref={actionSheetRef}

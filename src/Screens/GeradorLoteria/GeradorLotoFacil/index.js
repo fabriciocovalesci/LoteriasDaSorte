@@ -35,6 +35,12 @@ const GeradorLotoFacil = (navigation, route) => {
     const [visible, setVisible] = React.useState(false);
     const onToggleSnackBar = () => setVisible(!visible);
     const onDismissSnackBar = () => setVisible(false);
+
+    const [visibleCopy, setVisibleCopy] = React.useState(false);
+    const onToggleSnackBarCopy = () => setVisibleCopy(!visibleCopy);
+    const onDismissSnackBarCopy = () => setVisibleCopy(false);
+
+
     const [checked, setChecked] = React.useState(false)
     const [text, setText] = React.useState('');
     const [filterDB, setFilterDB] = React.useState([])
@@ -212,8 +218,13 @@ const GeradorLotoFacil = (navigation, route) => {
 
 
     const copyJogo = () => {
-        Clipboard.setString(returnMSG());
-      };
+        try {
+            Clipboard.setString(returnMSG());
+            onToggleSnackBarCopy();
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
 
     let [megasena, setMega] = React.useState({
@@ -480,6 +491,18 @@ const GeradorLotoFacil = (navigation, route) => {
                     }}>
                     Números da {loteriaMega.title} salvo nos Favoritos.
                 </Snackbar>
+
+                <Snackbar
+                    visible={visibleCopy}
+                    onDismiss={onDismissSnackBarCopy}
+                    style={{ marginBottom: 15 }}
+                    action={{
+                        label: 'Fechar',
+                        onPress: () => { onDismissSnackBarCopy },
+                    }}>
+                    Números copiado com sucesso !!
+                </Snackbar>
+
             </ScrollView>
             <ActionSheet ref={actionSheetRef}
                 initialOffsetFromBottom={0.4}
