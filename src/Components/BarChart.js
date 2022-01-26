@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Dimensions, View, Text, Button } from "react-native";
+import { Dimensions, View, Text, Button, StyleSheet } from "react-native";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -27,21 +27,23 @@ export const MyBarChart = (props) => {
             <Text style={{ textAlign: "center", fontSize: 14, fontWeight: "bold" }}>{ props.tituloBar }</Text>
             <Text style={{ textAlign: "center", fontSize: 12 }}>{ props.subtituloBar }</Text>
                      
-            <VictoryChart offset={10} width={screenWidth} theme={VictoryTheme.material}>
+         <VictoryChart horizontal offset={10} width={screenWidth} theme={VictoryTheme.material}>
             <VictoryLabel x={10} y={25} text="Ocorrências"  />
-            <VictoryBar style={{ data: { fill: "#c43a31" } }} alignment='start' animate={{
+            <VictoryBar style={{ data: { fill: "green" } }} alignment='start' animate={{
                               onLoad: {duration: 1000},
                               duration: 1000, 
                               easing: "bounce"
-                            }} data={data} x="dezenas" y="earnings" />
+                            }} 
+                            data={data} x="dezenas" y="earnings" 
+                            labels={({ datum }) => datum.x}
+                            />
             <VictoryLabel
                 x={screenWidth/1.5}
                 y={25}
                 textAnchor="middle"
                 text="Dezenas"
             />
-            </VictoryChart>             
-            
+            </VictoryChart>
         </View>
     )
 }
@@ -116,3 +118,28 @@ export const BarChartSomaPercent = (props) => {
         </View>
     )
 }
+
+
+
+export const graficoApp = () => {
+
+    return (
+      <View style={{flex: 1}}>
+        <View style={styles.container}>
+          <LineChart style={styles.chart}
+            data={{dataSets:[{label: "demo", values: [{y: 1}, {y: 2}, {y: 1}]}]}}
+          />
+        </View>
+      </View>
+    );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5FCFF'
+  },
+  chart: {
+    flex: 1
+  }
+});

@@ -8,6 +8,7 @@ import { TabScreen } from "./src/router/TabRouter";
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 
+import GetAllProvider from "./src/context/GetAllResultados/GetAllResultados";
 
 const Stack = createNativeStackNavigator();
 
@@ -55,8 +56,10 @@ export default function App() {
   return (
     <NavigationContainer ref={navigationRef}>
       <PaperProvider theme={theme}>
-        {/* <TopBar /> */}
+        <GetAllProvider>
         <TabScreen />
+        </GetAllProvider>
+        {/* <TopBar /> */}
       </PaperProvider>
     </NavigationContainer>
   );

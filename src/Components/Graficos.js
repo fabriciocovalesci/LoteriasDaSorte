@@ -1,5 +1,11 @@
 import { BarChart, AreaChart, Grid, XAxis } from 'react-native-svg-charts'
-import { Dimensions, View } from 'react-native'
+import { Dimensions, View , StyleSheet, Text} from 'react-native'
+import { VictoryLabel, VictoryChart, VictoryBar, VictoryLine, VictoryTheme } from 'victory-native';
+import * as React from 'react'
+import moment from 'moment';
+import "moment/locale/pt-br"
+import { Colors } from 'react-native-paper';
+moment.locale('pt-br')
 
 export const BarChartScreen = (props) => {
 
@@ -64,3 +70,83 @@ export const BarChartScreen = (props) => {
 }
 
 
+export const GraficoBarYear = (props) => {
+
+  let data = []
+  if (props.hasOwnProperty('dezenas')) {
+    props.dezenas.reverse().forEach((dezena) => {
+      let item = {
+        "y": `${Object.values(dezena)[0]}`,
+        "x": Object.keys(dezena)[0],
+      }
+      data.push(item)
+    })
+  }
+  return (
+    <>
+      <Text style={{ textAlign: "center", fontWeight: "bold", marginBottom: 0 }}>10 dezenas mais sorteadas no ano de {props.ano}</Text>
+      <VictoryChart theme={VictoryTheme.material} width={Dimensions.get('window').width - 10} height={350}>
+        <VictoryLabel x={10} y={25} text="Frequências" />
+        <VictoryBar
+          style={{ data: { fill: Colors.green400 } }}
+          data={data}
+          labelComponent={
+            <VictoryLabel angle={0} textAnchor="middle" />
+          }
+          animate={{
+            duration: 2000,
+            onLoad: { duration: 1000 }
+          }}
+          labels={({ datum }) => datum.y}
+        />
+        <VictoryLabel
+          x={Dimensions.get('screen').width - 170}
+          y={340}
+          textAnchor="middle"
+          text="Dezenas"
+        />
+      </VictoryChart>
+    </>
+  )
+}
+
+
+export const GraficoBarMesAno = (props) => {
+
+  let data = []
+  if (props.hasOwnProperty('dezenas')) {
+    props.dezenas.reverse().forEach((dezena) => {
+      let item = {
+        "y": `${Object.values(dezena)[0]}`,
+        "x": Object.keys(dezena)[0],
+      }
+      data.push(item)
+    })
+  }
+  return (
+    <>
+      <Text style={{ textAlign: "center", fontWeight: "bold", marginBottom: 0 }}>10 dezenas mais sorteadas em {moment.months(props.data.substr(5, 7) - 1)} de {props.data.substr(0, 4)}</Text>
+      <VictoryChart theme={VictoryTheme.material} domainPadding={10} width={Dimensions.get('window').width - 10} height={350}>
+        <VictoryLabel x={10} y={25} text="Frequências" />
+        <VictoryBar
+          style={{ data: { fill: Colors.green400 } }}
+          data={data}
+          labelComponent={
+            <VictoryLabel angle={0} textAnchor="middle" />
+          }
+          animate={{
+            duration: 2000,
+            onLoad: { duration: 1000 }
+          }}
+          labels={({ datum }) => datum.y}
+        />
+        <VictoryLabel
+          x={Dimensions.get('screen').width - 170}
+          y={340}
+          textAnchor="middle"
+          text="Dezenas"
+        />
+      </VictoryChart>
+    </>
+  )
+}

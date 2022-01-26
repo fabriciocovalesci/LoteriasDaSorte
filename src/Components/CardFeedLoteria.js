@@ -7,6 +7,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 import { GetBeforeConcurso } from '../services';
 
+import { GetAllContext } from '../context/GetAllResultados/GetAllResultados';
+
 import ModalGanhadores from './ModalGanhadores';
 
 const CircleNumber = (props) => {
