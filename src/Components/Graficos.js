@@ -88,7 +88,7 @@ export const GraficoBarYear = (props) => {
       <VictoryChart theme={VictoryTheme.material} width={Dimensions.get('window').width - 10} height={350}>
         <VictoryLabel x={10} y={25} text="Frequências" />
         <VictoryBar
-          style={{ data: { fill: Colors.green400 } }}
+          style={{ data: { fill: props.color } }}
           data={data}
           labelComponent={
             <VictoryLabel angle={0} textAnchor="middle" />
@@ -129,7 +129,7 @@ export const GraficoBarMesAno = (props) => {
       <VictoryChart theme={VictoryTheme.material} domainPadding={10} width={Dimensions.get('window').width - 10} height={350}>
         <VictoryLabel x={10} y={25} text="Frequências" />
         <VictoryBar
-          style={{ data: { fill: Colors.green400 } }}
+          style={{ data: { fill: props.color } }}
           data={data}
           labelComponent={
             <VictoryLabel angle={0} textAnchor="middle" />
@@ -173,7 +173,7 @@ export const GraficoGroup = (props) => {
       <VictoryChart theme={VictoryTheme.material} domainPadding={10} width={Dimensions.get('window').width - 10} height={350}>
         <VictoryLabel x={10} y={25} text="Frequências" />
         <VictoryBar
-          style={{ data: { fill: Colors.green400 } }}
+          style={{ data: { fill: props.color } }}
           data={data}
           labelComponent={
             <VictoryLabel angle={-270} dy={5} dx={30}  textAnchor="middle" />

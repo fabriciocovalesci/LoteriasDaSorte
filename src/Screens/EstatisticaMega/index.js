@@ -1,11 +1,11 @@
 
 
-import React, { useState } from 'react'
+import React from 'react'
 import { View, Text, Dimensions, FlatList, StyleSheet, ActivityIndicator } from 'react-native'
 import moment from 'moment';
 import "moment/locale/pt-br"
 import { EstatisMega } from '../../services/estatisticas';
-import { MyBarChart, MyBarChartAtraso, BarChartSomaPercent } from '../../Components/BarChart';
+import { MyBarChart, MyBarChartAtraso } from '../../Components/BarChart';
 import { DataTable, Divider, Colors, Button, Title, Provider, Menu, IconButton, Modal, Card, Paragraph, Checkbox } from 'react-native-paper';
 import * as Progress from 'react-native-progress';
 
@@ -475,7 +475,7 @@ export default function EstatisticaMega() {
                                     </ScrollView>
                                     : CheckedFreqMA ?
                                     <View>
-                                        <GraficoBarMesAno dezenas={countDezByMesAno.slice(0,10)} data={mesAno} />
+                                        <GraficoBarMesAno color={Colors.green400} dezenas={countDezByMesAno.slice(0,10)} data={mesAno} />
                                         <DataTable>
                                     <Text style={{ fontWeight: "bold", marginLeft: 15 }}>Mês - Ano: {moment.months(mesAno.substr(5, 7) - 1)} de {mesAno.substr(0, 4)}</Text>
                                     <DataTable.Header style={{}}>
@@ -628,7 +628,7 @@ export default function EstatisticaMega() {
                             </View>
                             : CheckedFreqA ?
                             <View>
-                                <GraficoBarYear dezenas={countDezByAno.slice(0,10)} ano={selectedYear}/>
+                                <GraficoBarYear color={Colors.green400}  dezenas={countDezByAno.slice(0,10)} ano={selectedYear}/>
                                 <DataTable>
                                 <Text style={{ padding: 5, fontWeight: "bold" }}>Quantidade de vezes que a dezena foi sorteada no ano de {selectedYear}</Text>
                                 <DataTable.Header style={{}}>
@@ -688,7 +688,7 @@ export default function EstatisticaMega() {
                         </Picker>
                         </View>
                         <ScrollView>
-                            <GraficoGroup ano={selectedAnoCompare} dezenas={compareArray}/>
+                            <GraficoGroup color={Colors.green400}  ano={selectedAnoCompare} dezenas={compareArray}/>
                         <DataTable>
                             <Text style={{ fontWeight: "bold", marginLeft: 15 }}>Dezena mais sorteadas por mes e ano - {selectedAnoCompare}</Text>
                             <DataTable.Header style={{}}>

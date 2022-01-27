@@ -773,6 +773,7 @@ export const EstatisFacil = async () =>{
             }
         });
         return { 
+            allFacil,allFacil,
             ocorrencias,
             somaParImpar,
             estatisAtrasoSeq,
