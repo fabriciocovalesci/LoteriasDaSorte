@@ -1,6 +1,6 @@
 import { BarChart, AreaChart, Grid, XAxis } from 'react-native-svg-charts'
 import { Dimensions, View , StyleSheet, Text} from 'react-native'
-import { VictoryLabel, VictoryChart, VictoryBar, VictoryLine, VictoryTheme } from 'victory-native';
+import { VictoryLabel, VictoryChart, VictoryBar, VictoryLine, VictoryTheme, VictoryGroup } from 'victory-native';
 import * as React from 'react'
 import moment from 'moment';
 import "moment/locale/pt-br"
@@ -145,6 +145,50 @@ export const GraficoBarMesAno = (props) => {
           y={340}
           textAnchor="middle"
           text="Dezenas"
+        />
+      </VictoryChart>
+    </>
+  )
+}
+
+
+export const GraficoGroup = (props) => {
+  let data = []
+  if (props.hasOwnProperty('dezenas')) {
+    props.dezenas.reverse().forEach((item) => {
+      if(item.hasOwnProperty('dezena') && item.hasOwnProperty('mes')){
+        let dataItem = {
+          "y": `${Object.values(item.dezena)}`,
+          "x": `${Object.keys(item.dezena)}`,
+          "z": item.mes
+        }
+        data.push(dataItem)
+      }
+    })
+
+  }
+  return (
+    <>
+ <Text style={{ textAlign: "center", fontWeight: "bold", marginBottom: 0 }}>Dezenas mais sorteadas por Mês/Ano - {props.ano}</Text>
+      <VictoryChart theme={VictoryTheme.material} domainPadding={10} width={Dimensions.get('window').width - 10} height={350}>
+        <VictoryLabel x={10} y={25} text="Frequências" />
+        <VictoryBar
+          style={{ data: { fill: Colors.green400 } }}
+          data={data}
+          labelComponent={
+            <VictoryLabel angle={-270} dy={5} dx={30}  textAnchor="middle" />
+          }
+          animate={{
+            duration: 2000,
+            onLoad: { duration: 1000 }
+          }}
+          labels={({ datum }) => datum.z}
+        />
+        <VictoryLabel
+          x={Dimensions.get('screen').width - 190}
+          y={340}
+          textAnchor="middle"
+          text="Dezenas - Mês"
         />
       </VictoryChart>
     </>
