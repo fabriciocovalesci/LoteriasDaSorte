@@ -1,13 +1,15 @@
 
 
 import React from 'react'
-import { View, Text, Dimensions, FlatList, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Text, Dimensions, FlatList,LogBox, StyleSheet, ActivityIndicator } from 'react-native'
 import moment from 'moment';
 import "moment/locale/pt-br"
 import { EstatisMega } from '../../services/estatisticas';
-import { MyBarChart, MyBarChartAtraso } from '../../Components/BarChart';
+import { MyBarChart, MyBarChartAtraso, MyBarChartSequencia } from '../../Components/BarChart';
 import { DataTable, Divider, Colors, Button, Title, Provider, Menu, IconButton, Modal, Card, Paragraph, Checkbox } from 'react-native-paper';
 import * as Progress from 'react-native-progress';
+
+import { firebaseDB } from '../../firebase/config';
 
 import { Col, Row, Grid } from "react-native-easy-grid";
 
@@ -36,11 +38,22 @@ const CircleNumber = (props) => {
     )
 }
 
+LogBox.ignoreAllLogs(); // ignore all logs
+
+
 const dataYear = Array.from({ length: 27 }, (v, k) => k + 1996).reverse()
 const dataMes = Array.from({ length: 12 }, (v, k) => k + 1)
 
 
 export default function EstatisticaMega() {
+
+
+    // async function getCities(db) {
+    //     const citiesCol = collection(db, 'users');
+    //     const citySnapshot = await getDocs(citiesCol);
+    //     const cityList = citySnapshot.docs.map(doc => doc.data());
+    //     return cityList;
+    //   }
 
     const [selected, setStateBtn] = React.useState(0)
 
@@ -111,17 +124,17 @@ export default function EstatisticaMega() {
         }
     }
 
-
     React.useEffect(() => {
         EstatisMega().then((value) => {
             SetAlldataMega(value.allMega)
             setTableMega(value.ocorrencias);
             setMegaChart(value.ocorrencias.slice(0, 10));
             setTableMegaAnalise(value.estatisAtrasoSeq)
-            setMegaChartAtraso(value.estatisAtrasoSeq.slice(value.estatisAtrasoSeq.length - 10, value.estatisAtrasoSeq.length))
+            setMegaChartAtraso(value.estatisAtrasoSeq)
             setMegaSomaParImpar(value.somaParImpar.slice(value.somaParImpar.length - 100, value.somaParImpar.length))
             setMegaSomaPercent(value.percentSoma)
         });
+
     }, [])
 
 
@@ -225,7 +238,7 @@ export default function EstatisticaMega() {
                         :
                         <>
                         <View>
-                            <MyBarChart dezenas={megaChart} tituloBar="Maior Ocorrências" subtituloBar="10 dezenas Mais sorteadas" />
+                            <MyBarChart color="#209869" dezenas={megaChart} tituloBar="Maior Ocorrências" subtituloBar="10 dezenas Mais sorteadas" />
                         </View>
                         <DataTable>
                             <DataTable.Header style={{}}>
@@ -248,7 +261,7 @@ export default function EstatisticaMega() {
                     :  selectedLanguage === 'atrasos'  ?
                     <>
                         <View>
-                            <MyBarChartAtraso dezenas={megaChartAtraso} tituloBar="Maiores Atrasos" subtituloBar="10 dezenas Mais atrasadas" />
+                            <MyBarChartAtraso color="#209869" dezenas={megaChartAtraso} tituloBar="Maiores Atrasos" subtituloBar="10 dezenas Mais atrasadas" />
                         </View>
                         <DataTable>
                             <DataTable.Header style={{}}>
@@ -272,7 +285,7 @@ export default function EstatisticaMega() {
                     : selectedLanguage === 'sequencias'  ? 
                     <>
                         <View>
-                            {/* <MyBarChartAtraso dezenas={megaChartAtraso} tituloBar="Maiores Atrasos" subtituloBar="10 dezenas Mais atrasadas" /> */}
+                            <MyBarChartSequencia color="#209869" dezenas={megaChartAtraso} tituloBar="Maiores Sequências" subtituloBar="Máximo de sequências da Mega Sena" />
                         </View>
                         <DataTable>
                             <DataTable.Header style={{}}>
@@ -303,43 +316,43 @@ export default function EstatisticaMega() {
                                 <Text>3 Pares e 3 Ímpares: {megaSomaPercent.equal.jogos} jogos</Text>
                                 <Text>{megaSomaPercent.equal.porcentagem} %</Text>
                             </View>
-                            <Progress.Bar progress={megaSomaPercent.equal.porcentagem / 100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Progress.Bar progress={megaSomaPercent.equal.porcentagem / 100} color='#209869' height={10} width={Dimensions.get('screen').width - 40} />
                             <Divider style={{marginBottom: 10}}/>
                             <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
                                 <Text>4 Pares e 2 Ímpares: {megaSomaPercent.FourPTwoI.jogos} jogos</Text>
                                 <Text>{megaSomaPercent.FourPTwoI.porcentagem} %</Text>
                             </View>
-                            <Progress.Bar progress={megaSomaPercent.FourPTwoI.porcentagem / 100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Progress.Bar progress={megaSomaPercent.FourPTwoI.porcentagem / 100} color='#209869' height={10} width={Dimensions.get('screen').width - 40} />
                             <Divider style={{marginBottom: 10}}/>
                             <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
                                 <Text>2 Pares e 4 Ímpares: {megaSomaPercent.FourITwoP.jogos} jogos</Text>
                                 <Text>{megaSomaPercent.FourITwoP.porcentagem} %</Text>
                             </View>
-                            <Progress.Bar progress={megaSomaPercent.FourITwoP.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Progress.Bar progress={megaSomaPercent.FourITwoP.porcentagem/100} color='#209869' height={10} width={Dimensions.get('screen').width - 40} />
                             <Divider style={{marginBottom: 10}}/>
                             <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
                                 <Text>5 Pares e 1 Ímpares: {megaSomaPercent.FivePOneI.jogos} jogos</Text>
                                 <Text>{megaSomaPercent.FivePOneI.porcentagem} %</Text>
                             </View>
-                            <Progress.Bar progress={megaSomaPercent.FivePOneI.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Progress.Bar progress={megaSomaPercent.FivePOneI.porcentagem/100} color='#209869' height={10} width={Dimensions.get('screen').width - 40} />
                             <Divider style={{marginBottom: 10}}/>
                             <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
                                 <Text>1 Pares e 5 Ímpares: {megaSomaPercent.FiveIOneP.jogos} jogos</Text>
                                 <Text>{megaSomaPercent.FiveIOneP.porcentagem} %</Text>
                             </View>
-                            <Progress.Bar progress={megaSomaPercent.FiveIOneP.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Progress.Bar progress={megaSomaPercent.FiveIOneP.porcentagem/100} color='#209869' height={10} width={Dimensions.get('screen').width - 40} />
                             <Divider style={{marginBottom: 10}}/>
                             <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
                                 <Text>0 Pares e 6 Ímpares: {megaSomaPercent.SixIZeroP.jogos} jogos</Text>
                                 <Text>{megaSomaPercent.SixIZeroP.porcentagem} %</Text>
                             </View>
-                            <Progress.Bar progress={megaSomaPercent.SixIZeroP.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Progress.Bar progress={megaSomaPercent.SixIZeroP.porcentagem/100} color='#209869' height={10} width={Dimensions.get('screen').width - 40} />
                             <Divider style={{marginBottom: 10}}/>
                             <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
                                 <Text>6 Pares e 0 Ímpares: {megaSomaPercent.SixPZeroI.jogos} jogos</Text>
                                 <Text>{megaSomaPercent.SixPZeroI.porcentagem} %</Text>
                             </View>
-                            <Progress.Bar progress={megaSomaPercent.SixPZeroI.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Progress.Bar progress={megaSomaPercent.SixPZeroI.porcentagem/100} color='#209869' height={10} width={Dimensions.get('screen').width - 40} />
                         </View>
                         <View style={{marginTop: 15, marginBottom: 5}}>
                         <Text style={{ textAlign: "center", marginBottom: 10, fontWeight: "bold" }}>Tabela dos Números Pares e Ímpares</Text>

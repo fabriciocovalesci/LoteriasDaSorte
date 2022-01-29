@@ -1,13 +1,30 @@
 import React from 'react'
-import { View, Text, ScrollView, Dimensions, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Text, Dimensions, FlatList, StyleSheet, ActivityIndicator } from 'react-native'
+import moment from 'moment';
+import "moment/locale/pt-br"
 import { EstatisMania } from '../../services/estatisticas';
-import { MyBarChart, MyBarChartAtraso, BarChartSomaPercent } from '../../Components/BarChart';
-import MyPieChart from '../../Components/PieChart';
-import { DataTable, Divider, Colors } from 'react-native-paper';
-
+import { MyBarChart, MyBarChartAtraso, MyBarChartSequencia } from '../../Components/BarChart';
+import { DataTable, Divider, Colors, Button, Title, Provider, Menu, IconButton, Modal, Card, Paragraph, Checkbox } from 'react-native-paper';
 import * as Progress from 'react-native-progress';
 
-import SegmentedControlTab from "react-native-segmented-control-tab";
+import { Col, Row, Grid } from "react-native-easy-grid";
+
+import {Picker} from '@react-native-picker/picker';
+
+import { ScrollView } from 'react-native-gesture-handler';
+
+import { GraficoBarYear, GraficoBarMesAno, GraficoGroup } from '../../Components/Graficos';
+
+import { ModalDate } from '../../Components/ModalDate';
+import { 
+    sortObject, 
+    filterdataMesAno, 
+    filterdataAno, 
+    countDezenasByAno, 
+    countDezenasByMesAno, 
+    getLatestMeses  } from '../../utils'
+
+moment.locale('pt-br');
 
 const CircleNumber = (props) => {
     return (
@@ -17,56 +34,196 @@ const CircleNumber = (props) => {
     )
 }
 
-export default function EstatisticaMega() {
+const dataYear = Array.from({ length: 24 }, (v, k) => k + 1999).reverse()
+const dataMes = Array.from({ length: 12 }, (v, k) => k + 1)
+
+
+export default function EstatisticaMania() {
 
     const [selected, setStateBtn] = React.useState(0)
 
-    const [tableMania, setTableMania] = React.useState([])
+    const [tableMega, setTableMega] = React.useState([])
 
-    const [tableManiaAnalise, setTableManiaAnalise] = React.useState([])
+    const [tableMegaAnalise, setTableMegaAnalise] = React.useState([])
 
-    const [maniaChart, setManiaChart] = React.useState([])
+    const [megaChart, setMegaChart] = React.useState([])
 
-    const [facilChartAtraso, setManiaChartAtraso] = React.useState([])
+    const [megaChartSeq, setMegaChartSeq] = React.useState([])
 
-    const [maniaSomaParImpar, setManiaSomaParImpar] = React.useState([])
+    const [megaChartAtraso, setMegaChartAtraso] = React.useState([])
 
-    const [maniaSomaPercent, setManiaSomaPercent] = React.useState()
+    const [megaSomaParImpar, setMegaSomaParImpar] = React.useState([])
+
+    const [megaSomaPercent, setMegaSomaPercent] = React.useState()
+    const [allDataMega, SetAlldataMega] = React.useState([]);
+    const [filterDataMesAno, setFilterDataMesAno] = React.useState([]);
+    const [filterDataAno, setFilterDataAno] = React.useState([]);
+    const [mesAno, setMesAno] = React.useState('');
+
+    const [countDezByAno, setCountDezenasByAno] = React.useState([]);
+    const [countDezByMesAno, setCountDezenasByMesAno] = React.useState([]);
+
+    const [selectGroup, setSelectGroup] = React.useState(0);
+    const [visible, setVisible] = React.useState(false);
+
+    const [checked, setChecked] = React.useState(true);
+    const [checkedDetail, setCheckedDetail] = React.useState(false);
+    const [CheckedFreqMA, setCheckedFreqMA] = React.useState(false);
+    const [CheckedFreqA, setCheckedFreqA] = React.useState(false);
+
+    const [selectedMesesCompare, setSelectedMesesCompare] = React.useState('');
+    const [selectedAnoCompare, setSelectedAnoCompare] = React.useState('');
+    const [compareArray, setCompareArray] = React.useState([]);
+
+    
+
+    const showModal = () => setVisible(true);
+    const hideModal = () => setVisible(false);
+
+
+    function getDate(date){
+        setMesAno(date)
+        let mes = parseInt(date.substr(5, 7))-1
+        let ano = parseInt(date.substr(0, 4))
+        setFilterDataMesAno(filterdataMesAno(allDataMega, mes, ano))
+        setCountDezenasByMesAno(sortObject(countDezenasByMesAno(allDataMega, mes, ano)))
+        setSelectedYear('')
+        setSelectGroup(1)
+    }
+
+    function filterDateYear(){
+        setFilterDataAno(filterdataAno(allDataMega, selectedYear))
+        setCountDezenasByAno(sortObject(countDezenasByAno(allDataMega, selectedYear)))
+        setSelectGroup(2)
+    }
+
+    function filterCompareMesAno(){
+        if(selectedMesesCompare && selectedAnoCompare){
+            setCompareArray(getLatestMeses(allDataMega, selectedMesesCompare, selectedAnoCompare))
+        }
+    }
+
+    function filterCompareMesAnobyM(){
+        if(selectedMesesCompare && selectedAnoCompare){
+            setCompareArray(getLatestMeses(allDataMega, selectedMesesCompare, selectedAnoCompare))
+        }
+    }
 
 
     React.useEffect(() => {
         EstatisMania().then((value) => {
-            setTableMania(value.ocorrencias);
-            setManiaChart(value.ocorrencias.slice(0, 10));
-            setTableManiaAnalise(value.estatisAtrasoSeq)
-            setManiaChartAtraso(value.estatisAtrasoSeq.slice(value.estatisAtrasoSeq.length - 10, value.estatisAtrasoSeq.length))
-            setManiaSomaParImpar(value.somaParImpar.slice(value.somaParImpar.length - 100, value.somaParImpar.length))
-            setManiaSomaPercent(value.percentSoma)
+            SetAlldataMega(value.allMania)
+            setTableMega(value.ocorrencias);
+            setMegaChart(value.ocorrencias.slice(0, 10));
+            setTableMegaAnalise(value.estatisAtrasoSeq)
+            setMegaChartAtraso(value.estatisAtrasoSeq)
+            setMegaSomaParImpar(value.somaParImpar.slice(value.somaParImpar.length - 100, value.somaParImpar.length))
+            setMegaSomaPercent(value.percentSoma)
         });
     }, [])
+
+
+    const [selectedLanguage, setSelectedLanguage] = React.useState('ocorrencias');
+    const pickerRef = React.useRef();
+
+    function open() {
+    pickerRef.current.focus();
+    }
+
+    function close() {
+    pickerRef.current.blur();
+    } 
+
+    const [selectedYear, setSelectedYear] = React.useState('');
+    const pickerRefYear = React.useRef();
+
+    function openYear() {
+    pickerRefYear.current.focus();
+    }
+
+    function closeYear() {
+    pickerRefYear.current.blur();
+    }   
+     
+
+    const [menuMesAno, setMenuMesAno] = React.useState(true);
+    const [menuAno, setMenuAno] = React.useState(false);
+    const [menuCompararMesAno, setMenuCompararMesAno] = React.useState(false);
+
+    const MenuAgrupamentos = () => {
+        const [visible, setVisible] = React.useState(false);
+        const openMenu = () => setVisible(true);      
+        const closeMenu = () => setVisible(false);
+
+        function MenuMesAno(){
+            setMenuMesAno(!menuMesAno)
+            setMenuAno(false)
+            setMenuCompararMesAno(false)
+        }
+
+        function MenuAno(){
+            setMenuAno(!menuAno)
+            setMenuMesAno(false)
+            setMenuCompararMesAno(false)
+        }
+
+        function MenuCompararMesAno(){
+            setMenuCompararMesAno(!menuCompararMesAno)
+            setMenuMesAno(false)
+            setMenuAno(false)
+        }
+      
+        return (
+            <View
+               style={{
+                marginTop: 10,
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}>
+              <Menu
+                visible={visible}
+                onDismiss={closeMenu}
+                anchor={<Button mode='outlined' style={styles.btnGeral} onPress={openMenu}>Menu de Agrupamentos</Button>}>
+                <Menu.Item onPress={MenuMesAno} title="Agrupar por Mês/Ano" />
+                <Menu.Item onPress={MenuAno} title="Agrupar por Ano" />
+                <Menu.Item onPress={MenuCompararMesAno} title="Comparar por Mês/Ano" />
+                <Divider />
+              </Menu>
+            </View>
+        );
+    };
 
     return (
         <>
             <View style={{ marginBottom: 0, marginTop: 10, marginLeft: 5, marginRight: 5 }}>
-                <SegmentedControlTab
-                    values={["Ocorrências", "Atrasos", "Sequências", "Combinações"]}
-                    selectedIndex={selected}
-                    onTabPress={index => setStateBtn(index)}
-                />
+                <Picker
+                ref={pickerRef}
+                mode="dialog"
+                selectedValue={selectedLanguage}
+                onValueChange={(itemValue, itemIndex) =>
+                    setSelectedLanguage(itemValue)
+                }>
+                <Picker.Item label="Ocorrências" value="ocorrencias" />
+                <Picker.Item label="Atrasos" value="atrasos" />
+                <Picker.Item label="Sequências" value="sequencias" />
+                <Picker.Item label="Combinações Par - Impar" value="par-impar" />
+                <Picker.Item label="Agrupamentos por datas" value="agrupamentos" />
+                </Picker>
             </View>
+ 
             <ScrollView>
-                {selected === 0 ?
+                 {selectedLanguage === 'ocorrencias' ?
                     <>
                     {
-                          maniaChart.length === 0 && tableMania.length === 0 ?
-                          <View style={{ flex: 1, height: Dimensions.get('screen').height / 2, justifyContent: "center", alignContent: "center" }}>
-                              <Text style={{ color: Colors.black, fontWeight: "bold", textAlign: "center" }}>Carregando dados ...</Text>
-                              <ActivityIndicator size="large" color="#0000ff" />
-                          </View>
-                          :
-                          <>
+                        megaChart.length === 0 && tableMega.length === 0 ?
+                        <View style={{ flex: 1, height: Dimensions.get('screen').height / 2, justifyContent: "center", alignContent: "center" }}>
+                            <Text style={{ color: Colors.black, fontWeight: "bold", textAlign: "center" }}>Carregando dados ...</Text>
+                            <ActivityIndicator size="large" color="#0000ff" />
+                        </View>
+                        :
+                        <>
                         <View>
-                            <MyBarChart dezenas={maniaChart} tituloBar="Maior Ocorrências" subtituloBar="10 dezenas Mais sorteadas" />
+                            <MyBarChart color="#F78100" dezenas={megaChart} tituloBar="Maior Ocorrências" subtituloBar="10 dezenas Mais sorteadas" />
                         </View>
                         <DataTable>
                             <DataTable.Header style={{}}>
@@ -74,7 +231,7 @@ export default function EstatisticaMega() {
                                 <DataTable.Title >Ocorrências</DataTable.Title>
                             </DataTable.Header>
                             <ScrollView>
-                                {tableMania.map((elem, index) =>
+                                {tableMega.map((elem, index) =>
                                     <DataTable.Row key={index}>
                                         <DataTable.Cell ><CircleNumber number={elem[0]}/></DataTable.Cell>
                                         <DataTable.Cell >{elem[1]}</DataTable.Cell>
@@ -82,14 +239,14 @@ export default function EstatisticaMega() {
                                 )}
                             </ScrollView>
                         </DataTable>
-                          </>
-                    }
+                        </>
+                    }   
+                        
                     </>
-                    : null }
-                {selected === 1 ?
+                    :  selectedLanguage === 'atrasos'  ?
                     <>
                         <View>
-                            {/* <MyBarChartAtraso dezenas={facilChartAtraso} tituloBar="Maiores Atrasos" subtituloBar="10 dezenas Mais atrasadas" /> */}
+                            <MyBarChartAtraso color="#F78100" dezenas={megaChartAtraso} tituloBar="Maiores Atrasos" subtituloBar="10 dezenas Mais atrasadas" />
                         </View>
                         <DataTable>
                             <DataTable.Header style={{}}>
@@ -99,7 +256,7 @@ export default function EstatisticaMega() {
                                 <DataTable.Title >Média Atraso</DataTable.Title>
                             </DataTable.Header>
                             <ScrollView>
-                                {tableManiaAnalise.map((elem, index) =>
+                                {tableMegaAnalise.map((elem, index) =>
                                     <DataTable.Row key={index + elem.dezena}>
                                         <DataTable.Cell ><CircleNumber number={elem.dezena}/></DataTable.Cell>
                                         <DataTable.Cell >{elem.atraso}</DataTable.Cell>
@@ -110,11 +267,10 @@ export default function EstatisticaMega() {
                             </ScrollView>
                         </DataTable>
                     </>
-                    : <Text></Text>}
-                {selected === 2 ?
+                    : selectedLanguage === 'sequencias'  ? 
                     <>
                         <View>
-                            {/* <MyBarChartAtraso dezenas={megaChartAtraso} tituloBar="Maiores Atrasos" subtituloBar="10 dezenas Mais atrasadas" /> */}
+                        <MyBarChartSequencia color="#F78100" dezenas={megaChartAtraso} tituloBar="Maiores Sequências" subtituloBar="Máximo de sequências da Mega Sena" />
                         </View>
                         <DataTable>
                             <DataTable.Header style={{}}>
@@ -124,7 +280,7 @@ export default function EstatisticaMega() {
                                 <DataTable.Title >Média Seq</DataTable.Title>
                             </DataTable.Header>
                             <ScrollView>
-                                {tableManiaAnalise.map((elem, index) =>
+                                {tableMegaAnalise.map((elem, index) =>
                                     <DataTable.Row key={index + elem.dezena}>
                                         <DataTable.Cell ><CircleNumber number={elem.dezena}/></DataTable.Cell>
                                         <DataTable.Cell >{elem.sequencia}</DataTable.Cell>
@@ -135,91 +291,62 @@ export default function EstatisticaMega() {
                             </ScrollView>
                         </DataTable>
                     </>
-                    : <Text></Text>}
-                {selected === 3 ?
+                    : selectedLanguage === 'par-impar'  ?
                     <>
                     <View style={{  }}>
                             <Text style={{ textAlign: "center", marginBottom: 10, fontWeight: "bold" }}>Combinações de Dezenas Pares e Ímpares</Text>
                         </View>
+
                         <View style={{ alignSelf: "center", marginTop: 0 }}>
                             <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                                <Text>10 pares e 10 ímpares: {maniaSomaPercent.equal.jogos} jogos</Text>
-                                <Text>{maniaSomaPercent.equal.porcentagem} %</Text>
+                                <Text>10 Pares e 10 Ímpares: {megaSomaPercent.equal.jogos} jogos</Text>
+                                <Text>{megaSomaPercent.equal.porcentagem} %</Text>
                             </View>
-                            <Progress.Bar progress={maniaSomaPercent.equal.porcentagem / 100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Progress.Bar progress={megaSomaPercent.equal.porcentagem / 100} color='#F78100' height={10} width={Dimensions.get('screen').width - 40} />
                             <Divider style={{marginBottom: 10}}/>
                             <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                                <Text>9 pares e 11 ímpares: {maniaSomaPercent.Combinada_1.jogos} jogos</Text>
-                                <Text>{maniaSomaPercent.Combinada_1.porcentagem} %</Text>
+                                <Text>9 Pares e 11 Ímpares: {megaSomaPercent.Combinada_1.jogos} jogos</Text>
+                                <Text>{megaSomaPercent.Combinada_1.porcentagem} %</Text>
                             </View>
-                            <Progress.Bar progress={maniaSomaPercent.Combinada_1.porcentagem / 100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Progress.Bar progress={megaSomaPercent.Combinada_1.porcentagem / 100} color='#F78100' height={10} width={Dimensions.get('screen').width - 40} />
                             <Divider style={{marginBottom: 10}}/>
                             <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                                <Text>11 pares e 9 ímpares: {maniaSomaPercent.Combinada_2.jogos} jogos</Text>
-                                <Text>{maniaSomaPercent.Combinada_2.porcentagem} %</Text>
+                                <Text>11 Pares e 9 Ímpares: {megaSomaPercent.Combinada_2.jogos} jogos</Text>
+                                <Text>{megaSomaPercent.Combinada_2.porcentagem} %</Text>
                             </View>
-                            <Progress.Bar progress={maniaSomaPercent.Combinada_2.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Progress.Bar progress={megaSomaPercent.Combinada_2.porcentagem/100} color='#F78100' height={10} width={Dimensions.get('screen').width - 40} />
                             <Divider style={{marginBottom: 10}}/>
                             <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                                <Text>8 pares e 12 ímpares: {maniaSomaPercent.Combinada_3.jogos} jogos</Text>
-                                <Text>{maniaSomaPercent.Combinada_3.porcentagem} %</Text>
+                                <Text>8 Pares e 12 Ímpares: {megaSomaPercent.Combinada_3.jogos} jogos</Text>
+                                <Text>{megaSomaPercent.Combinada_3.porcentagem} %</Text>
                             </View>
-                            <Progress.Bar progress={maniaSomaPercent.Combinada_3.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Progress.Bar progress={megaSomaPercent.Combinada_3.porcentagem/100} color='#F78100' height={10} width={Dimensions.get('screen').width - 40} />
                             <Divider style={{marginBottom: 10}}/>
                             <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                                <Text>12 pares e 8 ímpares: {maniaSomaPercent.Combinada_4.jogos} jogos</Text>
-                                <Text>{maniaSomaPercent.Combinada_4.porcentagem} %</Text>
+                                <Text>12 Pares e 8 Ímpares: {megaSomaPercent.Combinada_4.jogos} jogos</Text>
+                                <Text>{megaSomaPercent.Combinada_4.porcentagem} %</Text>
                             </View>
-                            <Progress.Bar progress={maniaSomaPercent.Combinada_4.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Progress.Bar progress={megaSomaPercent.Combinada_4.porcentagem/100} color='#F78100' height={10} width={Dimensions.get('screen').width - 40} />
                             <Divider style={{marginBottom: 10}}/>
                             <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                                <Text>13 pares e 7 ímpares: {maniaSomaPercent.Combinada_5.jogos} jogos</Text>
-                                <Text>{maniaSomaPercent.Combinada_5.porcentagem} %</Text>
+                                <Text>13 Pares e 7 Ímpares: {megaSomaPercent.Combinada_5.jogos} jogos</Text>
+                                <Text>{megaSomaPercent.Combinada_5.porcentagem} %</Text>
                             </View>
-                            <Progress.Bar progress={maniaSomaPercent.Combinada_5.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Progress.Bar progress={megaSomaPercent.Combinada_5.porcentagem/100} color='#F78100' height={10} width={Dimensions.get('screen').width - 40} />
                             <Divider style={{marginBottom: 10}}/>
                             <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                                <Text>7 pares e 13 ímpares: {maniaSomaPercent.Combinada_6.jogos} jogos</Text>
-                                <Text>{maniaSomaPercent.Combinada_6.porcentagem} %</Text>
+                                <Text>7 pares e 13 ímpares: {megaSomaPercent.Combinada_6.jogos} jogos</Text>
+                                <Text>{megaSomaPercent.Combinada_6.porcentagem} %</Text>
                             </View>
-                            <Progress.Bar progress={maniaSomaPercent.Combinada_6.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Progress.Bar progress={megaSomaPercent.Combinada_6.porcentagem/100} color='#F78100' height={10} width={Dimensions.get('screen').width - 40} />
                             <Divider style={{marginBottom: 10}}/>
                             <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                                <Text>6 pares e 14 ímpares: {maniaSomaPercent.Combinada_7.jogos} jogos</Text>
-                                <Text>{maniaSomaPercent.Combinada_7.porcentagem} %</Text>
+                                <Text>6 pares e 14 ímpares: {megaSomaPercent.Combinada_7.jogos} jogos</Text>
+                                <Text>{megaSomaPercent.Combinada_7.porcentagem} %</Text>
                             </View>
-                            <Progress.Bar progress={maniaSomaPercent.Combinada_7.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
-                            <Divider style={{marginBottom: 10}}/>
-                            <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                                <Text>14 pares e 6 ímpares: {maniaSomaPercent.Combinada_8.jogos} jogos</Text>
-                                <Text>{maniaSomaPercent.Combinada_8.porcentagem} %</Text>
-                            </View>
-                            <Progress.Bar progress={maniaSomaPercent.Combinada_8.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
-                            <Divider style={{marginBottom: 10}}/>
-                            <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                                <Text>15 pares e 5 ímpares: {maniaSomaPercent.Combinada_9.jogos} jogos</Text>
-                                <Text>{maniaSomaPercent.Combinada_9.porcentagem} %</Text>
-                            </View>
-                            <Progress.Bar progress={maniaSomaPercent.Combinada_9.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
-                            <Divider style={{marginBottom: 10}}/>
-                            <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                                <Text>5 pares e 15 ímpares: {maniaSomaPercent.Combinada_10.jogos} jogos</Text>
-                                <Text>{maniaSomaPercent.Combinada_10.porcentagem} %</Text>
-                            </View>
-                            <Progress.Bar progress={maniaSomaPercent.Combinada_10.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
-                            <Divider style={{marginBottom: 10}}/>
-                            <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                                <Text>16 pares e 4 ímpares: {maniaSomaPercent.Combinada_11.jogos} jogos</Text>
-                                <Text>{maniaSomaPercent.Combinada_11.porcentagem} %</Text>
-                            </View>
-                            <Progress.Bar progress={maniaSomaPercent.Combinada_11.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
-                            <Divider style={{marginBottom: 10}}/>
-                            <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                                <Text>4 pares e 16 ímpares: {maniaSomaPercent.Combinada_12.jogos} jogos</Text>
-                                <Text>{maniaSomaPercent.Combinada_12.porcentagem} %</Text>
-                            </View>
-                            <Progress.Bar progress={maniaSomaPercent.Combinada_12.porcentagem/100} color='red' height={10} width={Dimensions.get('screen').width - 40} />
+                            <Progress.Bar progress={megaSomaPercent.Combinada_7.porcentagem/100} color='#F78100' height={10} width={Dimensions.get('screen').width - 40} />
                         </View>
+
                         <View style={{marginTop: 15, marginBottom: 5}}>
                         <Text style={{ textAlign: "center", marginBottom: 10, fontWeight: "bold" }}>Tabela dos Números Pares e Ímpares</Text>
                         </View>
@@ -231,7 +358,7 @@ export default function EstatisticaMega() {
                                 <DataTable.Title numeric>Soma</DataTable.Title>
                             </DataTable.Header>
                             <ScrollView>
-                                {maniaSomaParImpar.reverse().map((elem, index) =>
+                                {megaSomaParImpar.reverse().map((elem, index) =>
                                     <DataTable.Row key={index}>
                                         <DataTable.Cell ><Text style={{ fontWeight: "bold" }}>{elem.concurso}</Text></DataTable.Cell>
                                         <DataTable.Cell numeric>{elem.impar}</DataTable.Cell>
@@ -242,12 +369,359 @@ export default function EstatisticaMega() {
                             </ScrollView>
                         </DataTable>
                     </>
-                    : <Text></Text>}
+                    : selectedLanguage === 'agrupamentos'  ?
+                    <View>
+                    <MenuAgrupamentos />
+                    {
+                        menuMesAno ?
+                        <>
+                        <ModalDate getdate={(date) => getDate(date)} visible={visible} hideModal={hideModal}></ModalDate>
+                        <Text style={{ textAlign: "center", margin: 5, fontWeight: "bold" }}>Agrupamentos por Meses/Ano</Text>
+                        <Text style={{ margin: 5, textAlign: "center" }}>Selcione a data e uma das opões abaixo</Text>
+                        <Button mode='outlined' style={{ borderColor: "blue", margin: 10 }} onPress={showModal}>Mês/Ano</Button>
+                        <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                            <Checkbox.Item
+                                label='Versão Compacta'
+                                style={{ margin: 0 }}
+                                status={checked ? 'checked' : 'unchecked'}
+                                onPress={() => {
+                                    setChecked(!checked);
+                                    setCheckedDetail(false);
+                                    setCheckedFreqMA(false)
+                                    setCheckedFreqA(false)
+                                }}
+                            />
+                            <Checkbox.Item
+                                label='Versão Detalhada'
+                                status={checkedDetail ? 'checked' : 'unchecked'}
+                                onPress={() => {
+                                    setCheckedDetail(!checkedDetail);
+                                    setChecked(false);
+                                    setCheckedFreqMA(false)
+                                    setCheckedFreqA(false)
+                                }}
+                            />
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: "center"  }}>
+                            <Checkbox.Item
+                                label='Frequência Mês/Ano'
+                                status={CheckedFreqMA ? 'checked' : 'unchecked'}
+                                onPress={() => {
+                                    setCheckedFreqMA(!CheckedFreqMA);
+                                    setChecked(false);
+                                    setCheckedDetail(false)
+                                    setCheckedFreqA(false)
+                                }}
+                            />
+
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-around", alignContent: "center" }}>
+                        {
+                            checked ?
+                                <DataTable>
+                                    <Text style={{ fontWeight: "bold", marginLeft: 15 }}>Mês - Ano: {moment.months(mesAno.substr(5, 7) - 1)} de {mesAno.substr(0, 4)}</Text>
+                                    <DataTable.Header style={{}}>
+                                        <DataTable.Title >Concurso</DataTable.Title>
+                                        <DataTable.Title numeric>Par</DataTable.Title>
+                                        <DataTable.Title numeric>Impar</DataTable.Title>
+                                        <DataTable.Title numeric>Soma</DataTable.Title>
+                                        <DataTable.Title numeric>Primos</DataTable.Title>
+                                    </DataTable.Header>
+                                    <ScrollView>
+                                        {filterDataMesAno.map((elem, index) =>
+                                            <DataTable.Row key={index}>
+                                                <DataTable.Cell ><Text style={{ fontWeight: "bold" }}>{elem.concurso}</Text></DataTable.Cell>
+                                                <DataTable.Cell numeric>{elem.pares}</DataTable.Cell>
+                                                <DataTable.Cell numeric>{elem.impar}</DataTable.Cell>
+                                                <DataTable.Cell numeric>{elem.soma}</DataTable.Cell>
+                                                <DataTable.Cell numeric>{elem.primos.length}</DataTable.Cell>
+                                            </DataTable.Row>
+                                        )}
+                                    </ScrollView>
+                                </DataTable>
+                                : checkedDetail ?
+                                    <ScrollView>
+                                        {filterDataMesAno.map((elem, index) =>
+                                            <View key={index} style={styles.cardShadow}>
+                                                <Grid style={{ justifyContent: "center", alignContent: "center", alignItems: "center" }}>
+                                                    <Col>
+                                                        <Text style={{ fontWeight: "bold" }}>Concurso {elem.concurso}</Text>
+                                                    </Col>
+                                                    <Col>
+                                                        <Text>Par</Text>
+                                                        <Row><Text>{elem.pares}</Text></Row>
+                                                    </Col>
+                                                    <Col>
+                                                        <Text>Impar</Text>
+                                                        <Row><Text>{elem.impar}</Text></Row>
+                                                    </Col>
+                                                    <Col>
+                                                        <Text>Soma</Text>
+                                                        <Row><Text>{elem.soma}</Text></Row>
+                                                    </Col>
+                                                </Grid>
+                                                <View style={{ marginTop: 10, justifyContent: "center", alignContent: "center" }}>
+                                                    <Grid>
+                                                        <Row><Text style={{ fontWeight: "bold" }}>Dezenas Sorteadas - {elem.data}</Text></Row>
+                                                        <Col style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                                                            {
+                                                                elem.dezenas.map(dezena => <CircleNumber key={dezena} number={dezena} />)
+                                                            }
+                                                        </Col>
+                                                        <Row><Text>Números Primos</Text></Row>
+                                                        <Col style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                                                            {
+                                                                elem.primos.map(primo => <CircleNumber key={primo} number={primo} />)
+                                                            }
+                                                        </Col>
+                                                    </Grid>
+                                                </View>
+                                            </View>
+                                        )}
+                                    </ScrollView>
+                                    : CheckedFreqMA ?
+                                    <View>
+                                        <GraficoBarMesAno color="#F78100" dezenas={countDezByMesAno.slice(0,10)} data={mesAno} />
+                                        <DataTable>
+                                    <Text style={{ fontWeight: "bold", marginLeft: 15 }}>Mês - Ano: {moment.months(mesAno.substr(5, 7) - 1)} de {mesAno.substr(0, 4)}</Text>
+                                    <DataTable.Header style={{}}>
+                                        <DataTable.Title >Concurso</DataTable.Title>
+                                        <DataTable.Title numeric>Par</DataTable.Title>
+                                        <DataTable.Title numeric>Impar</DataTable.Title>
+                                        <DataTable.Title numeric>Soma</DataTable.Title>
+                                        <DataTable.Title numeric>Primos</DataTable.Title>
+                                    </DataTable.Header>
+                                    <ScrollView>
+                                        {filterDataMesAno.map((elem, index) =>
+                                            <DataTable.Row key={index}>
+                                                <DataTable.Cell ><Text style={{ fontWeight: "bold" }}>{elem.concurso}</Text></DataTable.Cell>
+                                                <DataTable.Cell numeric>{elem.pares}</DataTable.Cell>
+                                                <DataTable.Cell numeric>{elem.impar}</DataTable.Cell>
+                                                <DataTable.Cell numeric>{elem.soma}</DataTable.Cell>
+                                                <DataTable.Cell numeric>{elem.primos.length}</DataTable.Cell>
+                                            </DataTable.Row>
+                                        )}
+                                    </ScrollView>
+                                </DataTable>
+                                    </View>
+                                  : null
+                        }
+                        </View>
+                        </>
+                        : menuAno ?
+                        <>
+                        <View style={{ justifyContent: "center" }}>
+                        <Text style={{ textAlign: "center", margin: 5, fontWeight: "bold" }}>Agrupamentos por Ano</Text>
+                        <Text style={{ textAlign: "center", margin: 5 }}>Selecione o ano e uma das opções abaixo</Text>
+                        <Picker
+                        style={{ width: "60%", marginLeft: 10, borderColor: "blue", borderWidth: 1, justifyContent: "center"  }}
+                        ref={pickerRefYear}
+                        mode="dropdown"
+                        selectedValue={selectedYear}
+                        onBlur={filterDateYear}
+                        onValueChange={(itemValue, itemIndex) =>
+                            setSelectedYear(itemValue)
+                        }>
+                            <Picker.Item label="Selecione ano" />
+                        {
+                            dataYear.map((year) => 
+                            <Picker.Item key={year} label={"Ano " + year} value={year} />
+                            )
+                        }
+                        </Picker>
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                        <Checkbox.Item
+                                label='Versão Compacta'
+                                style={{ margin: 0 }}
+                                status={checked ? 'checked' : 'unchecked'}
+                                onPress={() => {
+                                    setChecked(!checked);
+                                    setCheckedDetail(false);
+                                    setCheckedFreqMA(false)
+                                    setCheckedFreqA(false)
+                                }}
+                            />
+                            <Checkbox.Item
+                                label='Versão Detalhada'
+                                status={checkedDetail ? 'checked' : 'unchecked'}
+                                onPress={() => {
+                                    setCheckedDetail(!checkedDetail);
+                                    setChecked(false);
+                                    setCheckedFreqMA(false)
+                                    setCheckedFreqA(false)
+                                }}
+                            />
+                            
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                        <Checkbox.Item
+                                label='Frequência por ano'
+                                status={CheckedFreqA ? 'checked' : 'unchecked'}
+                                onPress={() => {
+                                    setCheckedFreqA(!CheckedFreqA);
+                                    setCheckedFreqMA(false)
+                                    setChecked(false);
+                                    setCheckedDetail(false)
+                                }}
+                            />
+                        </View>
+                        {
+                            checked ? 
+                            <DataTable>
+                            <Text style={{ fontWeight: "bold", marginLeft: 15 }}>Ano: {selectedYear}</Text>
+                            <DataTable.Header style={{}}>
+                                <DataTable.Title >Concurso</DataTable.Title>
+                                <DataTable.Title numeric>Par</DataTable.Title>
+                                <DataTable.Title numeric>Impar</DataTable.Title>
+                                <DataTable.Title numeric>Soma</DataTable.Title>
+                                <DataTable.Title numeric>Primos</DataTable.Title>
+                            </DataTable.Header>
+                            <ScrollView>
+                                {filterDataAno.map((elem, index) =>
+                                    <DataTable.Row key={index}>
+                                        <DataTable.Cell ><Text style={{ fontWeight: "bold" }}>{elem.concurso}</Text></DataTable.Cell>
+                                        <DataTable.Cell numeric>{elem.pares}</DataTable.Cell>
+                                        <DataTable.Cell numeric>{elem.impar}</DataTable.Cell>
+                                        <DataTable.Cell numeric>{elem.soma}</DataTable.Cell>
+                                        <DataTable.Cell numeric>{elem.primos.length}</DataTable.Cell>
+                                    </DataTable.Row>
+                                )}
+                            </ScrollView>
+                            </DataTable>
+                            : checkedDetail ?
+                            <View>
+                                <Text style={{ margin: 5, fontWeight: "bold" }}>Concursos realizados no ano de {selectedYear}</Text>
+                            <ScrollView>
+                                    {filterDataAno.map((elem, index) =>
+                                        <View key={index} style={styles.cardShadow}>
+                                            <Grid style={{ justifyContent: "center", alignContent: "center", alignItems: "center" }}>
+                                                <Col>
+                                                    <Text style={{ fontWeight: "bold" }}>Concurso {elem.concurso}</Text>
+                                                </Col>
+                                                <Col>
+                                                    <Text>Par</Text>
+                                                    <Row><Text>{elem.pares}</Text></Row>
+                                                </Col>
+                                                <Col>
+                                                    <Text>Impar</Text>
+                                                    <Row><Text>{elem.impar}</Text></Row>
+                                                </Col>
+                                                <Col>
+                                                    <Text>Soma</Text>
+                                                    <Row><Text>{elem.soma}</Text></Row>
+                                                </Col>
+                                            </Grid>
+                                            <View style={{ marginTop: 10, justifyContent: "center", alignContent: "center" }}>
+                                                <Grid>
+                                                    <Row><Text style={{ fontWeight: "bold" }}>Dezenas Sorteadas - {elem.data}</Text></Row>
+                                                    <Col style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                                                        {
+                                                            elem.dezenas.map(dezena => <CircleNumber key={dezena} number={dezena}/>)
+                                                        }
+                                                    </Col>
+                                                    <Row><Text>Números Primos</Text></Row>
+                                                    <Col style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                                                        {
+                                                            elem.primos.map(primo => <CircleNumber key={primo} number={primo}/>)
+                                                        }
+                                                    </Col>
+                                                </Grid>
+                                            </View>
+                                        </View>
+                                    )}
+                                </ScrollView>
+                            </View>
+                            : CheckedFreqA ?
+                            <View>
+                                <GraficoBarYear color="#F78100" dezenas={countDezByAno.slice(0,10)} ano={selectedYear}/>
+                                <DataTable>
+                                <Text style={{ padding: 5, fontWeight: "bold" }}>Quantidade de vezes que a dezena foi sorteada no ano de {selectedYear}</Text>
+                                <DataTable.Header style={{}}>
+                                    <DataTable.Title >Dezena</DataTable.Title>
+                                    <DataTable.Title >Frequência</DataTable.Title>
+                                </DataTable.Header>
+                                <ScrollView>
+                                    {countDezByAno.map((elem, index) =>
+                                        <DataTable.Row key={index}>
+                                             <DataTable.Cell ><CircleNumber key={index} number={Object.keys(elem)[0]}/></DataTable.Cell>
+                                             <DataTable.Cell >{Object.values(elem)[0]}</DataTable.Cell>
+                                         </DataTable.Row>
+                                    )}
+                                </ScrollView>
+                                </DataTable>
+                            </View> 
+                            : null
+                        }
+                        </>
+                        : menuCompararMesAno ? 
+                        <>
+                        <Text style={{ textAlign: "center", margin: 5, fontWeight: "bold" }}>Comparar por Meses/Ano</Text>
+                        <Text style={{ margin: 5, }}>Distribuição da dezena mais sortedas por meses anteriores</Text>
+                        <Text style={{ margin: 5, }}>Selecione a quantidade de meses que deseja verificar e o ano</Text>
+                        <View style={{ flexDirection: "row", justifyContent: "space-around", alignItems: "center", margin: 5 }}>
+                        <Picker
+                        style={{ width: "50%", marginLeft: 10, borderColor: "blue", borderWidth: 1, justifyContent: "center"  }}
+                        ref={pickerRefYear}
+                        mode="dropdown"
+                        selectedValue={selectedMesesCompare}
+                        onBlur={filterCompareMesAnobyM}
+                        onValueChange={(itemValue, itemIndex) =>
+                            setSelectedMesesCompare(itemValue)
+                        }>
+                            <Picker.Item label="Selecione meses" />
+                        {
+                            dataMes.map((mes) => 
+                            <Picker.Item key={mes} label={"Meses " + mes} value={mes} />
+                            )
+                        }
+                        </Picker>
+                        <Picker
+                        style={{ width: "50%", marginLeft: 10, borderColor: "blue", borderWidth: 1, justifyContent: "center"  }}
+                        ref={pickerRefYear}
+                        mode="dropdown"
+                        selectedValue={selectedAnoCompare}
+                        onBlur={filterCompareMesAno}
+                        onValueChange={(itemValue, itemIndex) =>
+                            setSelectedAnoCompare(itemValue)
+                        }>
+                            <Picker.Item label="Selecione ano" />
+                        {
+                            dataYear.map((year) => 
+                            <Picker.Item key={year} label={"Ano " + year} value={year} />
+                            )
+                        }
+                        </Picker>
+                        </View>
+                        <ScrollView>
+                            <GraficoGroup color="#F78100" ano={selectedAnoCompare} dezenas={compareArray}/>
+                        <DataTable>
+                            <Text style={{ fontWeight: "bold", marginLeft: 15 }}>Dezena mais sorteadas por mes e ano - {selectedAnoCompare}</Text>
+                            <DataTable.Header style={{}}>
+                                <DataTable.Title >Meses</DataTable.Title>
+                                <DataTable.Title numeric>Dezena</DataTable.Title>
+                                <DataTable.Title numeric>Frequência</DataTable.Title>
+                            </DataTable.Header>
+                            <ScrollView>
+                                {compareArray.length !== 0 ? compareArray.map((elem, index) =>
+                                    <DataTable.Row key={index}>
+                                        <DataTable.Cell ><Text style={{ fontWeight: "bold" }}>{elem.mes}</Text></DataTable.Cell>
+                                        <DataTable.Cell numeric><CircleNumber key={index} number={Object.keys(elem.dezena)}/></DataTable.Cell>
+                                        <DataTable.Cell numeric>{Object.values(elem.dezena)}</DataTable.Cell>
+                                    </DataTable.Row>
+                                ) : null}
+                            </ScrollView>
+                            </DataTable>
+                        </ScrollView>
+                        </>
+                        : null
+                    }   
+                    </View>
+                    : null}
             </ScrollView>
         </>
     )
 }
-
 
 export const styles = StyleSheet.create({
     circleMania: {
@@ -260,4 +734,61 @@ export const styles = StyleSheet.create({
         padding: 0,
         margin: 5
     },
+      chart: {
+        flex: 1
+      },
+      cardShadow :{
+        padding: 20,
+        margin: 5,
+        backgroundColor: Colors.white, 
+        borderRadius: 10, 
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.9,
+        shadowRadius: 2,  
+        elevation: 9
+    },
+      containerCarousel: {
+        backgroundColor: '#fff', 
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 10
+      },
+      dropdown: {
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+      },
+      icon: {
+        marginRight: 5,
+      },
+      label: {
+        position: 'absolute',
+        backgroundColor: 'white',
+        left: 22,
+        top: 8,
+        zIndex: 999,
+        paddingHorizontal: 8,
+        fontSize: 14,
+      },
+      placeholderStyle: {
+        fontSize: 16,
+      },
+      selectedTextStyle: {
+        fontSize: 16,
+      },
+      iconStyle: {
+        width: 20,
+        height: 20,
+      },
+      inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+      },
+      btnGeral: {
+        borderColor: "blue", 
+        margin: 5 
+      }
 });

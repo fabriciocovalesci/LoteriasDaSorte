@@ -27,19 +27,19 @@ export const MyBarChart = (props) => {
             <Text style={{ textAlign: "center", fontSize: 14, fontWeight: "bold" }}>{ props.tituloBar }</Text>
             <Text style={{ textAlign: "center", fontSize: 12 }}>{ props.subtituloBar }</Text>
                      
-         <VictoryChart horizontal offset={10} width={screenWidth} theme={VictoryTheme.material}>
+         <VictoryChart offset={10} width={screenWidth} theme={VictoryTheme.material}>
             <VictoryLabel x={10} y={25} text="Ocorrências"  />
-            <VictoryBar style={{ data: { fill: "green" } }} alignment='start' animate={{
+            <VictoryBar style={{ data: { fill: props.color } }} alignment='start' animate={{
                               onLoad: {duration: 1000},
                               duration: 1000, 
                               easing: "bounce"
                             }} 
                             data={data} x="dezenas" y="earnings" 
-                            labels={({ datum }) => datum.x}
+                            labels={({ datum }) => datum.y}
                             />
             <VictoryLabel
-                x={screenWidth/1.5}
-                y={25}
+                x={screenWidth/2}
+                y={340}
                 textAnchor="middle"
                 text="Dezenas"
             />
@@ -52,33 +52,88 @@ export const MyBarChart = (props) => {
 export const MyBarChartAtraso = (props) => {
 
     const data = []
-
+    let dezenasAtraso;
     if(props !== undefined && props.dezenas !== undefined && props.dezenas.length !== 0){
-        props.dezenas.forEach(elem => {
-            data.push({ earnings: elem.mediaAtraso, dezenas: elem.dezena })
-        });
+        dezenasAtraso = props.dezenas.sort((a, b) => b.atraso - a.atraso)
     }
+
+    dezenasAtraso = dezenasAtraso.slice(0, 10)
+
+    dezenasAtraso.forEach(elem => {
+        data.push({ earnings: elem.atraso, dezenas: elem.dezena })
+    });
 
     return (
         <View>
-            <Text style={{ textAlign: "center", fontSize: 14, fontWeight: "bold" }}>{ props.tituloBar }</Text>
-            <Text style={{ textAlign: "center", fontSize: 12 }}>{ props.subtituloBar }</Text>
-                     
+            <Text style={{ textAlign: "center", fontSize: 14, fontWeight: "bold" }}>{props.tituloBar}</Text>
+            <Text style={{ textAlign: "center", fontSize: 12 }}>{props.subtituloBar}</Text>
             <VictoryChart offset={10} width={screenWidth} theme={VictoryTheme.material}>
-            <VictoryLabel x={10} y={25} text="Média Atrasos %"  />
-            <VictoryBar style={{ data: { fill: "#c43a31" } }} alignment='start' animate={{
-                              onLoad: {duration: 1000},
-                              duration: 1000, 
-                              easing: "bounce"
-                            }} data={data} x="dezenas" y="earnings" />
-            <VictoryLabel
-                x={screenWidth/1.5}
-                y={25}
-                textAnchor="middle"
-                text="Dezenas"
-            />
-            </VictoryChart>             
-            
+                <VictoryLabel x={10} y={25} text="Atraso atual" />
+                <VictoryBar style={{ data: { fill: props.color } }}
+                    labelComponent={
+                        <VictoryLabel angle={0} textAnchor="middle" />
+                    }
+                    alignment='start'
+                    animate={{
+                        onLoad: { duration: 1000 },
+                        duration: 1000,
+                        easing: "bounce"
+                    }}
+                    data={data} x="dezenas" y="earnings"
+                    labels={({ datum }) => datum.y} />
+                <VictoryLabel
+                    x={screenWidth / 1.4}
+                    y={340}
+                    textAnchor="middle"
+                    text="Dezenas"
+                />
+            </VictoryChart>
+
+        </View>
+    )
+}
+
+export const MyBarChartSequencia = (props) => {
+
+    const data = []
+    let dezenasSequencia;
+    if(props !== undefined && props.dezenas !== undefined && props.dezenas.length !== 0){
+        dezenasSequencia = props.dezenas.sort((a, b) => b.maxSequencia - a.maxSequencia)
+    }
+
+    dezenasSequencia = dezenasSequencia.slice(0, 10)
+
+    dezenasSequencia.forEach(elem => {
+        data.push({ earnings: elem.maxSequencia, dezenas: elem.dezena })
+    });
+
+
+    return (
+        <View>
+            <Text style={{ textAlign: "center", fontSize: 14, fontWeight: "bold" }}>{props.tituloBar}</Text>
+            <Text style={{ textAlign: "center", fontSize: 12 }}>{props.subtituloBar}</Text>
+            <VictoryChart offset={10} width={screenWidth} theme={VictoryTheme.material}>
+                <VictoryLabel x={10} y={25} text="Sequências" />
+                <VictoryBar style={{ data: { fill: props.color } }}
+                    labelComponent={
+                        <VictoryLabel angle={0} textAnchor="middle" />
+                    }
+                    alignment='start'
+                    animate={{
+                        onLoad: { duration: 1000 },
+                        duration: 1000,
+                        easing: "bounce"
+                    }}
+                    data={data} x="dezenas" y="earnings"
+                    labels={({ datum }) => datum.y} />
+                <VictoryLabel
+                    x={screenWidth / 1.4}
+                    y={340}
+                    textAnchor="middle"
+                    text="Dezenas"
+                />
+            </VictoryChart>
+
         </View>
     )
 }

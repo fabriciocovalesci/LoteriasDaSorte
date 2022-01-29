@@ -812,6 +812,7 @@ export const EstatisMania = async () =>{
             }
         });
         return { 
+            allMania,
             ocorrencias,
             somaParImpar,
             estatisAtrasoSeq,
@@ -851,6 +852,7 @@ export const EstatisQuina = async () =>{
             }
         });
         return { 
+            allQuina,
             ocorrencias,
             somaParImpar,
             estatisAtrasoSeq,

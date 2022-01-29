@@ -6,6 +6,8 @@ import TopBar from "../../Components/TopBar";
 
 import UltimosResultadoDb from "../../Model/UltimosResultadoDb";
 
+import { firebaseDB } from "../../firebase/config";
+
 import {
     ResultadoMegaSena,
     ResultadoLotoFacil,
@@ -24,6 +26,9 @@ import {
     from "../../Components/CardFeedLoteria";
 
 const Resultados = () => {
+
+
+  
 
     const [loadingData, setloadingData] = React.useState(true)
 
@@ -55,9 +60,6 @@ const Resultados = () => {
         async function loadDataMega() {
             Promise.all([ResultadoMegaSena(), ResultadoLotoFacil(), ResultadoLotoMania(), ResultadoQuina(), LatestMegaSena()]).then((values) => {
                if(values !== undefined && values !== null){
-                //    console.log('==========retorna os dados do site da caixa==========================');
-                //    console.log(values[4]);
-                //    console.log('====================================');
                    setMega(values[0].data)
                    setLotoFacil(values[1].data)
                    setLotoMania(values[2].data)
@@ -67,19 +69,6 @@ const Resultados = () => {
         }
         loadDataMega();
     }, []);
-
-    // React.useEffect(() => {
-    //     async function savedData() {
-    //         console.log(megasena);
-    //     UltimosResultadoDb.create({nome: megasena.nome, dezena: JSON.stringify(megasena.dezenas), concurso: parseInt(megasena.concurso), dataProxConcurso: megasena.dataProxConcurso, proxConcurso: parseInt(megasena.proxConcurso)}).then((res) => console.log("Ultimos resultados da mega sena salvos!! ", res)).catch((err) => console.error("Error ao salvar dados da mega senha ", err))
-    //     // UltimosResultadoDb.create({nome: lotofacil.nome, dezena: JSON.stringify(lotofacil.dezenas), concurso: parseInt(lotofacil.concurso), dataProxConcurso: lotofacil.dataProxConcurso, proxConcurso: parseInt(lotofacil.proxConcurso)}).then((res) => console.log("Ultimos resultados da lotofacil salvos!! ", res)).catch((err) => console.error("Error ao salvar dados da lotofacil ", err))
-    //     // UltimosResultadoDb.create({nome: lotoMania.nome, dezena: JSON.stringify(lotoMania.dezenas), concurso: parseInt(lotoMania.concurso), dataProxConcurso: lotoMania.dataProxConcurso, proxConcurso: parseInt(lotoMania.proxConcurso)}).then((res) => console.log("Ultimos resultados da lotoMania salvos!! ", res)).catch((err) => console.error("Error ao salvar dados da lotoMania ", err))
-    //     // UltimosResultadoDb.create({nome: quina.nome, dezena: JSON.stringify(quina.dezenas), concurso: parseInt(quina.concurso), dataProxConcurso: quina.dataProxConcurso, proxConcurso: parseInt(quina.proxConcurso)}).then((res) => console.log("Ultimos resultados da quina salvos!! ", res)).catch((err) => console.error("Error ao salvar dados da quina ", err))
-    //     setloadingData(false)
-    // }
-    // savedData()
-    
-    // },[loadingData])
 
     return (
         <React.Fragment>
